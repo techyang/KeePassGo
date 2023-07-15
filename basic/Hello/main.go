@@ -230,7 +230,7 @@ func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QW
 	tabWidget.AddTab(propertiesTab, "Properties")
 	tabWidget.AddTab(autoTypeTab, "Auto-Type")
 	tabWidget.AddTab(historyTab, "History")
-	tabWidget.Resize2(600, 400)
+	tabWidget.Resize2(700, 400)
 	return entryTab, advancedTab
 }
 
@@ -252,26 +252,69 @@ func initEntryTab(entryTab *widgets.QWidget) {
 	userNameEdit := widgets.NewQLineEdit(nil)
 	formLayout.AddRow3("User name:", userNameEdit)
 
-	phoneLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Phone:", phoneLineEdit)
+	passwordEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Password:", passwordEdit)
 
-	addressLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Address:", addressLineEdit)
+	repeatPasswordEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Repeat:", repeatPasswordEdit)
 
-	cityLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("City:", cityLineEdit)
+	// Create a progress bar
+	progressBar := widgets.NewQProgressBar(nil)
+	progressBar.SetRange(0, 100)
 
-	// Create and add widgets to the second tab
+	// Create a palette for the progress bar
+	palette := progressBar.Palette()
+	//palette.SetColor(gui.QPalette__Base, core.Qt__GlobalColor(gui.QPalette__Dark))
+	// Create a color gradient from orange to green
+	gradient := gui.NewQLinearGradient3(0, 0, 1, 0)
+	gradient.SetColorAt(0.0, gui.NewQColor3(255, 165, 0, 0)) // Orange
+	gradient.SetColorAt(1.0, gui.NewQColor3(0, 128, 0, 0))   // Green
 
-	firstNameLineEdit2 := widgets.NewQLineEdit(nil)
-	lastNameLineEdit2 := widgets.NewQLineEdit(nil)
+	// Create a brush with the gradient
+	brush := gui.NewQBrush10(gradient)
 
-	nameLayout2 := widgets.NewQHBoxLayout2(nil)
-	nameLayout2.AddWidget(firstNameLineEdit2, 0, core.Qt__AlignLeft)
-	nameLayout2.AddWidget(lastNameLineEdit2, 0, core.Qt__AlignLeft)
-	label22 := widgets.NewQLabel2("Title:", nil, 0)
-	//formLayout.AddRow3("nameLabel", nameLayout.Widget())
-	formLayout.AddRow2(label22, nameLayout2)
+	// Set the color gradient as the background of the progress bar
+	palette.SetBrush(gui.QPalette__Highlight, brush)
+	progressBar.SetPalette(palette)
+
+	// Create a line edit for entering the password
+	passwordEdit.ConnectTextChanged(func(text string) {
+		// Calculate the password complexity score
+		complexity := calculatePasswordComplexity(text)
+
+		// Set the value of the progress bar based on the complexity score
+		progressBar.SetValue(complexity)
+	})
+
+	formLayout.AddRow3("Quality:", progressBar)
+
+	urlEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Url:", urlEdit)
+
+	notesEdit := widgets.NewQTextEdit(nil)
+	notesEdit.Resize2(300, 200)
+	formLayout.AddRow3("Notes:", notesEdit)
+
+	dateTimeEdit := widgets.NewQDateTimeEdit(nil)
+	//dateEdit.enab
+	formLayout.AddRow3("Expires:", dateTimeEdit)
+	button := widgets.NewQPushButton2("Get DateTime", nil)
+	button.ConnectClicked(func(checked bool) {
+		selectedDateTime := dateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
+		dateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
+		fmt.Println("Selected DateTime:", selectedDateTime)
+	})
+
+	formLayout.AddRow3("chage datetime:", button)
+
+}
+
+// Function to calculate the password complexity score
+func calculatePasswordComplexity(password string) int {
+	// Dummy implementation, replace with your own logic
+	// Calculate the complexity based on the password strength criteria
+	// Return a score between 0 and 100
+	return len(password) * 10
 }
 
 func initAdvancedTab(advancedTab *widgets.QWidget) {
