@@ -10,6 +10,69 @@ import (
 	"time"
 )
 
+type EntryTab struct {
+	FormLayout         *widgets.QFormLayout
+	FirstNameLineEdit  *widgets.QLineEdit
+	LastNameLineEdit   *widgets.QLineEdit
+	UserNameEdit       *widgets.QLineEdit
+	PasswordEdit       *widgets.QLineEdit
+	RepeatPasswordEdit *widgets.QLineEdit
+	ProgressBar        *widgets.QProgressBar
+	URLEdit            *widgets.QLineEdit
+	NotesEdit          *widgets.QTextEdit
+	DateTimeEdit       *widgets.QDateTimeEdit
+}
+
+func (entry *EntryTab) InitEntryTab2(entryTab *widgets.QWidget) {
+	// Create the entry tab struct
+	//entryTabWidget := widgets.NewQWidget(nil, 0)
+
+	// Create the form layout
+	entry.FormLayout = widgets.NewQFormLayout(entryTab)
+
+	// Create and add widgets to the form layout
+	entry.FirstNameLineEdit = widgets.NewQLineEdit(nil)
+	entry.LastNameLineEdit = widgets.NewQLineEdit(nil)
+
+	nameLayout := widgets.NewQHBoxLayout2(nil)
+	nameLayout.AddWidget(entry.FirstNameLineEdit, 0, core.Qt__AlignLeft)
+	nameLayout.AddWidget(entry.LastNameLineEdit, 0, core.Qt__AlignLeft)
+	label2 := widgets.NewQLabel2("Title:", nil, 0)
+	entry.FormLayout.AddRow2(label2, nameLayout)
+
+	entry.UserNameEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("User name:", entry.UserNameEdit)
+
+	entry.PasswordEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("Password:", entry.PasswordEdit)
+
+	entry.RepeatPasswordEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("Repeat:", entry.RepeatPasswordEdit)
+
+	entry.ProgressBar = widgets.NewQProgressBar(nil)
+	entry.ProgressBar.SetRange(0, 100)
+	entry.FormLayout.AddRow3("Quality:", entry.ProgressBar)
+
+	entry.URLEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("URL:", entry.URLEdit)
+
+	entry.NotesEdit = widgets.NewQTextEdit(nil)
+	entry.NotesEdit.Resize2(300, 200)
+	entry.FormLayout.AddRow3("Notes:", entry.NotesEdit)
+
+	entry.DateTimeEdit = widgets.NewQDateTimeEdit(nil)
+	entry.FormLayout.AddRow3("Expires:", entry.DateTimeEdit)
+
+	button := widgets.NewQPushButton2("Get DateTime", nil)
+	button.ConnectClicked(func(checked bool) {
+		selectedDateTime := entry.DateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
+		entry.DateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
+		fmt.Println("Selected DateTime:", selectedDateTime)
+	})
+
+	entry.FormLayout.AddRow3("Change datetime:", button)
+}
+
 func main() {
 	widgets.NewQApplication(len(os.Args), os.Args)
 
@@ -161,7 +224,11 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create the tab widget
 	tabWidget := widgets.NewQTabWidget(dialog)
 	entryTab, advancedTab := initTabWidget(tabWidget)
-	initEntryTab(entryTab)
+	//entryTabWidget := widgets.NewQWidget(nil, 0)
+	entry := &EntryTab{}
+	entry.InitEntryTab2(entryTab)
+
+	//initEntryTab(a)
 	initAdvancedTab(advancedTab)
 
 	hBoxLayout := initBottomButton(tabWidget, dialog)
@@ -232,6 +299,12 @@ func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QW
 	tabWidget.AddTab(historyTab, "History")
 	tabWidget.Resize2(700, 400)
 	return entryTab, advancedTab
+}
+
+func initTabWidget2(entryTab *widgets.QWidget, tabWidget *widgets.QTabWidget) {
+	// Create and add tabs to the tab widget
+	tabWidget.AddTab(entryTab, "Entry")
+
 }
 
 func initEntryTab(entryTab *widgets.QWidget) {
