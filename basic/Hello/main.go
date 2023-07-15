@@ -173,11 +173,11 @@ func restTable2(tableWidget *widgets.QTableWidget) {
 	tableWidget.SetItem(2, 2, widgets.NewQTableWidgetItem2("1.34", 0))
 }
 
-func addTableItem(tableWidget *widgets.QTableWidget) {
+func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
-	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2("头条1", 0))
-	tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2("toutiao1", 0))
+	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(entry.UserNameEdit.Text(), 0))
+	tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(entry.PasswordEdit.Text(), 0))
 	tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2("2.37", 0))
 
 }
@@ -207,8 +207,9 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 			expanded := item.IsExpanded() // Get the current expansion state
 			item.SetExpanded(!expanded)   // Toggle the expansion state
 		} else {
-			initDetailWidget(tableWidget)
 			restTable(tableWidget)
+			//initDetailWidget(tableWidget)
+
 		}
 	})
 	return treeWidget
@@ -231,7 +232,7 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	//initEntryTab(a)
 	initAdvancedTab(advancedTab)
 
-	hBoxLayout := initBottomButton(tabWidget, dialog)
+	hBoxLayout := initBottomButton(entry, tableWidget, tabWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
@@ -251,7 +252,7 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(entryTab *EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 	okButton := widgets.NewQPushButton2("Ok", nil)
@@ -273,6 +274,8 @@ func initBottomButton(tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *w
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
+		reAddTableItem(entryTab, tableWidget)
+
 		dialog.Close()
 	})
 
