@@ -24,6 +24,11 @@ type EntryTab struct {
 	DateTimeEdit       *widgets.QDateTimeEdit
 }
 
+func clearChildItems(item *widgets.QTreeWidgetItem) {
+	for item.ChildCount() > 0 {
+		item.TakeChild(0)
+	}
+}
 func (entry *EntryTab) InitEntryTab2(entryTab *widgets.QWidget) {
 	// Create the entry tab struct
 	//entryTabWidget := widgets.NewQWidget(nil, 0)
@@ -202,7 +207,7 @@ func initKeePass(tableWidget *widgets.QTableWidget) {
 
 }
 
-func initKeePassItem(index int, tableWidget *widgets.QTableWidget) {
+func initKeePassItem(qTreeWidgetItem *widgets.QTreeWidgetItem, tableWidget *widgets.QTableWidget) {
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
 	db := gokeepasslib.NewDatabase()
@@ -210,7 +215,7 @@ func initKeePassItem(index int, tableWidget *widgets.QTableWidget) {
 	_ = gokeepasslib.NewDecoder(file).Decode(db)
 
 	db.UnlockProtectedEntries()
-
+	index := qTreeWidgetItem.IndexOfChild(qTreeWidgetItem.Parent())
 	// Note: This is a simplified example and the groups and entries will depend on the specific file.
 	// bound checking for the slices is recommended to avoid panics.
 
@@ -253,19 +258,21 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 
 	db.UnlockProtectedEntries()
 	rootGroups := db.Content.Root.Groups
-	groupMap := make(map[string]int, 10) //创建map
-
+	//groupMap := make(map[string]int, 10) //创建map
+	//groupMap[group.Name] = i
 	for i, rootGroup := range rootGroups {
 		fmt.Println(i, "rootGroup:", rootGroup.Name)
 		// Create the root item
 		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
 		rootItem.SetExpanded(true) // Set the root item initially expanded
 		groups := rootGroup.Groups
-
+		//group4 := rootGroup.Groups[4]
 		for i, group := range groups {
 			fmt.Println(i, "subGroup:", group.Name)
-			groupMap[group.Name] = i
-			rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{group.Name}, 0))
+			treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+			search1(group, 1, 1)
+
+			rootItem.AddChild(treeItem)
 			/*entries := group.Entries
 
 			for i, entry := range entries {
@@ -288,13 +295,109 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 		fmt.Println(item.Text(0), "点击了")
-		index := treeWidget.CurrentIndex().Row()
-		initKeePassItem(index, tableWidget)
-		expanded := item.IsExpanded() // Get the current expansion state
-		item.SetExpanded(!expanded)   // Toggle the expansion state
+
+		parentItem := item.Parent()
+		//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
+
+		if parentItem == nil {
+			// Clicked item is a top-level item
+			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+			fmt.Printf("Clicked top-level item: Level %d, Index %d\n", 0, topLevelIndex)
+		} else {
+			// Clicked item is a child item
+			//topLevelItem := treeWidget.InvisibleRootItem()
+			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+
+			childIndex := parentItem.IndexOfChild(item)
+			fmt.Printf("aaaaaaaaaaaaaaaaClicked child item: Level %d, Index %d\n", topLevelIndex, childIndex)
+			//db.Content.Root.Groups[0].Groups[1]
+			//search1(db, topLevelIndex, childIndex)
+			rootGroups := db.Content.Root.Groups
+			//groupMap := make(map[string]int, 10) //创建map
+			//groupMap[group.Name] = i
+			for _, rootGroup := range rootGroups {
+				fmt.Println("level:", topLevelIndex, ",当前group:", rootGroup.Name)
+				// Create the root item
+				groups := rootGroup.Groups
+				//group4 := rootGroup.Groups[4]
+
+				for m, group := range groups {
+					//fmt.Println(topLevelIndex, "当前点击是分组:", group.Name)
+					if childIndex == m {
+
+						clearChildItems(item)
+						for _, grp := range group.Groups {
+
+							item.AddChild(widgets.NewQTreeWidgetItem2([]string{grp.Name}, 0))
+							fmt.Println(m, "level:", topLevelIndex, "-----------childIndex:", childIndex)
+
+						}
+					}
+
+				}
+
+			}
+
+		}
+
+		//index := treeWidget.CurrentIndex().Row()
+		//it := treeWidget.SelectedItems()[0]
+		//selectedItems := treeWidget.SelectedItems()
+		// Iterate over the selected items
+		//for _, item := range selectedItems {
+		// Perform operations on the selected item
+		//	item.
+		//}
+		/*if len(items) > 0 {
+			item := items[0] //取第一个选中节点
+			//node := item.Data(0, widgets.Qt__UserRole).(myNodeType) // 强制转换为我的节点类型
+			itemData := item.Data(0, 0).ToString()
+			fmt.Println(itemData)
+			//item.Data()
+			// 使用节点对象
+			//fmt.Println(node.Name)
+		}*/
+
+		//initKeePassItem(it, tableWidget)
+		//expanded := it.IsExpanded() // Get the current expansion state
+		//it.SetExpanded(!expanded)   // Toggle the expansion state
 
 	})
 	return treeWidget
+}
+
+func search1(group gokeepasslib.Group, level, index int) int {
+
+	rootGroups := group.Groups
+
+	for i, rootGroup := range rootGroups {
+		fmt.Println(i, "files-------:", level, "-", index, "-", rootGroup.Name)
+	}
+
+	/*	files, err := ioutil.ReadDir(path)
+		fmt.Println("files-------:", files)
+		if err != nil {
+			fmt.Println("目录读取失败！", err.Error())
+			return matches
+		}
+		if len(files) <= 0 {
+			return matches
+		}
+		for _, file := range files {
+			name := file.Name()
+			fmt.Println("name-----:", name)
+			if name == queryName {
+				matches++
+			}
+			if file.IsDir() {
+				dir := path + "/" + name
+				if path == "/" {
+					dir = path + name
+				}
+				search1(dir, queryName)
+			}
+		}*/
+	return 0
 }
 
 func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
@@ -865,9 +968,12 @@ func initFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	fileMenu.AddSeparator()
-	exitAction := fileMenu.AddAction("&Exit")
+	exitAction := fileMenu.AddAction("Exit")
 	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
-
+	//exitAction.SetShortcut(widgets.NewQKeySequence2("Ctrl+Q"))
+	exitAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Quit))
+	//exitAction.SetShortcut(gui.NewQKeySequence5(gui.key))
+	exitAction.SetShortcut(gui.NewQKeySequence2("Ctrl+S", gui.QKeySequence__NativeText))
 	/*closeAction := widgets.NewQAction3(gui.QIcon_FromTheme("window-close"), "Close", nil)
 	fileMenu.AddActions([]*widgets.QAction{closeAction})*/
 
