@@ -202,6 +202,36 @@ func initKeePass(tableWidget *widgets.QTableWidget) {
 
 }
 
+func initKeePassItem(index int, tableWidget *widgets.QTableWidget) {
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+
+	// Note: This is a simplified example and the groups and entries will depend on the specific file.
+	// bound checking for the slices is recommended to avoid panics.
+
+	entries := db.Content.Root.Groups[0].Groups[index].Entries
+
+	db.LockProtectedEntries()
+
+	tableWidget.Clear()
+	tableWidget.SetRowCount(len(entries) + 1)
+	//tableWidget.
+	for i, entry := range entries {
+
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+		fmt.Println(entry.GetTitle())
+		fmt.Println(entry.GetPassword())
+	}
+
+}
+
 func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
@@ -215,32 +245,54 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	treeWidget := widgets.NewQTreeWidget(nil)
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 
-	// Create the root item
-	rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{"Yangwl"}, 0)
-	rootItem.SetExpanded(true) // Set the root item initially expanded
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
-	// Add child items to the root item
-	rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{"22222"}, 0))
-	rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{"3333"}, 0))
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+	rootGroups := db.Content.Root.Groups
+	groupMap := make(map[string]int, 10) //创建map
+
+	for i, rootGroup := range rootGroups {
+		fmt.Println(i, "rootGroup:", rootGroup.Name)
+		// Create the root item
+		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
+		rootItem.SetExpanded(true) // Set the root item initially expanded
+		groups := rootGroup.Groups
+
+		for i, group := range groups {
+			fmt.Println(i, "subGroup:", group.Name)
+			groupMap[group.Name] = i
+			rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{group.Name}, 0))
+			/*entries := group.Entries
+
+			for i, entry := range entries {
+				fmt.Println(i, entry.GetTitle(), entry.GetPassword())
+				/*	fmt.Println(entry.GetTitle())
+					fmt.Println(entry.GetPassword())
+			}
+			*/
+		}
+		// Add child items to the root item
+
+		treeWidget.InsertTopLevelItem(i, rootItem)
+	}
+	// Create the root item
 
 	// Set the root item as the top-level item of the tree widget
-	treeWidget.InsertTopLevelItem(0, rootItem)
+
 	treeWidget.SetHeaderHidden(true)
 
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 		fmt.Println(item.Text(0), "点击了")
-		if "3333" == item.Text(0) { // Check if the clicked item is the root item
-			fmt.Println("root")
-			restTable2(tableWidget)
-			expanded := item.IsExpanded() // Get the current expansion state
-			item.SetExpanded(!expanded)   // Toggle the expansion state
-		} else {
-			//restTable(tableWidget)
-			initKeePass(tableWidget)
-			//initDetailWidget(tableWidget)
+		index := treeWidget.CurrentIndex().Row()
+		initKeePassItem(index, tableWidget)
+		expanded := item.IsExpanded() // Get the current expansion state
+		item.SetExpanded(!expanded)   // Toggle the expansion state
 
-		}
 	})
 	return treeWidget
 }
