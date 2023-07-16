@@ -5,6 +5,7 @@ import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 	"math/rand"
 	"os"
 	"time"
@@ -173,6 +174,34 @@ func restTable2(tableWidget *widgets.QTableWidget) {
 	tableWidget.SetItem(2, 2, widgets.NewQTableWidgetItem2("1.34", 0))
 }
 
+func initKeePass(tableWidget *widgets.QTableWidget) {
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+
+	// Note: This is a simplified example and the groups and entries will depend on the specific file.
+	// bound checking for the slices is recommended to avoid panics.
+
+	entries := db.Content.Root.Groups[0].Groups[0].Entries
+
+	db.LockProtectedEntries()
+
+	tableWidget.Clear()
+	for i, entry := range entries {
+		tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+		fmt.Println(entry.GetTitle())
+		fmt.Println(entry.GetPassword())
+	}
+
+}
+
 func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
@@ -207,7 +236,8 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 			expanded := item.IsExpanded() // Get the current expansion state
 			item.SetExpanded(!expanded)   // Toggle the expansion state
 		} else {
-			restTable(tableWidget)
+			//restTable(tableWidget)
+			initKeePass(tableWidget)
 			//initDetailWidget(tableWidget)
 
 		}
