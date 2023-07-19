@@ -4,15 +4,12 @@ go 1.20
 
 require github.com/therecipe/qt v0.0.0-20200904063919-c0c124a5770d
 
-require (
-	github.com/gopherjs/gopherjs v0.0.0-20190411002643-bd77b112433e
-	github.com/stretchr/testify v1.3.0
-)
+require github.com/tobischo/gokeepasslib/v3 v3.5.1
 
 require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stephenlyu/go-pkg-xmlx v0.0.0-20151201012946-76f54ee73233 // indirect
-	github.com/stephenlyu/goqtuic v0.0.0-20201217075954-6b5b69deba73 // indirect
-	github.com/z-ray/log v0.0.0-20171010041026-e59779f9e8f6 // indirect
+	github.com/aead/argon2 v0.0.0-20180111183520-a87724528b07 // indirect
+	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20190411002643-bd77b112433e // indirect
+	golang.org/x/crypto v0.8.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 )

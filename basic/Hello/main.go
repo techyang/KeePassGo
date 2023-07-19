@@ -5,10 +5,79 @@ import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 	"math/rand"
 	"os"
 	"time"
 )
+
+type EntryTab struct {
+	FormLayout         *widgets.QFormLayout
+	FirstNameLineEdit  *widgets.QLineEdit
+	LastNameLineEdit   *widgets.QLineEdit
+	UserNameEdit       *widgets.QLineEdit
+	PasswordEdit       *widgets.QLineEdit
+	RepeatPasswordEdit *widgets.QLineEdit
+	ProgressBar        *widgets.QProgressBar
+	URLEdit            *widgets.QLineEdit
+	NotesEdit          *widgets.QTextEdit
+	DateTimeEdit       *widgets.QDateTimeEdit
+}
+
+func clearChildItems(item *widgets.QTreeWidgetItem) {
+	for item.ChildCount() > 0 {
+		item.TakeChild(0)
+	}
+}
+func (entry *EntryTab) InitEntryTab2(entryTab *widgets.QWidget) {
+	// Create the entry tab struct
+	//entryTabWidget := widgets.NewQWidget(nil, 0)
+
+	// Create the form layout
+	entry.FormLayout = widgets.NewQFormLayout(entryTab)
+
+	// Create and add widgets to the form layout
+	entry.FirstNameLineEdit = widgets.NewQLineEdit(nil)
+	entry.LastNameLineEdit = widgets.NewQLineEdit(nil)
+
+	nameLayout := widgets.NewQHBoxLayout2(nil)
+	nameLayout.AddWidget(entry.FirstNameLineEdit, 0, core.Qt__AlignLeft)
+	nameLayout.AddWidget(entry.LastNameLineEdit, 0, core.Qt__AlignLeft)
+	label2 := widgets.NewQLabel2("Title:", nil, 0)
+	entry.FormLayout.AddRow2(label2, nameLayout)
+
+	entry.UserNameEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("User name:", entry.UserNameEdit)
+
+	entry.PasswordEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("Password:", entry.PasswordEdit)
+
+	entry.RepeatPasswordEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("Repeat:", entry.RepeatPasswordEdit)
+
+	entry.ProgressBar = widgets.NewQProgressBar(nil)
+	entry.ProgressBar.SetRange(0, 100)
+	entry.FormLayout.AddRow3("Quality:", entry.ProgressBar)
+
+	entry.URLEdit = widgets.NewQLineEdit(nil)
+	entry.FormLayout.AddRow3("URL:", entry.URLEdit)
+
+	entry.NotesEdit = widgets.NewQTextEdit(nil)
+	entry.NotesEdit.Resize2(300, 200)
+	entry.FormLayout.AddRow3("Notes:", entry.NotesEdit)
+
+	entry.DateTimeEdit = widgets.NewQDateTimeEdit(nil)
+	entry.FormLayout.AddRow3("Expires:", entry.DateTimeEdit)
+
+	button := widgets.NewQPushButton2("Get DateTime", nil)
+	button.ConnectClicked(func(checked bool) {
+		selectedDateTime := entry.DateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
+		entry.DateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
+		fmt.Println("Selected DateTime:", selectedDateTime)
+	})
+
+	entry.FormLayout.AddRow3("Change datetime:", button)
+}
 
 func main() {
 	widgets.NewQApplication(len(os.Args), os.Args)
@@ -110,11 +179,69 @@ func restTable2(tableWidget *widgets.QTableWidget) {
 	tableWidget.SetItem(2, 2, widgets.NewQTableWidgetItem2("1.34", 0))
 }
 
-func addTableItem(tableWidget *widgets.QTableWidget) {
+func initKeePass(tableWidget *widgets.QTableWidget) {
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+
+	// Note: This is a simplified example and the groups and entries will depend on the specific file.
+	// bound checking for the slices is recommended to avoid panics.
+
+	entries := db.Content.Root.Groups[0].Groups[0].Entries
+
+	db.LockProtectedEntries()
+
+	tableWidget.Clear()
+	for i, entry := range entries {
+		tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+		fmt.Println(entry.GetTitle())
+		fmt.Println(entry.GetPassword())
+	}
+
+}
+
+func initKeePassItem(qTreeWidgetItem *widgets.QTreeWidgetItem, tableWidget *widgets.QTableWidget) {
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+	index := qTreeWidgetItem.IndexOfChild(qTreeWidgetItem.Parent())
+	// Note: This is a simplified example and the groups and entries will depend on the specific file.
+	// bound checking for the slices is recommended to avoid panics.
+
+	entries := db.Content.Root.Groups[0].Groups[index].Entries
+
+	db.LockProtectedEntries()
+
+	tableWidget.Clear()
+	tableWidget.SetRowCount(len(entries) + 1)
+	//tableWidget.
+	for i, entry := range entries {
+
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+		fmt.Println(entry.GetTitle())
+		fmt.Println(entry.GetPassword())
+	}
+
+}
+
+func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
-	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2("头条1", 0))
-	tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2("toutiao1", 0))
+	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(entry.UserNameEdit.Text(), 0))
+	tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(entry.PasswordEdit.Text(), 0))
 	tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2("2.37", 0))
 
 }
@@ -123,32 +250,154 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	treeWidget := widgets.NewQTreeWidget(nil)
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 
-	// Create the root item
-	rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{"Yangwl"}, 0)
-	rootItem.SetExpanded(true) // Set the root item initially expanded
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
-	// Add child items to the root item
-	rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{"22222"}, 0))
-	rootItem.AddChild(widgets.NewQTreeWidgetItem2([]string{"3333"}, 0))
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+	rootGroups := db.Content.Root.Groups
+	//groupMap := make(map[string]int, 10) //创建map
+	//groupMap[group.Name] = i
+	for i, rootGroup := range rootGroups {
+		fmt.Println(i, "rootGroup:", rootGroup.Name)
+		// Create the root item
+		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
+		rootItem.SetExpanded(true) // Set the root item initially expanded
+		groups := rootGroup.Groups
+		//group4 := rootGroup.Groups[4]
+		for i, group := range groups {
+			fmt.Println(i, "subGroup:", group.Name)
+			treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+			search1(group, 1, 1)
+
+			rootItem.AddChild(treeItem)
+			/*entries := group.Entries
+
+			for i, entry := range entries {
+				fmt.Println(i, entry.GetTitle(), entry.GetPassword())
+				/*	fmt.Println(entry.GetTitle())
+					fmt.Println(entry.GetPassword())
+			}
+			*/
+		}
+		// Add child items to the root item
+
+		treeWidget.InsertTopLevelItem(i, rootItem)
+	}
+	// Create the root item
 
 	// Set the root item as the top-level item of the tree widget
-	treeWidget.InsertTopLevelItem(0, rootItem)
+
 	treeWidget.SetHeaderHidden(true)
 
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 		fmt.Println(item.Text(0), "点击了")
-		if "3333" == item.Text(0) { // Check if the clicked item is the root item
-			fmt.Println("root")
-			restTable2(tableWidget)
-			expanded := item.IsExpanded() // Get the current expansion state
-			item.SetExpanded(!expanded)   // Toggle the expansion state
+
+		parentItem := item.Parent()
+		//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
+
+		if parentItem == nil {
+			// Clicked item is a top-level item
+			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+			fmt.Printf("Clicked top-level item: Level %d, Index %d\n", 0, topLevelIndex)
 		} else {
-			initDetailWidget(tableWidget)
-			restTable(tableWidget)
+			// Clicked item is a child item
+			//topLevelItem := treeWidget.InvisibleRootItem()
+			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+
+			childIndex := parentItem.IndexOfChild(item)
+			fmt.Printf("aaaaaaaaaaaaaaaaClicked child item: Level %d, Index %d\n", topLevelIndex, childIndex)
+			//db.Content.Root.Groups[0].Groups[1]
+			//search1(db, topLevelIndex, childIndex)
+			rootGroups := db.Content.Root.Groups
+			//groupMap := make(map[string]int, 10) //创建map
+			//groupMap[group.Name] = i
+			for _, rootGroup := range rootGroups {
+				fmt.Println("level:", topLevelIndex, ",当前group:", rootGroup.Name)
+				// Create the root item
+				groups := rootGroup.Groups
+				//group4 := rootGroup.Groups[4]
+
+				for m, group := range groups {
+					//fmt.Println(topLevelIndex, "当前点击是分组:", group.Name)
+					if childIndex == m {
+
+						clearChildItems(item)
+						for _, grp := range group.Groups {
+
+							item.AddChild(widgets.NewQTreeWidgetItem2([]string{grp.Name}, 0))
+							fmt.Println(m, "level:", topLevelIndex, "-----------childIndex:", childIndex)
+
+						}
+					}
+
+				}
+
+			}
+
 		}
+
+		//index := treeWidget.CurrentIndex().Row()
+		//it := treeWidget.SelectedItems()[0]
+		//selectedItems := treeWidget.SelectedItems()
+		// Iterate over the selected items
+		//for _, item := range selectedItems {
+		// Perform operations on the selected item
+		//	item.
+		//}
+		/*if len(items) > 0 {
+			item := items[0] //取第一个选中节点
+			//node := item.Data(0, widgets.Qt__UserRole).(myNodeType) // 强制转换为我的节点类型
+			itemData := item.Data(0, 0).ToString()
+			fmt.Println(itemData)
+			//item.Data()
+			// 使用节点对象
+			//fmt.Println(node.Name)
+		}*/
+
+		//initKeePassItem(it, tableWidget)
+		//expanded := it.IsExpanded() // Get the current expansion state
+		//it.SetExpanded(!expanded)   // Toggle the expansion state
+
 	})
 	return treeWidget
+}
+
+func search1(group gokeepasslib.Group, level, index int) int {
+
+	rootGroups := group.Groups
+
+	for i, rootGroup := range rootGroups {
+		fmt.Println(i, "files-------:", level, "-", index, "-", rootGroup.Name)
+	}
+
+	/*	files, err := ioutil.ReadDir(path)
+		fmt.Println("files-------:", files)
+		if err != nil {
+			fmt.Println("目录读取失败！", err.Error())
+			return matches
+		}
+		if len(files) <= 0 {
+			return matches
+		}
+		for _, file := range files {
+			name := file.Name()
+			fmt.Println("name-----:", name)
+			if name == queryName {
+				matches++
+			}
+			if file.IsDir() {
+				dir := path + "/" + name
+				if path == "/" {
+					dir = path + name
+				}
+				search1(dir, queryName)
+			}
+		}*/
+	return 0
 }
 
 func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
@@ -161,10 +410,14 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create the tab widget
 	tabWidget := widgets.NewQTabWidget(dialog)
 	entryTab, advancedTab := initTabWidget(tabWidget)
-	initEntryTab(entryTab)
+	//entryTabWidget := widgets.NewQWidget(nil, 0)
+	entry := &EntryTab{}
+	entry.InitEntryTab2(entryTab)
+
+	//initEntryTab(a)
 	initAdvancedTab(advancedTab)
 
-	hBoxLayout := initBottomButton(tabWidget, dialog)
+	hBoxLayout := initBottomButton(entry, tableWidget, tabWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
@@ -184,7 +437,7 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(entryTab *EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 	okButton := widgets.NewQPushButton2("Ok", nil)
@@ -206,6 +459,8 @@ func initBottomButton(tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *w
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
+		reAddTableItem(entryTab, tableWidget)
+
 		dialog.Close()
 	})
 
@@ -230,8 +485,14 @@ func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QW
 	tabWidget.AddTab(propertiesTab, "Properties")
 	tabWidget.AddTab(autoTypeTab, "Auto-Type")
 	tabWidget.AddTab(historyTab, "History")
-	tabWidget.Resize2(600, 400)
+	tabWidget.Resize2(700, 400)
 	return entryTab, advancedTab
+}
+
+func initTabWidget2(entryTab *widgets.QWidget, tabWidget *widgets.QTabWidget) {
+	// Create and add tabs to the tab widget
+	tabWidget.AddTab(entryTab, "Entry")
+
 }
 
 func initEntryTab(entryTab *widgets.QWidget) {
@@ -252,26 +513,69 @@ func initEntryTab(entryTab *widgets.QWidget) {
 	userNameEdit := widgets.NewQLineEdit(nil)
 	formLayout.AddRow3("User name:", userNameEdit)
 
-	phoneLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Phone:", phoneLineEdit)
+	passwordEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Password:", passwordEdit)
 
-	addressLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Address:", addressLineEdit)
+	repeatPasswordEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Repeat:", repeatPasswordEdit)
 
-	cityLineEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("City:", cityLineEdit)
+	// Create a progress bar
+	progressBar := widgets.NewQProgressBar(nil)
+	progressBar.SetRange(0, 100)
 
-	// Create and add widgets to the second tab
+	// Create a palette for the progress bar
+	palette := progressBar.Palette()
+	//palette.SetColor(gui.QPalette__Base, core.Qt__GlobalColor(gui.QPalette__Dark))
+	// Create a color gradient from orange to green
+	gradient := gui.NewQLinearGradient3(0, 0, 1, 0)
+	gradient.SetColorAt(0.0, gui.NewQColor3(255, 165, 0, 0)) // Orange
+	gradient.SetColorAt(1.0, gui.NewQColor3(0, 128, 0, 0))   // Green
 
-	firstNameLineEdit2 := widgets.NewQLineEdit(nil)
-	lastNameLineEdit2 := widgets.NewQLineEdit(nil)
+	// Create a brush with the gradient
+	brush := gui.NewQBrush10(gradient)
 
-	nameLayout2 := widgets.NewQHBoxLayout2(nil)
-	nameLayout2.AddWidget(firstNameLineEdit2, 0, core.Qt__AlignLeft)
-	nameLayout2.AddWidget(lastNameLineEdit2, 0, core.Qt__AlignLeft)
-	label22 := widgets.NewQLabel2("Title:", nil, 0)
-	//formLayout.AddRow3("nameLabel", nameLayout.Widget())
-	formLayout.AddRow2(label22, nameLayout2)
+	// Set the color gradient as the background of the progress bar
+	palette.SetBrush(gui.QPalette__Highlight, brush)
+	progressBar.SetPalette(palette)
+
+	// Create a line edit for entering the password
+	passwordEdit.ConnectTextChanged(func(text string) {
+		// Calculate the password complexity score
+		complexity := calculatePasswordComplexity(text)
+
+		// Set the value of the progress bar based on the complexity score
+		progressBar.SetValue(complexity)
+	})
+
+	formLayout.AddRow3("Quality:", progressBar)
+
+	urlEdit := widgets.NewQLineEdit(nil)
+	formLayout.AddRow3("Url:", urlEdit)
+
+	notesEdit := widgets.NewQTextEdit(nil)
+	notesEdit.Resize2(300, 200)
+	formLayout.AddRow3("Notes:", notesEdit)
+
+	dateTimeEdit := widgets.NewQDateTimeEdit(nil)
+	//dateEdit.enab
+	formLayout.AddRow3("Expires:", dateTimeEdit)
+	button := widgets.NewQPushButton2("Get DateTime", nil)
+	button.ConnectClicked(func(checked bool) {
+		selectedDateTime := dateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
+		dateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
+		fmt.Println("Selected DateTime:", selectedDateTime)
+	})
+
+	formLayout.AddRow3("chage datetime:", button)
+
+}
+
+// Function to calculate the password complexity score
+func calculatePasswordComplexity(password string) int {
+	// Dummy implementation, replace with your own logic
+	// Calculate the complexity based on the password strength criteria
+	// Return a score between 0 and 100
+	return len(password) * 10
 }
 
 func initAdvancedTab(advancedTab *widgets.QWidget) {
@@ -664,9 +968,12 @@ func initFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	fileMenu.AddSeparator()
-	exitAction := fileMenu.AddAction("&Exit")
+	exitAction := fileMenu.AddAction("Exit")
 	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
-
+	//exitAction.SetShortcut(widgets.NewQKeySequence2("Ctrl+Q"))
+	exitAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Quit))
+	//exitAction.SetShortcut(gui.NewQKeySequence5(gui.key))
+	exitAction.SetShortcut(gui.NewQKeySequence2("Ctrl+S", gui.QKeySequence__NativeText))
 	/*closeAction := widgets.NewQAction3(gui.QIcon_FromTheme("window-close"), "Close", nil)
 	fileMenu.AddActions([]*widgets.QAction{closeAction})*/
 
