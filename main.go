@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/therecipe/examples/functions"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -432,7 +433,7 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 
 func initKeePassImage() *widgets.QLabel {
 	imageLabel := widgets.NewQLabel(nil, 0)
-	imagePixmap := gui.NewQPixmap3("D:\\workspace_go\\KeePassGo\\basic\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
+	imagePixmap := gui.NewQPixmap3("D:\\workspace_go\\KeePassGo\\src\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
 	imageLabel.SetPixmap(imagePixmap)
 	return imageLabel
 }
@@ -593,7 +594,7 @@ func initAdvancedTab(advancedTab *widgets.QWidget) {
 func initTopImage(vBoxLayout *widgets.QVBoxLayout, tabWidget *widgets.QTabWidget, hBoxLayout *widgets.QHBoxLayout) {
 	// Load and set the image pixmap
 	imageLabel := widgets.NewQLabel(nil, 0)
-	imagePixmap := gui.NewQPixmap3("D:\\workspace_go\\KeePassGo\\basic\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
+	imagePixmap := gui.NewQPixmap3("D:\\workspace_go\\KeePassGo\\src\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
 	imageLabel.SetPixmap(imagePixmap)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
 	vBoxLayout.AddWidget(tabWidget, 0, core.Qt__AlignLeft)
@@ -914,7 +915,7 @@ func initFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	newAction := fileMenu.AddAction("&New...")
 	// Connect the actions and tool buttons to their respective triggered events
 	newAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	// Create actions for the file menu
@@ -1026,21 +1027,21 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	addGroupAction := editMenu.AddAction("&Add Group...")
 	// Connect the actions and tool buttons to their respective triggered events
 	addGroupAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	// Create actions for the file menu
 	editGroupAction := editMenu.AddAction("&Edit Group...")
 	// Connect the actions and tool buttons to their respective triggered events
 	editGroupAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	// Create actions for the file menu
 	DelteteGroupAction := editMenu.AddAction("&Delete Group...")
 	// Connect the actions and tool buttons to their respective triggered events
 	DelteteGroupAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	editMenu.AddSeparator()
@@ -1051,7 +1052,7 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	addEntityAction := editMenu.AddAction("&Add Entity...")
 	// Connect the actions and tool buttons to their respective triggered events
 	addEntityAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	addEntityAction.SetShortcut(gui.NewQKeySequence2("Ctrl+I", gui.QKeySequence__NativeText))
@@ -1060,21 +1061,21 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	editEntityAction := editMenu.AddAction("&Edit Entity...")
 	// Connect the actions and tool buttons to their respective triggered events
 	editEntityAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	// Create actions for the edit menu
 	duplicateEntityAction := editMenu.AddAction("&Duplicate Entity...")
 	// Connect the actions and tool buttons to their respective triggered events
 	duplicateEntityAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	// Create actions for the edit menu
 	DelteteEntityAction := editMenu.AddAction("&Delete Entity...")
 	// Connect the actions and tool buttons to their respective triggered events
 	DelteteEntityAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	editMenu.AddSeparator()
@@ -1083,7 +1084,7 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	selectAllAction := editMenu.AddAction("&Select All...")
 	// Connect the actions and tool buttons to their respective triggered events
 	selectAllAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 	selectAllAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__SelectAll))
 	editMenu.AddSeparator()
@@ -1091,19 +1092,19 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	showEntriesAction := editMenu.AddAction("&Select All...")
 	// Connect the actions and tool buttons to their respective triggered events
 	showEntriesAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 	showEntriesByTagAction := editMenu.AddAction("&Select All...")
 	// Connect the actions and tool buttons to their respective triggered events
 	showEntriesByTagAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 
 	editMenu.AddSeparator()
 	findAction := editMenu.AddAction("&Find...")
 	// Connect the actions and tool buttons to their respective triggered events
 	findAction.ConnectTriggered(func(checked bool) {
-		doNewAction(window)
+		functions.DoNewAction(window)
 	})
 	//helpAction.SetShortcuts2(core.NewQKeySequence2("Ctrl+O", core.QKeySequence__NativeText))
 	//helpAction.SetShortcut(gui.NewQKeySequence2("Ctrl+Alt+S", gui.QKeySequence__NativeText))
@@ -1191,33 +1192,4 @@ func initEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		}
 	})
 	*/
-}
-
-func doNewAction(window *widgets.QMainWindow) {
-	msgBox := widgets.NewQMessageBox(nil)
-	msgBox.SetWindowTitle("Message Box")
-	msgBox.SetText("This is a message box.")
-	msgBox.SetInformativeText("This is a message box with text information.")
-	msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
-	msgBox.SetDefaultButton2(widgets.QMessageBox__Ok)
-
-	// Connect the clicked signal of the buttons
-	msgBox.ConnectButtonClicked(func(button *widgets.QAbstractButton) {
-		if button.Text() == "OK" {
-			newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt")
-			newFileBox.Show()
-			newFileBox.ConnectFileSelected(func(file string) {
-				fmt.Print(file)
-			})
-		} else if button.Text() == "&Cancel" {
-			// Handle the logic for the Cancel button
-			// ...
-		}
-
-		// Close the message box
-		msgBox.Close()
-	})
-
-	// Show the message box
-	msgBox.Exec()
 }
