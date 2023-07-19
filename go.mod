@@ -1,4 +1,4 @@
-module github.com/therecipe/examples
+module github.com/techyang/KeePassGo
 
 go 1.20
 
