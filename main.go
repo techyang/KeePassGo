@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/techyang/KeePassGo/functions"
+	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
