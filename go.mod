@@ -1,4 +1,4 @@
-module github.com/techyang/KeePassGo
+module github.com/techyang/keepassgo
 
 go 1.20
 
