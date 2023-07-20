@@ -259,29 +259,18 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	rootGroups := db.Content.Root.Groups
 	//groupMap := make(map[string]int, 10) //创建map
 	//groupMap[group.Name] = i
+
 	for i, rootGroup := range rootGroups {
 		fmt.Println(i, "rootGroup:", rootGroup.Name)
 		// Create the root item
 		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
 		rootItem.SetExpanded(true) // Set the root item initially expanded
 		groups := rootGroup.Groups
-		//group4 := rootGroup.Groups[4]
-		for i, group := range groups {
-			fmt.Println(i, "subGroup:", group.Name)
-			treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
-			search1(group, 1, 1)
 
-			rootItem.AddChild(treeItem)
-			/*entries := group.Entries
-
-			for i, entry := range entries {
-				fmt.Println(i, entry.GetTitle(), entry.GetPassword())
-				/*	fmt.Println(entry.GetTitle())
-					fmt.Println(entry.GetPassword())
-			}
-			*/
-		}
-		// Add child items to the root item
+		findGroupByName(groups, "公共111")
+		//	findGroupByUUID(groups, "[97 82 122 100 116 72 67 110 76 107 87 79 110 82 90 57 119 81 103 101 85 81 61 61]")
+		//
+		buildGroupTree(rootItem, groups)
 
 		treeWidget.InsertTopLevelItem(i, rootItem)
 	}
@@ -365,6 +354,56 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	return treeWidget
 }
 
+func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {
+	for _, group := range groups {
+		txt, _ := group.UUID.MarshalText()
+		fmt.Println("group.UUID -----------:", group.UUID)
+		fmt.Println("group.UUID:", txt)
+		treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+		parent.AddChild(treeItem)
+		buildGroupTree(treeItem, group.Groups)
+	}
+}
+
+func findGroupByName(groups []gokeepasslib.Group, name string) *gokeepasslib.Group {
+	for _, group := range groups {
+		if group.Name == name {
+			fmt.Println("找到的名称是:", group.Name)
+			return &group
+		}
+		if foundGroup := findGroupByName(group.Groups, name); foundGroup != nil {
+			return foundGroup
+		}
+	}
+	return nil
+}
+
+func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Group {
+	//uuids := uuid.MustParse(uuid)
+	for _, group := range groups {
+		txt, _ := group.UUID.MarshalText()
+		if string(txt) == uuid {
+			fmt.Println("找到的名称是:", group.Name)
+			return &group
+		}
+		foundGroup := findGroupByUUID(group.Groups, uuid)
+		if foundGroup != nil {
+			return foundGroup
+		}
+	}
+	return nil
+}
+
+/*
+	func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []*gokeepasslib.Group) {
+		for _, group := range groups {
+			treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+			parent.AddChild(treeItem)
+			//item := widgets.NewQTreeWidgetItem2(parent, []string{group.Name()})
+			buildGroupTree(treeItem, group.Groups)
+		}
+	}
+*/
 func search1(group gokeepasslib.Group, level, index int) int {
 
 	rootGroups := group.Groups
