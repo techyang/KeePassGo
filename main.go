@@ -268,7 +268,7 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 		groups := rootGroup.Groups
 
 		findGroupByName(groups, "公共111")
-		//	findGroupByUUID(groups, "[97 82 122 100 116 72 67 110 76 107 87 79 110 82 90 57 119 81 103 101 85 81 61 61]")
+		findGroupByUUID(groups, "2liXmlBJgUe7xMqjvdvofA==")
 		//
 		buildGroupTree(rootItem, groups)
 
@@ -282,7 +282,9 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
-		fmt.Println(item.Text(0), "点击了")
+
+		groupUUID := item.Data(1, 0).ToString()
+		fmt.Println(item.Text(0), "点击了", groupUUID)
 
 		parentItem := item.Parent()
 		//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
@@ -357,9 +359,13 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {
 	for _, group := range groups {
 		txt, _ := group.UUID.MarshalText()
-		fmt.Println("group.UUID -----------:", group.UUID)
-		fmt.Println("group.UUID:", txt)
+
+		fmt.Println("group.UUID -----------:", group.Name, ":", string(txt))
 		treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+		//treeItem.SetData(0, core.Qt__UserRole, core.NewQVariant1(group.UUID.String()))
+
+		treeItem.SetData(1, 0, core.NewQVariant1(string(txt)))
+
 		parent.AddChild(treeItem)
 		buildGroupTree(treeItem, group.Groups)
 	}
