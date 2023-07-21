@@ -236,6 +236,24 @@ func initKeePassItem(qTreeWidgetItem *widgets.QTreeWidgetItem, tableWidget *widg
 
 }
 
+func setGroupKeePassItem(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
+
+	entries := group.Entries
+
+	tableWidget.Clear()
+	tableWidget.SetRowCount(len(entries) + 1)
+	//tableWidget.
+	for i, entry := range entries {
+
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+		fmt.Println(entry.GetTitle())
+		fmt.Println(entry.GetPassword())
+	}
+
+}
+
 func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
@@ -259,14 +277,14 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	rootGroups := db.Content.Root.Groups
 	//groupMap := make(map[string]int, 10) //创建map
 	//groupMap[group.Name] = i
-
+	//var rootsGroup gokeepasslib.Group
 	for i, rootGroup := range rootGroups {
 		fmt.Println(i, "rootGroup:", rootGroup.Name)
 		// Create the root item
 		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
 		rootItem.SetExpanded(true) // Set the root item initially expanded
 		groups := rootGroup.Groups
-
+		//	rootsGroup = rootGroup
 		findGroupByName(groups, "公共111")
 		findGroupByUUID(groups, "2liXmlBJgUe7xMqjvdvofA==")
 		//
@@ -286,50 +304,73 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 		groupUUID := item.Data(1, 0).ToString()
 		fmt.Println(item.Text(0), "点击了", groupUUID)
 
-		parentItem := item.Parent()
-		//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
+		group := findGroupByUUID(rootGroups, groupUUID)
 
-		if parentItem == nil {
-			// Clicked item is a top-level item
-			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
-			fmt.Printf("Clicked top-level item: Level %d, Index %d\n", 0, topLevelIndex)
+		if group != nil && group.Entries != nil {
+			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			for i, entry := range group.Entries {
+				username := entry.Get("UserName").Value.Content
+				url := entry.Get("URL").Value.Content
+				note := entry.Get("Notes").Value.Content
+				tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+				tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+				tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
+				tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
+				tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
+				tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
+			}
 		} else {
-			// Clicked item is a child item
-			//topLevelItem := treeWidget.InvisibleRootItem()
-			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			//tableWidget.Clear()
+			tableWidget.SetRowCount(0)
+		}
 
-			childIndex := parentItem.IndexOfChild(item)
-			fmt.Printf("aaaaaaaaaaaaaaaaClicked child item: Level %d, Index %d\n", topLevelIndex, childIndex)
-			//db.Content.Root.Groups[0].Groups[1]
-			//search1(db, topLevelIndex, childIndex)
-			rootGroups := db.Content.Root.Groups
-			//groupMap := make(map[string]int, 10) //创建map
-			//groupMap[group.Name] = i
-			for _, rootGroup := range rootGroups {
-				fmt.Println("level:", topLevelIndex, ",当前group:", rootGroup.Name)
-				// Create the root item
-				groups := rootGroup.Groups
-				//group4 := rootGroup.Groups[4]
+		/*	parentItem := item.Parent()
+			//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
 
-				for m, group := range groups {
-					//fmt.Println(topLevelIndex, "当前点击是分组:", group.Name)
-					if childIndex == m {
+			if parentItem == nil {
+				// Clicked item is a top-level item
+				topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+				fmt.Printf("Clicked top-level item: Level %d, Index %d\n", 0, topLevelIndex)
+			} else {
+				// Clicked item is a child item
+				//topLevelItem := treeWidget.InvisibleRootItem()
+				topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
 
-						clearChildItems(item)
-						for _, grp := range group.Groups {
+				childIndex := parentItem.IndexOfChild(item)
+				fmt.Printf("aaaaaaaaaaaaaaaaClicked child item: Level %d, Index %d\n", topLevelIndex, childIndex)
+				//db.Content.Root.Groups[0].Groups[1]
+				//search1(db, topLevelIndex, childIndex)
+				rootGroups := db.Content.Root.Groups
+				//groupMap := make(map[string]int, 10) //创建map
+				//groupMap[group.Name] = i
+				for _, rootGroup := range rootGroups {
+					fmt.Println("level:", topLevelIndex, ",当前group:", rootGroup.Name)
+					// Create the root item
+					groups := rootGroup.Groups
+					//group4 := rootGroup.Groups[4]
 
-							item.AddChild(widgets.NewQTreeWidgetItem2([]string{grp.Name}, 0))
-							fmt.Println(m, "level:", topLevelIndex, "-----------childIndex:", childIndex)
+					for m, group := range groups {
+						//fmt.Println(topLevelIndex, "当前点击是分组:", group.Name)
+						if childIndex == m {
 
+							clearChildItems(item)
+							for _, grp := range group.Groups {
+
+								item.AddChild(widgets.NewQTreeWidgetItem2([]string{grp.Name}, 0))
+								fmt.Println(m, "level:", topLevelIndex, "-----------childIndex:", childIndex)
+
+							}
 						}
+
 					}
 
 				}
 
 			}
-
-		}
-
+		*/
 		//index := treeWidget.CurrentIndex().Row()
 		//it := treeWidget.SelectedItems()[0]
 		//selectedItems := treeWidget.SelectedItems()
