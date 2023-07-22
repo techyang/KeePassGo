@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/techyang/keepassgo/functions"
+	"github.com/techyang/keepassgo/kpwidgets"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -10,72 +11,10 @@ import (
 	"os"
 )
 
-type EntryTab struct {
-	FormLayout         *widgets.QFormLayout
-	FirstNameLineEdit  *widgets.QLineEdit
-	LastNameLineEdit   *widgets.QLineEdit
-	UserNameEdit       *widgets.QLineEdit
-	PasswordEdit       *widgets.QLineEdit
-	RepeatPasswordEdit *widgets.QLineEdit
-	ProgressBar        *widgets.QProgressBar
-	URLEdit            *widgets.QLineEdit
-	NotesEdit          *widgets.QTextEdit
-	DateTimeEdit       *widgets.QDateTimeEdit
-}
-
 func clearChildItems(item *widgets.QTreeWidgetItem) {
 	for item.ChildCount() > 0 {
 		item.TakeChild(0)
 	}
-}
-func (entry *EntryTab) InitEntryTab2(entryTab *widgets.QWidget) {
-	// Create the entry tab struct
-	//entryTabWidget := widgets.NewQWidget(nil, 0)
-
-	// Create the form layout
-	entry.FormLayout = widgets.NewQFormLayout(entryTab)
-
-	// Create and add widgets to the form layout
-	entry.FirstNameLineEdit = widgets.NewQLineEdit(nil)
-	entry.LastNameLineEdit = widgets.NewQLineEdit(nil)
-
-	nameLayout := widgets.NewQHBoxLayout2(nil)
-	nameLayout.AddWidget(entry.FirstNameLineEdit, 0, core.Qt__AlignLeft)
-	nameLayout.AddWidget(entry.LastNameLineEdit, 0, core.Qt__AlignLeft)
-	label2 := widgets.NewQLabel2("Title:", nil, 0)
-	entry.FormLayout.AddRow2(label2, nameLayout)
-
-	entry.UserNameEdit = widgets.NewQLineEdit(nil)
-	entry.FormLayout.AddRow3("User name:", entry.UserNameEdit)
-
-	entry.PasswordEdit = widgets.NewQLineEdit(nil)
-	entry.FormLayout.AddRow3("Password:", entry.PasswordEdit)
-
-	entry.RepeatPasswordEdit = widgets.NewQLineEdit(nil)
-	entry.FormLayout.AddRow3("Repeat:", entry.RepeatPasswordEdit)
-
-	entry.ProgressBar = widgets.NewQProgressBar(nil)
-	entry.ProgressBar.SetRange(0, 100)
-	entry.FormLayout.AddRow3("Quality:", entry.ProgressBar)
-
-	entry.URLEdit = widgets.NewQLineEdit(nil)
-	entry.FormLayout.AddRow3("URL:", entry.URLEdit)
-
-	entry.NotesEdit = widgets.NewQTextEdit(nil)
-	entry.NotesEdit.Resize2(300, 200)
-	entry.FormLayout.AddRow3("Notes:", entry.NotesEdit)
-
-	entry.DateTimeEdit = widgets.NewQDateTimeEdit(nil)
-	entry.FormLayout.AddRow3("Expires:", entry.DateTimeEdit)
-
-	button := widgets.NewQPushButton2("Get DateTime", nil)
-	button.ConnectClicked(func(checked bool) {
-		selectedDateTime := entry.DateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
-		entry.DateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
-		fmt.Println("Selected DateTime:", selectedDateTime)
-	})
-
-	entry.FormLayout.AddRow3("Change datetime:", button)
 }
 
 func main() {
@@ -83,28 +22,60 @@ func main() {
 
 	// Create the main window
 	window := widgets.NewQMainWindow(nil, 0)
+	window.SetWindowIcon(gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png"))
 	window.SetWindowTitle("KeePass")
+
 	// Create the menu bar
 	initMenuBar(window)
-	// Create the QKeySequence for the shortcut
-	//shortcut := gui.NewQKeySequence2("core.Qt__Key_H", "")
-
-	// Set the shortcut for the "About" action
-	//aboutAction.SetShortcut(gui.QKeySequence_ITF().QKeySequence_PTR())
-
 	// Create the toolbar with a title
 	initToolbar(window)
-
 	initMainContent(window)
 
 	// 创建状态栏
 	statusBar := widgets.NewQStatusBar(window)
 	window.SetStatusBar(statusBar)
-
 	// 在状态栏中显示文本
 	statusBar.ShowMessage("Ready", 0)
+
 	// Show the main window
 	window.Resize2(800, 600)
+
+	//系统托盘
+	sys := widgets.NewQSystemTrayIcon(nil)
+	//设置托盘图标
+	//sys.SetIcon(window.Style().StandardIcon(widgets.QStyle__SP_MediaPlay, nil, nil))
+
+	sys.SetIcon(gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png"))
+	sys.ConnectActivated(func(reason widgets.QSystemTrayIcon__ActivationReason) {
+		//单击系统托盘
+		if reason == widgets.QSystemTrayIcon__Trigger {
+			window.Show()
+		}
+	})
+	menu := widgets.NewQMenu(nil)
+	exit := menu.AddAction("Exit")
+	exit.ConnectTriggered(func(bool) {
+		//app.Exit(0)
+	})
+	//添加分隔符
+	menu.AddSeparator()
+	help := menu.AddAction("help")
+	//定义二级菜单
+	menuChild := widgets.NewQMenu(nil)
+	menuChild.AddAction("option")
+	about := menuChild.AddAction("about")
+	about.ConnectTriggered(func(bool) {
+		//button := widgets.QMessageBox_Information(nil, "title", "text", widgets.QMessageBox__Ok, widgets.QMessageBox__Yes)
+		fmt.Println("click me")
+		//widgets.QMessageBox_Information(nil, "title", "text", widgets.QMessageBox__Ok, widgets.QMessageBox__Yes)
+		widgets.NewQFileDialog2(nil, "打开", "d:", "*.txt").Show()
+	})
+	//设置子项
+	help.SetMenu(menuChild)
+
+	//设置菜单
+	sys.SetContextMenu(menu)
+	sys.Show()
 
 	window.Show()
 
@@ -153,17 +124,6 @@ func initMainContent(window *widgets.QMainWindow) {
 
 }
 
-func restTable(tableWidget *widgets.QTableWidget) {
-	tableWidget.SetRowCount(2)
-	// Create and set QTableWidgetItem for each cell
-	tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2("搜狐", 0))
-	tableWidget.SetItem(0, 1, widgets.NewQTableWidgetItem2("sohu", 0))
-	tableWidget.SetItem(0, 2, widgets.NewQTableWidgetItem2("2.37", 0))
-	tableWidget.SetItem(1, 0, widgets.NewQTableWidgetItem2("新浪", 0))
-	tableWidget.SetItem(1, 1, widgets.NewQTableWidgetItem2("sina", 0))
-	tableWidget.SetItem(1, 2, widgets.NewQTableWidgetItem2("1.34", 0))
-}
-
 func setGroupKeePassItem(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
 
 	entries := group.Entries
@@ -182,19 +142,9 @@ func setGroupKeePassItem(group *gokeepasslib.Group, tableWidget *widgets.QTableW
 
 }
 
-func reAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
-	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
-	// Create and set QTableWidgetItem for each cell
-	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(entry.UserNameEdit.Text(), 0))
-	tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(entry.PasswordEdit.Text(), 0))
-	tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2("2.37", 0))
-
-}
-
 func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	treeWidget := widgets.NewQTreeWidget(nil)
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
-
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
 	db := gokeepasslib.NewDatabase()
@@ -220,6 +170,11 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	treeWidget.SetHeaderHidden(true)
 
 	// Connect the itemClicked signal of the tree widget
+	TableItemClicked(tableWidget, treeWidget, rootGroups)
+	return treeWidget
+}
+
+func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 
 		groupUUID := item.Data(1, 0).ToString()
@@ -230,23 +185,7 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 		if group != nil && group.Entries != nil {
 			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
 			tableWidget.SetHorizontalHeaderLabels(headerLabels)
-			for i, entry := range group.Entries {
-				username := entry.Get("UserName").Value.Content
-				url := entry.Get("URL").Value.Content
-				note := entry.Get("Notes").Value.Content
-				tableWidget.SetRowCount(tableWidget.RowCount() + 1)
-				tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
-				tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
-
-				passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
-				passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
-				//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
-				//passwordItem.SetCheckState(core.Qt__Checked)
-
-				tableWidget.SetItem(i, 2, passwordItem)
-				tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
-				tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
-			}
+			setTableItems(group, tableWidget)
 		} else {
 			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
 			tableWidget.SetHorizontalHeaderLabels(headerLabels)
@@ -255,7 +194,26 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 		}
 
 	})
-	return treeWidget
+}
+
+func setTableItems(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
+	for i, entry := range group.Entries {
+		username := entry.Get("UserName").Value.Content
+		url := entry.Get("URL").Value.Content
+		note := entry.Get("Notes").Value.Content
+		tableWidget.SetRowCount(i + 1)
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
+
+		passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
+		passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
+		//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
+		//passwordItem.SetCheckState(core.Qt__Checked)
+
+		tableWidget.SetItem(i, 2, passwordItem)
+		tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
+		tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
+	}
 }
 
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {
@@ -271,19 +229,6 @@ func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group
 		parent.AddChild(treeItem)
 		buildGroupTree(treeItem, group.Groups)
 	}
-}
-
-func findGroupByName(groups []gokeepasslib.Group, name string) *gokeepasslib.Group {
-	for _, group := range groups {
-		if group.Name == name {
-			fmt.Println("找到的名称是:", group.Name)
-			return &group
-		}
-		if foundGroup := findGroupByName(group.Groups, name); foundGroup != nil {
-			return foundGroup
-		}
-	}
-	return nil
 }
 
 func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Group {
@@ -313,7 +258,7 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	tabWidget := widgets.NewQTabWidget(dialog)
 	entryTab, advancedTab := initTabWidget(tabWidget)
 	//entryTabWidget := widgets.NewQWidget(nil, 0)
-	entry := &EntryTab{}
+	entry := &kpwidgets.EntryTab{}
 	entry.InitEntryTab2(entryTab)
 
 	//initEntryTab(a)
@@ -334,12 +279,12 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 
 func initKeePassImage() *widgets.QLabel {
 	imageLabel := widgets.NewQLabel(nil, 0)
-	imagePixmap := gui.NewQPixmap3("D:\\workspace_go\\KeePassGo\\src\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
+	imagePixmap := gui.NewQPixmap3("src\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
 	imageLabel.SetPixmap(imagePixmap)
 	return imageLabel
 }
 
-func initBottomButton(entryTab *EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(entryTab *kpwidgets.EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 	okButton := widgets.NewQPushButton2("Ok", nil)
@@ -361,7 +306,50 @@ func initBottomButton(entryTab *EntryTab, tableWidget *widgets.QTableWidget, tab
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
-		reAddTableItem(entryTab, tableWidget)
+		kpwidgets.ReAddTableItem(entryTab, tableWidget)
+
+		file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+		db := gokeepasslib.NewDatabase()
+		db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+		_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+		db.UnlockProtectedEntries()
+
+		// Find the group by UUID
+		targetGroup := findGroupByUUID(db.Content.Root.Groups, "your-group-uuid")
+		/*if err != nil {
+			fmt.Println("Error finding the group:", err)
+			return
+		}*/
+
+		// Create a new password entry
+		entry := gokeepasslib.NewEntry()
+		entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
+		entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
+		//entry.Values = append(entry.Values, mkProtectedValue("Password", "hunter2"))
+
+		targetGroup.Entries = append(targetGroup.Entries, entry)
+		/*// Add the new entry to the group
+		targetGroup.Entries = append(targetGroup.Entries, newEntry)
+
+		// Add the new entry to the group
+		targetGroup.Entries = append(targetGroup.Entries, newEntry)*/
+
+		// Save the Keepass database
+		/*newFile, err := os.OpenFile("path/to/your/new_keepass.kdbx", os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			fmt.Println("Error creating the new Keepass database:", err)
+			return
+		}*/
+
+		/*	err = writer.WriteDatabase(newFile, db, gokeepasslib.WithPassword("your-master-password"))
+			if err != nil {
+				fmt.Println("Error saving the Keepass database:", err)
+				return
+			}*/
+
+		fmt.Println("Password entry saved successfully.")
 
 		dialog.Close()
 	})
@@ -373,6 +361,17 @@ func initBottomButton(entryTab *EntryTab, tableWidget *widgets.QTableWidget, tab
 	})
 	return hBoxLayout
 }
+
+func mkValue(key string, value string) gokeepasslib.ValueData {
+	return gokeepasslib.ValueData{Key: key, Value: gokeepasslib.V{Content: value}}
+}
+
+/*func mkProtectedValue(key string, value string) gokeepasslib.ValueData {
+	return gokeepasslib.ValueData{
+		Key:   key,
+		Value: gokeepasslib.V{Content: value, Protected: NewBoolWrapper(true)},
+	}
+}*/
 
 func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QWidget) {
 	// Create and add tabs to the tab widget
@@ -389,87 +388,6 @@ func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QW
 	tabWidget.AddTab(historyTab, "History")
 	tabWidget.Resize2(700, 400)
 	return entryTab, advancedTab
-}
-
-func initTabWidget2(entryTab *widgets.QWidget, tabWidget *widgets.QTabWidget) {
-	// Create and add tabs to the tab widget
-	tabWidget.AddTab(entryTab, "Entry")
-
-}
-
-func initEntryTab(entryTab *widgets.QWidget) {
-	//widgets.newqla
-	// Create and add widgets to the form layout
-	//nameLabel := widgets.NewQLabel2("Name:", nil, 0)
-	// Create the form layout
-	formLayout := widgets.NewQFormLayout(entryTab)
-	firstNameLineEdit := widgets.NewQLineEdit(nil)
-	lastNameLineEdit := widgets.NewQLineEdit(nil)
-
-	nameLayout := widgets.NewQHBoxLayout2(nil)
-	nameLayout.AddWidget(firstNameLineEdit, 0, core.Qt__AlignLeft)
-	nameLayout.AddWidget(lastNameLineEdit, 0, core.Qt__AlignLeft)
-	label2 := widgets.NewQLabel2("Title:", nil, 0)
-	//formLayout.AddRow3("nameLabel", nameLayout.Widget())
-	formLayout.AddRow2(label2, nameLayout)
-	userNameEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("User name:", userNameEdit)
-
-	passwordEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Password:", passwordEdit)
-
-	repeatPasswordEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Repeat:", repeatPasswordEdit)
-
-	// Create a progress bar
-	progressBar := widgets.NewQProgressBar(nil)
-	progressBar.SetRange(0, 100)
-
-	// Create a palette for the progress bar
-	palette := progressBar.Palette()
-	//palette.SetColor(gui.QPalette__Base, core.Qt__GlobalColor(gui.QPalette__Dark))
-	// Create a color gradient from orange to green
-	gradient := gui.NewQLinearGradient3(0, 0, 1, 0)
-	gradient.SetColorAt(0.0, gui.NewQColor3(255, 165, 0, 0)) // Orange
-	gradient.SetColorAt(1.0, gui.NewQColor3(0, 128, 0, 0))   // Green
-
-	// Create a brush with the gradient
-	brush := gui.NewQBrush10(gradient)
-
-	// Set the color gradient as the background of the progress bar
-	palette.SetBrush(gui.QPalette__Highlight, brush)
-	progressBar.SetPalette(palette)
-
-	// Create a line edit for entering the password
-	passwordEdit.ConnectTextChanged(func(text string) {
-		// Calculate the password complexity score
-		complexity := calculatePasswordComplexity(text)
-
-		// Set the value of the progress bar based on the complexity score
-		progressBar.SetValue(complexity)
-	})
-
-	formLayout.AddRow3("Quality:", progressBar)
-
-	urlEdit := widgets.NewQLineEdit(nil)
-	formLayout.AddRow3("Url:", urlEdit)
-
-	notesEdit := widgets.NewQTextEdit(nil)
-	notesEdit.Resize2(300, 200)
-	formLayout.AddRow3("Notes:", notesEdit)
-
-	dateTimeEdit := widgets.NewQDateTimeEdit(nil)
-	//dateEdit.enab
-	formLayout.AddRow3("Expires:", dateTimeEdit)
-	button := widgets.NewQPushButton2("Get DateTime", nil)
-	button.ConnectClicked(func(checked bool) {
-		selectedDateTime := dateTimeEdit.DateTime().ToString("2006-01-02 15:04:05")
-		dateTimeEdit.SetDateTime(core.QDateTime_CurrentDateTime())
-		fmt.Println("Selected DateTime:", selectedDateTime)
-	})
-
-	formLayout.AddRow3("chage datetime:", button)
-
 }
 
 // Function to calculate the password complexity score
@@ -564,8 +482,73 @@ func initTableWidget() *widgets.QTableWidget {
 
 func setTableContextMenu(tableWidget *widgets.QTableWidget) {
 	contextMenu := widgets.NewQMenu(nil)
-	addItemAction := contextMenu.AddAction("Add Item")
-	deleteItemAction := contextMenu.AddAction("Delete Item")
+	copyUserNameAction := contextMenu.AddAction("Copy User Name \tCtrl+B+C")
+	copyUserNameAction.SetShortcut(gui.NewQKeySequence2("Ctrl+B", gui.QKeySequence__NativeText))
+	//copyUserNameAction.SetShortcut(widgets.QKeySequence_fromString("Ctrl+O"))
+
+	copyPasswordAction := contextMenu.AddAction("Copy Password")
+	copyPasswordAction.SetShortcut(gui.NewQKeySequence2("Ctrl+C", gui.QKeySequence__NativeText))
+
+	copyPasswordAction.SetMenuRole(widgets.QAction__TextHeuristicRole) // Show shortcut in the context menu
+	//copyPasswordAction.
+
+	urlsMenu := contextMenu.AddMenu2("URS(S)")
+	urlsMenu.AddAction("Open")
+	urlsMenu.AddAction("Copy to ClipBoard")
+	contextMenu.AddSeparator()
+
+	performAutoTypeAction := contextMenu.AddAction("Perform Auto-Type")
+	contextMenu.AddSeparator()
+	addItemAction := contextMenu.AddAction("Add Entry...")
+	editOrViewEntryAction := contextMenu.AddAction("Edit/View Entry...")
+	duplicateAction := contextMenu.AddAction("Duplicate Entry...")
+
+	//addItemAction := contextMenu.AddAction("Add Entry...")
+	deleteItemAction := contextMenu.AddAction("Delete Entry")
+	selectEntriesMenu := contextMenu.AddMenu2("Select Entries")
+	selectEntriesMenu.AddAction("Duplicate Entry...")
+	selectAllAction := contextMenu.AddAction("Select All")
+	contextMenu.AddSeparator()
+	clipbordMenu := contextMenu.AddMenu2("Clipbord")
+	clipbordMenu.AddAction("Copy Entries...")
+	clipbordMenu.AddAction("Paste Entries...")
+
+	rearrangeMenu := contextMenu.AddMenu2("Rearrange")
+	rearrangeMenu.AddAction("Move Entry to Top")
+	rearrangeMenu.AddAction("Move Entry One Up")
+	rearrangeMenu.AddAction("Move Entry One Down")
+	rearrangeMenu.AddAction("Move Entry to Bottom")
+
+	copyUserNameAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+	copyPasswordAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+	performAutoTypeAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+	editOrViewEntryAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+	duplicateAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+
+	selectAllAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+	})
+
+	/*clipbordAction := contextMenu.AddMenu2("Copy User Name")
+	clipbordAction := contextMenu.AddAction("Copy User Name")
+
+	copyUserNameAction := contextMenu.AddAction("Copy User Name")
+
+	copyUserNameAction := contextMenu.AddAction("Copy User Name")
+
+	copyUserNameAction := contextMenu.AddAction("Copy User Name")
+	*/
+
 	tableWidget.ConnectCustomContextMenuRequested(func(pos *core.QPoint) {
 		contextMenu.Exec2(tableWidget.MapToGlobal(pos), nil)
 	})
@@ -610,10 +593,16 @@ func initToolbar(window *widgets.QMainWindow) {
 	// Add tool buttons to the toolbar
 	newToolButton := widgets.NewQToolButton(nil)
 	newToolButton.SetText("New")
+	newToolIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
+	newToolButton.SetIcon(newToolIcon)
+	//.
+	//newToolButton.SetIcon(gui.NewQIcon5("tr\\docs\\favicon.ico"))
 
 	// Add tool buttons to the toolbar
 	openToolButton := widgets.NewQToolButton(nil)
-	openToolButton.SetText("Open")
+	openToolButton.SetToolTip("Open")
+
+	openToolButton.SetIcon(gui.NewQIcon5("Ext\\Images_Client_16\\C49_Folder_Blue_Open.png"))
 
 	/*newAction := widgets.NewQAction3(gui.QIcon_FromTheme("document-new"), "New", nil)
 	openAction := widgets.NewQAction3(gui.QIcon_FromTheme("document-open"), "Open", nil)
