@@ -2,8 +2,6 @@ package functions
 
 import (
 	"fmt"
-	"github.com/techyang/keepassgo/kpwidgets"
-	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
@@ -100,13 +98,13 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 		// Create the tab widget
 		//entryTabWidget := widgets.NewQWidget(nil, 0)
-		tabWidget := kpwidgets.NewMyTabWidget()
-		tabWidget.Resize(700, 400)
+		//tabWidget := kpwidgets.NewKeePassDialog(dialog)
+		//tabWidget.Resize(700, 400)
 
 		//initEntryTab(a)
 
-		vBoxLayout := widgets.NewQVBoxLayout2(dialog)
-		vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
+		//vBoxLayout := widgets.NewQVBoxLayout2(dialog)
+		//	vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
 
 		dialog.Resize2(600, 400)
 		dialog.Exec()

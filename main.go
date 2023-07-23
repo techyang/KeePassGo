@@ -38,7 +38,7 @@ func main() {
 	statusBar.ShowMessage("Ready", 0)
 
 	// Show the main window
-	window.Resize2(800, 600)
+	window.Resize2(800, 650)
 
 	//系统托盘
 	sys := widgets.NewQSystemTrayIcon(nil)
@@ -247,7 +247,7 @@ func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Gro
 	return nil
 }
 
-func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+/*func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")
@@ -275,9 +275,9 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	dialog.Exec()
 
 	return dialog
-}
+}*/
 
-func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")
@@ -285,21 +285,22 @@ func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	imageLabel := initKeePassImage()
 
 	// Create the tab widget
-	tabWidget := kpwidgets.NewMyTabWidget(dialog)
-
-	//entryTab, advancedTab := initTabWidget(tabWidget.TabWidget)
+	keePassDialog := kpwidgets.NewKeePassDialog(dialog)
+	keePassDialog.Resize(600, 400)
+	//entryTab, advancedTab := initTabWidget(keePassDialog.TabWidget)
 	//entryTabWidget := widgets.NewQWidget(nil, 0)
-	entry := &kpwidgets.EntryTab{}
-	entry.InitEntryTab2(tabWidget.EntryTab)
+	//entry := &kpwidgets.EntryTab{}
+	//entry.InitEntryTab2(keePassDialog.EntryTab)
 
 	//initEntryTab(a)
-	initAdvancedTab(tabWidget.AdvancedTab)
-
-	hBoxLayout := initBottomButton(entry, tableWidget, tabWidget.TabWidget, dialog)
+	//initAdvancedTab(keePassDialog.AdvancedTab)
+	//keePassDialog.AdvancedTab =
+	//kpwidgets.NewAdvanceTab(keePassDialog.AdvancedTab)
+	hBoxLayout := initBottomButton(keePassDialog, tableWidget, keePassDialog.TabWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
-	vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddWidget(keePassDialog.TabWidget, 0, core.Qt__AlignLeft)
 	vBoxLayout.AddLayout(hBoxLayout, 0)
 
 	dialog.Resize2(600, 400)
@@ -315,7 +316,11 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(entryTab *kpwidgets.EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(keePassDialog *kpwidgets.KeePassDialog, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+	entryTab := keePassDialog.EntryTab
+	advancedTab := keePassDialog.AdvancedTab
+	advancedTab.Widget.Parent()
+
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 	okButton := widgets.NewQPushButton2("Ok", nil)
@@ -403,23 +408,6 @@ func mkValue(key string, value string) gokeepasslib.ValueData {
 		Value: gokeepasslib.V{Content: value, Protected: NewBoolWrapper(true)},
 	}
 }*/
-
-func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QWidget) {
-	// Create and add tabs to the tab widget
-	entryTab := widgets.NewQWidget(nil, 0)
-	advancedTab := widgets.NewQWidget(nil, 0)
-	propertiesTab := widgets.NewQWidget(nil, 0)
-	autoTypeTab := widgets.NewQWidget(nil, 0)
-	historyTab := widgets.NewQWidget(nil, 0)
-
-	tabWidget.AddTab(entryTab, "Entry")
-	tabWidget.AddTab(advancedTab, "Advanced")
-	tabWidget.AddTab(propertiesTab, "Properties")
-	tabWidget.AddTab(autoTypeTab, "Auto-Type")
-	tabWidget.AddTab(historyTab, "History")
-	tabWidget.Resize2(700, 400)
-	return entryTab, advancedTab
-}
 
 // Function to calculate the password complexity score
 func calculatePasswordComplexity(password string) int {
@@ -551,7 +539,7 @@ func setTableContextMenu(tableWidget *widgets.QTableWidget) {
 	rearrangeMenu.AddAction("Move Entry to Bottom")
 
 	copyUserNameAction.ConnectTriggered(func(bool) {
-		initDetailWidget2(tableWidget)
+		initDetailWidget(tableWidget)
 	})
 	copyPasswordAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)
