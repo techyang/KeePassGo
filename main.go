@@ -164,63 +164,9 @@ func restTable(tableWidget *widgets.QTableWidget) {
 	tableWidget.SetItem(1, 2, widgets.NewQTableWidgetItem2("1.34", 0))
 }
 
-func restTable2(tableWidget *widgets.QTableWidget) {
-	tableWidget.SetRowCount(3)
-	// Create and set QTableWidgetItem for each cell
-	tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2("头条", 0))
-	tableWidget.SetItem(0, 1, widgets.NewQTableWidgetItem2("toutiao", 0))
-	tableWidget.SetItem(0, 2, widgets.NewQTableWidgetItem2("2.37", 0))
-	tableWidget.SetItem(1, 0, widgets.NewQTableWidgetItem2("抖音", 0))
-	tableWidget.SetItem(1, 1, widgets.NewQTableWidgetItem2("douyin", 0))
-	tableWidget.SetItem(1, 2, widgets.NewQTableWidgetItem2("1.34", 0))
-	tableWidget.SetItem(2, 0, widgets.NewQTableWidgetItem2("西瓜视频", 0))
-	tableWidget.SetItem(2, 1, widgets.NewQTableWidgetItem2("西瓜", 0))
-	tableWidget.SetItem(2, 2, widgets.NewQTableWidgetItem2("1.34", 0))
-}
+func setGroupKeePassItem(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
 
-func initKeePass(tableWidget *widgets.QTableWidget) {
-	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
-
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
-	_ = gokeepasslib.NewDecoder(file).Decode(db)
-
-	db.UnlockProtectedEntries()
-
-	// Note: This is a simplified example and the groups and entries will depend on the specific file.
-	// bound checking for the slices is recommended to avoid panics.
-
-	entries := db.Content.Root.Groups[0].Groups[0].Entries
-
-	db.LockProtectedEntries()
-
-	tableWidget.Clear()
-	for i, entry := range entries {
-		tableWidget.SetRowCount(tableWidget.RowCount() + 1)
-		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
-		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
-		tableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(entry.GetPassword(), 0))
-		fmt.Println(entry.GetTitle())
-		fmt.Println(entry.GetPassword())
-	}
-
-}
-
-func initKeePassItem(qTreeWidgetItem *widgets.QTreeWidgetItem, tableWidget *widgets.QTableWidget) {
-	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
-
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
-	_ = gokeepasslib.NewDecoder(file).Decode(db)
-
-	db.UnlockProtectedEntries()
-	index := qTreeWidgetItem.IndexOfChild(qTreeWidgetItem.Parent())
-	// Note: This is a simplified example and the groups and entries will depend on the specific file.
-	// bound checking for the slices is recommended to avoid panics.
-
-	entries := db.Content.Root.Groups[0].Groups[index].Entries
-
-	db.LockProtectedEntries()
+	entries := group.Entries
 
 	tableWidget.Clear()
 	tableWidget.SetRowCount(len(entries) + 1)
@@ -257,19 +203,12 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 
 	db.UnlockProtectedEntries()
 	rootGroups := db.Content.Root.Groups
-	//groupMap := make(map[string]int, 10) //创建map
-	//groupMap[group.Name] = i
-
 	for i, rootGroup := range rootGroups {
 		fmt.Println(i, "rootGroup:", rootGroup.Name)
 		// Create the root item
 		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
 		rootItem.SetExpanded(true) // Set the root item initially expanded
 		groups := rootGroup.Groups
-
-		findGroupByName(groups, "公共111")
-		//	findGroupByUUID(groups, "[97 82 122 100 116 72 67 110 76 107 87 79 110 82 90 57 119 81 103 101 85 81 61 61]")
-		//
 		buildGroupTree(rootItem, groups)
 
 		treeWidget.InsertTopLevelItem(i, rootItem)
@@ -282,73 +221,38 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
-		fmt.Println(item.Text(0), "点击了")
 
-		parentItem := item.Parent()
-		//item.AddChild(widgets.NewQTreeWidgetItem2([]string{"group.Name"}, 0))
+		groupUUID := item.Data(1, 0).ToString()
+		fmt.Println(item.Text(0), "点击了", groupUUID)
 
-		if parentItem == nil {
-			// Clicked item is a top-level item
-			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
-			fmt.Printf("Clicked top-level item: Level %d, Index %d\n", 0, topLevelIndex)
-		} else {
-			// Clicked item is a child item
-			//topLevelItem := treeWidget.InvisibleRootItem()
-			topLevelIndex := treeWidget.IndexOfTopLevelItem(item)
+		group := findGroupByUUID(rootGroups, groupUUID)
 
-			childIndex := parentItem.IndexOfChild(item)
-			fmt.Printf("aaaaaaaaaaaaaaaaClicked child item: Level %d, Index %d\n", topLevelIndex, childIndex)
-			//db.Content.Root.Groups[0].Groups[1]
-			//search1(db, topLevelIndex, childIndex)
-			rootGroups := db.Content.Root.Groups
-			//groupMap := make(map[string]int, 10) //创建map
-			//groupMap[group.Name] = i
-			for _, rootGroup := range rootGroups {
-				fmt.Println("level:", topLevelIndex, ",当前group:", rootGroup.Name)
-				// Create the root item
-				groups := rootGroup.Groups
-				//group4 := rootGroup.Groups[4]
+		if group != nil && group.Entries != nil {
+			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			for i, entry := range group.Entries {
+				username := entry.Get("UserName").Value.Content
+				url := entry.Get("URL").Value.Content
+				note := entry.Get("Notes").Value.Content
+				tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+				tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+				tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
 
-				for m, group := range groups {
-					//fmt.Println(topLevelIndex, "当前点击是分组:", group.Name)
-					if childIndex == m {
+				passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
+				passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
+				//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
+				//passwordItem.SetCheckState(core.Qt__Checked)
 
-						clearChildItems(item)
-						for _, grp := range group.Groups {
-
-							item.AddChild(widgets.NewQTreeWidgetItem2([]string{grp.Name}, 0))
-							fmt.Println(m, "level:", topLevelIndex, "-----------childIndex:", childIndex)
-
-						}
-					}
-
-				}
-
+				tableWidget.SetItem(i, 2, passwordItem)
+				tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
+				tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
 			}
-
+		} else {
+			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			//tableWidget.Clear()
+			tableWidget.SetRowCount(0)
 		}
-
-		//index := treeWidget.CurrentIndex().Row()
-		//it := treeWidget.SelectedItems()[0]
-		//selectedItems := treeWidget.SelectedItems()
-		// Iterate over the selected items
-		//for _, item := range selectedItems {
-		// Perform operations on the selected item
-		//	item.
-		//}
-		/*if len(items) > 0 {
-			item := items[0] //取第一个选中节点
-			//node := item.Data(0, widgets.Qt__UserRole).(myNodeType) // 强制转换为我的节点类型
-			itemData := item.Data(0, 0).ToString()
-			fmt.Println(itemData)
-			//item.Data()
-			// 使用节点对象
-			//fmt.Println(node.Name)
-		}*/
-
-		//initKeePassItem(it, tableWidget)
-		//expanded := it.IsExpanded() // Get the current expansion state
-		//it.SetExpanded(!expanded)   // Toggle the expansion state
 
 	})
 	return treeWidget
@@ -357,9 +261,13 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {
 	for _, group := range groups {
 		txt, _ := group.UUID.MarshalText()
-		fmt.Println("group.UUID -----------:", group.UUID)
-		fmt.Println("group.UUID:", txt)
+
+		fmt.Println("group.UUID -----------:", group.Name, ":", string(txt))
 		treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
+		//treeItem.SetData(0, core.Qt__UserRole, core.NewQVariant1(group.UUID.String()))
+
+		treeItem.SetData(1, 0, core.NewQVariant1(string(txt)))
+
 		parent.AddChild(treeItem)
 		buildGroupTree(treeItem, group.Groups)
 	}
@@ -392,50 +300,6 @@ func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Gro
 		}
 	}
 	return nil
-}
-
-/*
-	func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []*gokeepasslib.Group) {
-		for _, group := range groups {
-			treeItem := widgets.NewQTreeWidgetItem2([]string{group.Name}, 0)
-			parent.AddChild(treeItem)
-			//item := widgets.NewQTreeWidgetItem2(parent, []string{group.Name()})
-			buildGroupTree(treeItem, group.Groups)
-		}
-	}
-*/
-func search1(group gokeepasslib.Group, level, index int) int {
-
-	rootGroups := group.Groups
-
-	for i, rootGroup := range rootGroups {
-		fmt.Println(i, "files-------:", level, "-", index, "-", rootGroup.Name)
-	}
-
-	/*	files, err := ioutil.ReadDir(path)
-		fmt.Println("files-------:", files)
-		if err != nil {
-			fmt.Println("目录读取失败！", err.Error())
-			return matches
-		}
-		if len(files) <= 0 {
-			return matches
-		}
-		for _, file := range files {
-			name := file.Name()
-			fmt.Println("name-----:", name)
-			if name == queryName {
-				matches++
-			}
-			if file.IsDir() {
-				dir := path + "/" + name
-				if path == "/" {
-					dir = path + name
-				}
-				search1(dir, queryName)
-			}
-		}*/
-	return 0
 }
 
 func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
@@ -649,7 +513,7 @@ func initTableWidget() *widgets.QTableWidget {
 	tableWidget.SetHorizontalHeaderLabels(headerLabels)
 
 	// Set the row count, must set to show table content
-	tableWidget.SetRowCount(2)
+	/*tableWidget.SetRowCount(2)
 
 	// Create and set QTableWidgetItem for each cell
 	tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2("KeePass", 0))
@@ -658,7 +522,7 @@ func initTableWidget() *widgets.QTableWidget {
 	tableWidget.SetItem(1, 0, widgets.NewQTableWidgetItem2("keePassLicC", 0))
 	tableWidget.SetItem(1, 1, widgets.NewQTableWidgetItem2("Status 2", 0))
 	tableWidget.SetItem(1, 2, widgets.NewQTableWidgetItem2("1.34", 0))
-
+	*/
 	// Enable sorting
 	tableWidget.SetSortingEnabled(true)
 
