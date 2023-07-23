@@ -22,8 +22,11 @@ func main() {
 
 	// Create the main window
 	window := widgets.NewQMainWindow(nil, 0)
-	window.SetWindowIcon(gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png"))
+	window.SetWindowIcon(gui.NewQIcon5("Ext\\Icons_04_CB\\Finals2\\plockb.ico"))
 	window.SetWindowTitle("KeePass")
+
+	icon := gui.NewQIcon5("Ext\\Icons_04_CB\\Finals2\\plockb.ico")
+	widgets.QApplication_SetWindowIcon(icon)
 
 	// Create the menu bar
 	initMenuBar(window)
@@ -285,22 +288,14 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	imageLabel := initKeePassImage()
 
 	// Create the tab widget
-	keePassDialog := kpwidgets.NewKeePassDialog(dialog)
-	keePassDialog.Resize(600, 400)
-	//entryTab, advancedTab := initTabWidget(keePassDialog.TabWidget)
-	//entryTabWidget := widgets.NewQWidget(nil, 0)
-	//entry := &kpwidgets.EntryTab{}
-	//entry.InitEntryTab2(keePassDialog.EntryTab)
+	keePassTabWidget := kpwidgets.NewKeePassTabWidget(dialog)
+	keePassTabWidget.Resize(600, 400)
 
-	//initEntryTab(a)
-	//initAdvancedTab(keePassDialog.AdvancedTab)
-	//keePassDialog.AdvancedTab =
-	//kpwidgets.NewAdvanceTab(keePassDialog.AdvancedTab)
-	hBoxLayout := initBottomButton(keePassDialog, tableWidget, keePassDialog.TabWidget, dialog)
+	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
-	vBoxLayout.AddWidget(keePassDialog.TabWidget, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddWidget(keePassTabWidget.TabWidget, 0, core.Qt__AlignLeft)
 	vBoxLayout.AddLayout(hBoxLayout, 0)
 
 	dialog.Resize2(600, 400)
@@ -316,7 +311,7 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(keePassDialog *kpwidgets.KeePassDialog, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	entryTab := keePassDialog.EntryTab
 	advancedTab := keePassDialog.AdvancedTab
 	advancedTab.Widget.Parent()
@@ -339,6 +334,15 @@ func initBottomButton(keePassDialog *kpwidgets.KeePassDialog, tableWidget *widge
 	})
 
 	okButton.ConnectClicked(func(bool) {
+
+		msgBox := widgets.NewQMessageBox(nil)
+		msgBox.SetWindowTitle("提示信息")
+		//msgBox.SetText(keePassDialog.EntryTab.UserNameEdit.Text())
+		msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
+		msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+		msgBox.SetIcon(widgets.QMessageBox__Information)
+		msgBox.Exec()
+
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
@@ -353,19 +357,19 @@ func initBottomButton(keePassDialog *kpwidgets.KeePassDialog, tableWidget *widge
 		db.UnlockProtectedEntries()
 
 		// Find the group by UUID
-		targetGroup := findGroupByUUID(db.Content.Root.Groups, "your-group-uuid")
+		//targetGroup := findGroupByUUID(db.Content.Root.Groups, "your-group-uuid")
 		/*if err != nil {
 			fmt.Println("Error finding the group:", err)
 			return
 		}*/
 
 		// Create a new password entry
-		entry := gokeepasslib.NewEntry()
-		entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
-		entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
+		//entry := gokeepasslib.NewEntry()
+		//entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
+		//entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
 		//entry.Values = append(entry.Values, mkProtectedValue("Password", "hunter2"))
 
-		targetGroup.Entries = append(targetGroup.Entries, entry)
+		//targetGroup.Entries = append(targetGroup.Entries, entry)
 		/*// Add the new entry to the group
 		targetGroup.Entries = append(targetGroup.Entries, newEntry)
 

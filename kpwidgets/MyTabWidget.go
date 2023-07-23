@@ -2,7 +2,7 @@ package kpwidgets
 
 import "github.com/therecipe/qt/widgets"
 
-type KeePassDialog struct {
+type KeePassTabWidget struct {
 	TabWidget     *widgets.QTabWidget
 	EntryTab      *EntryTab
 	AdvancedTab   *AdvancedTab
@@ -11,7 +11,7 @@ type KeePassDialog struct {
 	HistoryTab    *widgets.QWidget
 }
 
-func NewKeePassDialog(parent widgets.QWidget_ITF) *KeePassDialog {
+func NewKeePassTabWidget(parent widgets.QWidget_ITF) *KeePassTabWidget {
 	tabWidget := widgets.NewQTabWidget(parent)
 
 	entryTab := NewEntryTab()
@@ -27,7 +27,7 @@ func NewKeePassDialog(parent widgets.QWidget_ITF) *KeePassDialog {
 	tabWidget.AddTab(autoTypeTab, "Auto-Type")
 	tabWidget.AddTab(historyTab, "History")
 
-	return &KeePassDialog{
+	return &KeePassTabWidget{
 		TabWidget:     tabWidget,
 		EntryTab:      entryTab,
 		AdvancedTab:   advancedTab,
@@ -37,6 +37,6 @@ func NewKeePassDialog(parent widgets.QWidget_ITF) *KeePassDialog {
 	}
 }
 
-func (tw *KeePassDialog) Resize(width, height int) {
+func (tw *KeePassTabWidget) Resize(width, height int) {
 	tw.TabWidget.Resize2(width, height)
 }
