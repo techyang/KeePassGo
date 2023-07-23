@@ -2,6 +2,8 @@ package functions
 
 import (
 	"fmt"
+	"github.com/techyang/keepassgo/kpwidgets"
+	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
@@ -12,6 +14,12 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the file menu
 	newAction := fileMenu.AddAction("&New...")
+	//newActionIcon := gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png")
+	newActionIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
+
+	newAction.SetIcon(newActionIcon)
+	//newAction.SetIcon(gui.NewQIcon5("D:\\workspace_finmall\\autotest\\metersphere-2.10.3-lts\\api-test\\frontend\\node_modules\\mobius1-selectr\\docs\\favicon.ico"))
+
 	// Connect the actions and tool buttons to their respective triggered events
 	newAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
@@ -87,6 +95,21 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Connect the actions and tool buttons to their respective triggered events
 	openFileAction.ConnectTriggered(func(checked bool) {
 		//widgets
+		dialog := widgets.NewQDialog(nil, 0)
+		dialog.SetWindowTitle("Open Dialog")
+
+		// Create the tab widget
+		//entryTabWidget := widgets.NewQWidget(nil, 0)
+		tabWidget := kpwidgets.NewMyTabWidget()
+		tabWidget.Resize(700, 400)
+
+		//initEntryTab(a)
+
+		vBoxLayout := widgets.NewQVBoxLayout2(dialog)
+		vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
+
+		dialog.Resize2(600, 400)
+		dialog.Exec()
 	})
 
 	openUrlAction.ConnectTriggered(func(checked bool) {

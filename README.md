@@ -1,2 +1,2 @@
 # KeePassGo
-a go implementation for KeePass (https://keepass.info/)
+an implementation of go for KeePass (https://keepass.info/)
