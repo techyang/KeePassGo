@@ -22,8 +22,11 @@ func main() {
 
 	// Create the main window
 	window := widgets.NewQMainWindow(nil, 0)
-	window.SetWindowIcon(gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png"))
+	window.SetWindowIcon(gui.NewQIcon5("Ext\\Icons_04_CB\\Finals2\\plockb.ico"))
 	window.SetWindowTitle("KeePass")
+
+	icon := gui.NewQIcon5("Ext\\Icons_04_CB\\Finals2\\plockb.ico")
+	widgets.QApplication_SetWindowIcon(icon)
 
 	// Create the menu bar
 	initMenuBar(window)
@@ -38,7 +41,7 @@ func main() {
 	statusBar.ShowMessage("Ready", 0)
 
 	// Show the main window
-	window.Resize2(800, 600)
+	window.Resize2(800, 650)
 
 	//系统托盘
 	sys := widgets.NewQSystemTrayIcon(nil)
@@ -247,7 +250,7 @@ func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Gro
 	return nil
 }
 
-func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+/*func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")
@@ -275,9 +278,9 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	dialog.Exec()
 
 	return dialog
-}
+}*/
 
-func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")
@@ -285,21 +288,14 @@ func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	imageLabel := initKeePassImage()
 
 	// Create the tab widget
-	tabWidget := kpwidgets.NewMyTabWidget(dialog)
+	keePassTabWidget := kpwidgets.NewKeePassTabWidget(dialog)
+	keePassTabWidget.Resize(600, 400)
 
-	//entryTab, advancedTab := initTabWidget(tabWidget.TabWidget)
-	//entryTabWidget := widgets.NewQWidget(nil, 0)
-	entry := &kpwidgets.EntryTab{}
-	entry.InitEntryTab2(tabWidget.EntryTab)
-
-	//initEntryTab(a)
-	initAdvancedTab(tabWidget.AdvancedTab)
-
-	hBoxLayout := initBottomButton(entry, tableWidget, tabWidget.TabWidget, dialog)
+	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
 	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
-	vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddWidget(keePassTabWidget.TabWidget, 0, core.Qt__AlignLeft)
 	vBoxLayout.AddLayout(hBoxLayout, 0)
 
 	dialog.Resize2(600, 400)
@@ -315,7 +311,11 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(entryTab *kpwidgets.EntryTab, tableWidget *widgets.QTableWidget, tabWidget *widgets.QTabWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+	entryTab := keePassDialog.EntryTab
+	advancedTab := keePassDialog.AdvancedTab
+	advancedTab.Widget.Parent()
+
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 	okButton := widgets.NewQPushButton2("Ok", nil)
@@ -334,6 +334,15 @@ func initBottomButton(entryTab *kpwidgets.EntryTab, tableWidget *widgets.QTableW
 	})
 
 	okButton.ConnectClicked(func(bool) {
+
+		msgBox := widgets.NewQMessageBox(nil)
+		msgBox.SetWindowTitle("提示信息")
+		//msgBox.SetText(keePassDialog.EntryTab.UserNameEdit.Text())
+		msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
+		msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+		msgBox.SetIcon(widgets.QMessageBox__Information)
+		msgBox.Exec()
+
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
@@ -348,19 +357,19 @@ func initBottomButton(entryTab *kpwidgets.EntryTab, tableWidget *widgets.QTableW
 		db.UnlockProtectedEntries()
 
 		// Find the group by UUID
-		targetGroup := findGroupByUUID(db.Content.Root.Groups, "your-group-uuid")
+		//targetGroup := findGroupByUUID(db.Content.Root.Groups, "your-group-uuid")
 		/*if err != nil {
 			fmt.Println("Error finding the group:", err)
 			return
 		}*/
 
 		// Create a new password entry
-		entry := gokeepasslib.NewEntry()
-		entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
-		entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
+		//entry := gokeepasslib.NewEntry()
+		//entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
+		//entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
 		//entry.Values = append(entry.Values, mkProtectedValue("Password", "hunter2"))
 
-		targetGroup.Entries = append(targetGroup.Entries, entry)
+		//targetGroup.Entries = append(targetGroup.Entries, entry)
 		/*// Add the new entry to the group
 		targetGroup.Entries = append(targetGroup.Entries, newEntry)
 
@@ -403,23 +412,6 @@ func mkValue(key string, value string) gokeepasslib.ValueData {
 		Value: gokeepasslib.V{Content: value, Protected: NewBoolWrapper(true)},
 	}
 }*/
-
-func initTabWidget(tabWidget *widgets.QTabWidget) (*widgets.QWidget, *widgets.QWidget) {
-	// Create and add tabs to the tab widget
-	entryTab := widgets.NewQWidget(nil, 0)
-	advancedTab := widgets.NewQWidget(nil, 0)
-	propertiesTab := widgets.NewQWidget(nil, 0)
-	autoTypeTab := widgets.NewQWidget(nil, 0)
-	historyTab := widgets.NewQWidget(nil, 0)
-
-	tabWidget.AddTab(entryTab, "Entry")
-	tabWidget.AddTab(advancedTab, "Advanced")
-	tabWidget.AddTab(propertiesTab, "Properties")
-	tabWidget.AddTab(autoTypeTab, "Auto-Type")
-	tabWidget.AddTab(historyTab, "History")
-	tabWidget.Resize2(700, 400)
-	return entryTab, advancedTab
-}
 
 // Function to calculate the password complexity score
 func calculatePasswordComplexity(password string) int {
@@ -551,7 +543,7 @@ func setTableContextMenu(tableWidget *widgets.QTableWidget) {
 	rearrangeMenu.AddAction("Move Entry to Bottom")
 
 	copyUserNameAction.ConnectTriggered(func(bool) {
-		initDetailWidget2(tableWidget)
+		initDetailWidget(tableWidget)
 	})
 	copyPasswordAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)

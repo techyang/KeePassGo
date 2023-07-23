@@ -2,31 +2,32 @@ package kpwidgets
 
 import "github.com/therecipe/qt/widgets"
 
-type MyTabWidget struct {
+type KeePassTabWidget struct {
 	TabWidget     *widgets.QTabWidget
-	EntryTab      *widgets.QWidget
-	AdvancedTab   *widgets.QWidget
+	EntryTab      *EntryTab
+	AdvancedTab   *AdvancedTab
 	PropertiesTab *widgets.QWidget
 	AutoTypeTab   *widgets.QWidget
 	HistoryTab    *widgets.QWidget
 }
 
-func NewMyTabWidget(parent widgets.QWidget_ITF) *MyTabWidget {
+func NewKeePassTabWidget(parent widgets.QWidget_ITF) *KeePassTabWidget {
 	tabWidget := widgets.NewQTabWidget(parent)
 
-	entryTab := widgets.NewQWidget(nil, 0)
-	advancedTab := widgets.NewQWidget(nil, 0)
+	entryTab := NewEntryTab()
+	advancedTab := NewAdvanceTab()
+
 	propertiesTab := widgets.NewQWidget(nil, 0)
 	autoTypeTab := widgets.NewQWidget(nil, 0)
 	historyTab := widgets.NewQWidget(nil, 0)
 
-	tabWidget.AddTab(entryTab, "Entry")
-	tabWidget.AddTab(advancedTab, "Advanced")
+	tabWidget.AddTab(entryTab.Widget, "Entry")
+	tabWidget.AddTab(advancedTab.Widget, "Advanced")
 	tabWidget.AddTab(propertiesTab, "Properties")
 	tabWidget.AddTab(autoTypeTab, "Auto-Type")
 	tabWidget.AddTab(historyTab, "History")
 
-	return &MyTabWidget{
+	return &KeePassTabWidget{
 		TabWidget:     tabWidget,
 		EntryTab:      entryTab,
 		AdvancedTab:   advancedTab,
@@ -36,6 +37,6 @@ func NewMyTabWidget(parent widgets.QWidget_ITF) *MyTabWidget {
 	}
 }
 
-func (tw *MyTabWidget) Resize(width, height int) {
+func (tw *KeePassTabWidget) Resize(width, height int) {
 	tw.TabWidget.Resize2(width, height)
 }
