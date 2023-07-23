@@ -277,6 +277,37 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	return dialog
 }
 
+func initDetailWidget2(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+	// Create and add tabs to the tab widget
+	dialog := widgets.NewQDialog(nil, 0)
+	dialog.SetWindowTitle("Open Dialog")
+
+	imageLabel := initKeePassImage()
+
+	// Create the tab widget
+	tabWidget := kpwidgets.NewMyTabWidget(dialog)
+
+	//entryTab, advancedTab := initTabWidget(tabWidget.TabWidget)
+	//entryTabWidget := widgets.NewQWidget(nil, 0)
+	entry := &kpwidgets.EntryTab{}
+	entry.InitEntryTab2(tabWidget.EntryTab)
+
+	//initEntryTab(a)
+	initAdvancedTab(tabWidget.AdvancedTab)
+
+	hBoxLayout := initBottomButton(entry, tableWidget, tabWidget.TabWidget, dialog)
+
+	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
+	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddLayout(hBoxLayout, 0)
+
+	dialog.Resize2(600, 400)
+	dialog.Exec()
+
+	return dialog
+}
+
 func initKeePassImage() *widgets.QLabel {
 	imageLabel := widgets.NewQLabel(nil, 0)
 	imagePixmap := gui.NewQPixmap3("src\\Hello\\img\\keepass.png", "", core.Qt__AutoColor)
@@ -520,7 +551,7 @@ func setTableContextMenu(tableWidget *widgets.QTableWidget) {
 	rearrangeMenu.AddAction("Move Entry to Bottom")
 
 	copyUserNameAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
+		initDetailWidget2(tableWidget)
 	})
 	copyPasswordAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)
