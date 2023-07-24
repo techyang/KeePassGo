@@ -36,7 +36,7 @@ func NewAdvanceTab() *AdvancedTab {
 	cw.StringFieldsTable.SetColumnCount(2)
 	cw.StringFieldsTable.SetRowCount(0)
 	cw.StringFieldsTable.SetHorizontalHeaderLabels([]string{"Field Name", "Field Value"})
-	cw.StringFieldsTable.SetFixedWidth(400)
+	cw.StringFieldsTable.SetFixedWidth(500)
 	stringFieldsLayout.AddWidget(cw.StringFieldsTable, 0, core.Qt__AlignLeft)
 
 	// Create the buttons for "String fields"
@@ -64,7 +64,7 @@ func NewAdvanceTab() *AdvancedTab {
 	cw.FileAttachmentsTable.SetColumnCount(2)
 	cw.FileAttachmentsTable.SetRowCount(0)
 	cw.FileAttachmentsTable.SetHorizontalHeaderLabels([]string{"Attachments", "Size"})
-	cw.FileAttachmentsTable.SetFixedWidth(400)
+	cw.FileAttachmentsTable.SetFixedWidth(500)
 	fileAttachmentsLayout.AddWidget(cw.FileAttachmentsTable, 0, core.Qt__AlignLeft)
 
 	// Create the buttons for "File attachments"

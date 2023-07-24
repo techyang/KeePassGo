@@ -74,6 +74,10 @@ func NewPropertiesTab() *PropertiesTab {
 	nameLayout3.AddWidget(cw.UUIDInput, 1, core.Qt__AlignLeft)
 	vBoxLayout.AddLayout(nameLayout3, 0)
 
+	cw.PluginDataInput.SetFixedWidth(500)
+	cw.OverrideURLInput.SetFixedWidth(620)
+	cw.TagsInput.SetFixedWidth(620)
+	cw.UUIDInput.SetFixedWidth(600)
 	// Connect the "Pick Color" buttons clicked signal to open the color selection dialogs
 	cw.ForegroundColorPickerBtn.ConnectClicked(func(checked bool) {
 		colorDialog := widgets.NewQColorDialog2(gui.NewQColor3(255, 255, 255, 255), nil)
