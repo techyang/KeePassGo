@@ -98,7 +98,7 @@ func setTableWidget(tableWidget *widgets.QTableWidget, vBoxLayout *widgets.QVBox
 	headerLabels := []string{"Taget Window", "Sequence"}
 	tableWidget.SetHorizontalHeaderLabels(headerLabels)
 
-	tableButtonVLayout := getTableButtonVLayout()
+	tableButtonVLayout := getTableButtonVLayout(tableWidget)
 
 	tableHLayout := widgets.NewQHBoxLayout2(nil)
 	tableHLayout.AddWidget(tableWidget, 0, core.Qt__AlignLeft)
@@ -106,7 +106,7 @@ func setTableWidget(tableWidget *widgets.QTableWidget, vBoxLayout *widgets.QVBox
 	vBoxLayout.AddLayout(tableHLayout, 0)
 }
 
-func getTableButtonVLayout() *widgets.QVBoxLayout {
+func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayout {
 	tableButtonVLayout := widgets.NewQVBoxLayout2(nil)
 	addButton := widgets.NewQPushButton2("Add", nil)
 	editButton := widgets.NewQPushButton2("Edit", nil)
@@ -118,5 +118,65 @@ func getTableButtonVLayout() *widgets.QVBoxLayout {
 	tableButtonVLayout.AddWidget(moveButton, 0, core.Qt__AlignLeft)
 	tableButtonVLayout.AddWidget(upButton, 0, core.Qt__AlignLeft)
 	tableButtonVLayout.AddWidget(downButton, 0, core.Qt__AlignLeft)
+
+	addButton.ConnectClicked(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		tableWidget.InsertRow(row + 1)
+		//tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+		if row >= 0 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+
+			// Add your edit logic here...
+
+			// For demonstration, we just print the values
+			fmt.Printf("Editing row %d - Field Name: %s, Field Value: %s\n", row, fieldName, fieldValue)
+		}
+	})
+
+	editButton.ConnectClicked(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row >= 0 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+
+			// Add your edit logic here...
+
+			// For demonstration, we just print the values
+			fmt.Printf("Editing row %d - Field Name: %s, Field Value: %s\n", row, fieldName, fieldValue)
+		}
+	})
+
+	// Connect the button clicked signals to the slots
+	moveButton.ConnectClicked(func(checked bool) {
+		// Get the selected row index
+		row := tableWidget.CurrentRow()
+		if row >= 0 {
+			tableWidget.RemoveRow(row)
+		}
+	})
+
+	upButton.ConnectClicked(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row > 0 {
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(row - 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+			}
+		}
+	})
+
+	downButton.ConnectClicked(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row < tableWidget.RowCount()-1 {
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(row + 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row+1, column, tableWidget.Item(row, column))
+			}
+		}
+	})
+
 	return tableButtonVLayout
 }
