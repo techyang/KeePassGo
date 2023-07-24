@@ -122,6 +122,7 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 	addButton.ConnectClicked(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		tableWidget.InsertRow(row + 1)
+
 		//tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 		if row >= 0 {
 			fieldName := tableWidget.Item(row, 0).Text()
@@ -158,24 +159,40 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 
 	upButton.ConnectClicked(func(checked bool) {
 		row := tableWidget.CurrentRow()
+
 		if row > 0 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
 			tableWidget.RemoveRow(row)
 			tableWidget.InsertRow(row - 1)
+			tableWidget.SetItem(row-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(row-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+
+			/*tableWidget.InsertRow(row - 1)
 			for column := 0; column < tableWidget.ColumnCount(); column++ {
 				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}
+			}*/
 		}
 	})
 
 	downButton.ConnectClicked(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row < tableWidget.RowCount()-1 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(row + 1)
+			tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+		}
+
+		/*if row < tableWidget.RowCount()-1 {
 			tableWidget.RemoveRow(row)
 			tableWidget.InsertRow(row + 1)
 			for column := 0; column < tableWidget.ColumnCount(); column++ {
 				tableWidget.SetItem(row+1, column, tableWidget.Item(row, column))
 			}
-		}
+		}*/
 	})
 
 	return tableButtonVLayout
