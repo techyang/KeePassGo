@@ -119,6 +119,15 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 	tableButtonVLayout.AddWidget(upButton, 0, core.Qt__AlignLeft)
 	tableButtonVLayout.AddWidget(downButton, 0, core.Qt__AlignLeft)
 
+	tableWidget.ConnectItemClicked(func(item *widgets.QTableWidgetItem) {
+		// Get the row index of the clicked item
+		//row := item.Row()
+
+		// Select the entire row
+		//tableWidget.SetRangeSelected(widgets.NewQTableWidgetSelectionRange2(row, 0, row, tableWidget.ColumnCount()-1), true)
+		tableWidget.SetSelectionBehavior(widgets.QAbstractItemView__SelectRows)
+	})
+
 	addButton.ConnectClicked(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		tableWidget.InsertRow(row + 1)
@@ -154,6 +163,9 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 		row := tableWidget.CurrentRow()
 		if row >= 0 {
 			tableWidget.RemoveRow(row)
+			if tableWidget.RowCount() >= row+1 {
+				tableWidget.SelectRow(row)
+			}
 		}
 	})
 
@@ -167,7 +179,7 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 			tableWidget.InsertRow(row - 1)
 			tableWidget.SetItem(row-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
 			tableWidget.SetItem(row-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-
+			tableWidget.SelectRow(row - 1)
 			/*tableWidget.InsertRow(row - 1)
 			for column := 0; column < tableWidget.ColumnCount(); column++ {
 				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
@@ -184,6 +196,7 @@ func getTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayo
 			tableWidget.InsertRow(row + 1)
 			tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
 			tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+			tableWidget.SelectRow(row + 1)
 		}
 
 		/*if row < tableWidget.RowCount()-1 {
