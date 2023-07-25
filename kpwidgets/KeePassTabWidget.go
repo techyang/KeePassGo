@@ -8,7 +8,7 @@ type KeePassTabWidget struct {
 	AdvancedTab   *AdvancedTab
 	PropertiesTab *PropertiesTab
 	AutoTypeTab   *AutoTypeTab
-	HistoryTab    *widgets.QWidget
+	HistoryTab    *HistoryTab
 }
 
 func NewKeePassTabWidget(parent widgets.QWidget_ITF) *KeePassTabWidget {
@@ -19,13 +19,13 @@ func NewKeePassTabWidget(parent widgets.QWidget_ITF) *KeePassTabWidget {
 
 	propertiesTab := NewPropertiesTab()
 	autoTypeTab := NewAutoTypeTab()
-	historyTab := widgets.NewQWidget(nil, 0)
+	historyTab := NewHistoryTab()
 
 	tabWidget.AddTab(entryTab.Widget, "Entry")
 	tabWidget.AddTab(advancedTab.Widget, "Advanced")
 	tabWidget.AddTab(propertiesTab.Widget, "Properties")
 	tabWidget.AddTab(autoTypeTab.Widget, "Auto-Type")
-	tabWidget.AddTab(historyTab, "History")
+	tabWidget.AddTab(historyTab.Widget, "History")
 
 	return &KeePassTabWidget{
 		TabWidget:     tabWidget,
