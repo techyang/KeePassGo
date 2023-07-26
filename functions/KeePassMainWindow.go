@@ -1,8 +1,7 @@
-package kpwidgets
+package functions
 
 import (
 	"fmt"
-	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
@@ -20,8 +19,8 @@ func InitMainWindow() *widgets.QMainWindow {
 	// Create the menu bar
 	initMenuBar(window)
 	// Create the toolbar with a title
-	functions.InitToolbar(window)
-	functions.InitMainContent(window)
+	InitToolbar(window)
+	InitMainContent(window)
 
 	// 创建状态栏
 	statusBar := widgets.NewQStatusBar(window)
@@ -84,9 +83,9 @@ func InitTrayIcon(window *widgets.QMainWindow) *widgets.QSystemTrayIcon {
 func initMenuBar(window *widgets.QMainWindow) {
 	menuBar := window.MenuBar()
 
-	functions.InitFileMenu(menuBar, window)
-	functions.InitEditMenu(menuBar, window)
-	functions.InitHelpMenu(menuBar, window)
+	InitFileMenu(menuBar, window)
+	InitEditMenu(menuBar, window)
+	InitHelpMenu(menuBar, window)
 }
 
 func clearChildItems(item *widgets.QTreeWidgetItem) {
