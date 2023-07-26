@@ -147,6 +147,11 @@ func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *wi
 
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
+
+	toolButton.SetIcon(gui.NewQIcon5(":/Ext/Images_Client_16/C59_Package_Development.png")) // Replace with the path to your icon file
+	toolButton.SetIconSize(core.NewQSize2(32, 32))                                          // Set the size of the icon
+	//toolButton.SetText("Tool")
+
 	okButton := widgets.NewQPushButton2("Ok", nil)
 	cancelButton := widgets.NewQPushButton2("Cancel", nil)
 	spacer := widgets.NewQSpacerItem(40, 20, widgets.QSizePolicy__Expanding, widgets.QSizePolicy__Minimum)
