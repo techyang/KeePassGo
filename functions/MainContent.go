@@ -9,6 +9,24 @@ import (
 	"os"
 )
 
+type PasswordDelegate struct {
+	widgets.QStyledItemDelegate
+}
+
+func NewPasswordDelegate() *PasswordDelegate {
+	return &PasswordDelegate{}
+}
+
+func (delegate *PasswordDelegate) DisplayText(value *core.QVariant, locale *core.QLocale) string {
+	// If the value is a string, return "***"
+	if value.Type() == core.QVariant__String {
+		return "***"
+	}
+
+	// Otherwise, call the base class method to display the default text
+	return delegate.QStyledItemDelegate.DisplayText(value, locale)
+}
+
 func InitMainContent(window *widgets.QMainWindow) {
 	// Create a QVBoxLayout and a QWidget as the container
 
@@ -66,6 +84,10 @@ func initTableWidget() *widgets.QTableWidget {
 
 	// Enable sorting
 	tableWidget.SetSortingEnabled(true)
+
+	// Set the password delegate for the second column
+	passwordDelegate := NewPasswordDelegate()
+	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
 
 	// Store the current sort order for each column
 	sortOrders := make([]core.Qt__SortOrder, tableWidget.ColumnCount())
@@ -158,6 +180,7 @@ func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Gro
 }
 
 func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
+
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 
 		groupUUID := item.Data(1, 0).ToString()
@@ -177,9 +200,15 @@ func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTr
 		}
 
 	})
+
+	passwordDelegate := NewPasswordDelegate()
+	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
 }
 
 func setTableItems(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
+	// Set the password delegate for the second column
+	passwordDelegate := NewPasswordDelegate()
+	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
 	for i, entry := range group.Entries {
 		username := entry.Get("UserName").Value.Content
 		url := entry.Get("URL").Value.Content
@@ -189,7 +218,7 @@ func setTableItems(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget)
 		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
 
 		passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
-		passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
+		//passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
 		//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
 		//passwordItem.SetCheckState(core.Qt__Checked)
 
