@@ -122,7 +122,7 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
 	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials("supersecret")
+	db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
 	_ = gokeepasslib.NewDecoder(file).Decode(db)
 
 	db.UnlockProtectedEntries()
