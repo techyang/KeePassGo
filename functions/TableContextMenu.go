@@ -325,26 +325,11 @@ func setMoveTopAction(tableWidget *widgets.QTableWidget, moveTopAction *widgets.
 	moveTopAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row > 0 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-
-			/*	selectedItems := tableWidget.SelectedIndexes()
-				for _, item := range selectedItems {
-					fmt.Println("item.Text():", item)
-				}*/
+			rowData := getRowData(tableWidget, row)
 			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(0)
-			tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(0, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(0, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(0, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(0)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
+			newRow := 0
+			tableWidget.InsertRow(newRow)
+			setTableRowData(tableWidget, newRow, rowData)
 		}
 	})
 }
@@ -353,45 +338,11 @@ func setMoveBottomAction(tableWidget *widgets.QTableWidget, moveBottomAction *wi
 	moveBottomAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row < tableWidget.RowCount()-1 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
+			rowData := getRowData(tableWidget, row)
 			tableWidget.RemoveRow(row)
-			tableWidget.SetRowCount(tableWidget.RowCount() + 1)
-			//tableWidget.InsertRow(tableWidget.RowCount() - 1)
-			tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(tableWidget.RowCount() - 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
-		}
-	})
-}
-
-func setMoveDownAction(tableWidget *widgets.QTableWidget, moveDownAction *widgets.QAction) {
-	moveDownAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row < tableWidget.RowCount()-1 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(row + 1)
-			tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(row + 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
+			newRow := tableWidget.RowCount()
+			tableWidget.InsertRow(newRow)
+			setTableRowData(tableWidget, newRow, rowData)
 		}
 	})
 }
@@ -400,23 +351,50 @@ func setMoveUpAction(tableWidget *widgets.QTableWidget, moveUpAction *widgets.QA
 	moveUpAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row > 0 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
+			rowData := getRowData(tableWidget, row)
 			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(row - 1)
-			tableWidget.SetItem(row-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(row-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(row-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(row-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(row - 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
+			newRow := row - 1
+			tableWidget.InsertRow(newRow)
+			setTableRowData(tableWidget, newRow, rowData)
 		}
 	})
+}
+
+func setMoveDownAction(tableWidget *widgets.QTableWidget, moveDownAction *widgets.QAction) {
+	moveDownAction.ConnectTriggered(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row < tableWidget.RowCount()-1 {
+			rowData := getRowData(tableWidget, row)
+			tableWidget.RemoveRow(row)
+			newRow := row + 1
+			tableWidget.InsertRow(newRow)
+			setTableRowData(tableWidget, newRow, rowData)
+		}
+	})
+}
+
+func setTableRowData(tableWidget *widgets.QTableWidget, newRow int, rowData []string) {
+	for column := 0; column < tableWidget.ColumnCount(); column++ {
+		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
+	}
+	tableWidget.SelectRow(newRow)
+}
+
+// Function to retrieve the data of a specific row in a QTableWidget and store it in an array
+func getRowData(tableWidget *widgets.QTableWidget, row int) []string {
+	columnCount := tableWidget.ColumnCount()
+	rowData := make([]string, columnCount)
+
+	for col := 0; col < columnCount; col++ {
+		item := tableWidget.Item(row, col)
+		if item != nil {
+			rowData[col] = item.Text()
+		} else {
+			rowData[col] = ""
+		}
+	}
+
+	return rowData
 }
 
 func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
