@@ -8,6 +8,8 @@ import (
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
 	"os"
+	"os/exec"
+	"runtime"
 )
 
 func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
@@ -47,156 +49,21 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 	moveTopAction := rearrangeMenu.AddAction("Move Entry to Top")
 	moveUpAction := rearrangeMenu.AddAction("Move Entry One Up")
 	moveDownAction := rearrangeMenu.AddAction("Move Entry One Down")
-	moveButtomAction := rearrangeMenu.AddAction("Move Entry to Bottom")
+	moveBottomAction := rearrangeMenu.AddAction("Move Entry to Bottom")
 
-	moveTopAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
+	moveUpAction.SetShortcut(gui.NewQKeySequence2("Alt+", gui.QKeySequence__NativeText))
 
-		if row > 0 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(0)
-			tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(0, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(0, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(0, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(0)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
-		}
-	})
+	setMoveTopAction(tableWidget, moveTopAction)
+	setMoveUpAction(tableWidget, moveUpAction)
+	setMoveDownAction(tableWidget, moveDownAction)
+	setMoveBottomAction(tableWidget, moveBottomAction)
 
-	moveUpAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row > 0 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(row - 1)
-			tableWidget.SetItem(row-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(row-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(row-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(row-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(row - 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
-		}
-	})
-	moveDownAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row < tableWidget.RowCount()-1 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-			tableWidget.RemoveRow(row)
-			tableWidget.InsertRow(row + 1)
-			tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(row + 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
-		}
-	})
-	moveButtomAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row < tableWidget.RowCount()-1 {
-			fieldName := tableWidget.Item(row, 0).Text()
-			fieldValue := tableWidget.Item(row, 1).Text()
-			fieldValue2 := tableWidget.Item(row, 2).Text()
-			fieldValue3 := tableWidget.Item(row, 3).Text()
-			tableWidget.RemoveRow(row)
-			tableWidget.SetRowCount(tableWidget.RowCount() + 1)
-			//tableWidget.InsertRow(tableWidget.RowCount() - 1)
-			tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-			tableWidget.SetItem(tableWidget.RowCount()-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-			tableWidget.SelectRow(tableWidget.RowCount() - 1)
-			/*tableWidget.InsertRow(row - 1)
-			for column := 0; column < tableWidget.ColumnCount(); column++ {
-				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-			}*/
-		}
-	})
+	setCopyUserNameAction(tableWidget, copyUserNameAction)
+	setCopyPasswordAction(tableWidget, copyPasswordAction)
 
-	copyUserNameAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
+	setOpenUrlAction(tableWidget, openUrlAction)
 
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 1)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
-
-	})
-	copyPasswordAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 2)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
-	})
-
-	openUrlAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(firstItemText))
-		}
-	})
-
-	copyUrlAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
-	})
+	setCopyUrlAction(tableWidget, copyUrlAction)
 	performAutoTypeAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)
 	})
@@ -204,11 +71,126 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 		initDetailWidget(tableWidget)
 	})
 	duplicateAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
+
+		dialog := widgets.NewQDialog(nil, 0)
+		dialog.SetWindowTitle("Duplication Options")
+
+		// Create the tab widget
+
+		appendCopyCheckBox := widgets.NewQCheckBox2("Apend \"-Copy\" to entry titles", nil)
+		repeatUserNameCheckBox := widgets.NewQCheckBox2("Enable auto-type for this entry", nil)
+		helpLabel1 := widgets.NewQLabel2("If this option is enabled, the copies will reference \nthe user names and passwords of the original entries.\nWhen a user name or password is changed in an original \nentry, the copy will automatically use the new data, too.", nil, 0)
+		helpLabel2 := widgets.NewQLabel2("Help: Field References", nil, 0)
+
+		helpLabel2.SetText("<a href=\"D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\spyxx.chm\">Help: Field References</a>")
+
+		helpLabel2.SetTextInteractionFlags(core.Qt__LinksAccessibleByMouse)
+
+		helpLabel2.ConnectLinkActivated(func(link string) {
+			//link = "D:\\Program Files\\TotalCMDPortable\\App\\totalcmd\\Plugins\\wcx\\Total7zip\\7-zip.chm"
+			/*if err := exec.Command("hh.exe", link).Start(); err != nil {
+				fmt.Println("Error opening .chm file:", err)
+			}*/
+			//chmFilePath := "path/to/helpfile.chm"
+
+			// Replace "your-topic" with the topic you want to display in the CHM file.
+			topic := "Working In Spy++"
+
+			// Use different commands based on the operating system.
+			var command string
+			var args []string
+			switch runtime.GOOS {
+			case "windows":
+				command = "hh.exe"
+				args = []string{link, fmt.Sprintf("-#%s", topic)}
+			default:
+				fmt.Println("Unsupported operating system.")
+				os.Exit(1)
+			}
+
+			cmd := exec.Command(command, args...)
+			err := cmd.Run()
+			if err != nil {
+				fmt.Println("Error opening CHM file:", err)
+				os.Exit(1)
+			}
+		})
+
+		hBoxLayout := widgets.NewQHBoxLayout2(nil)
+		hBoxLayout.AddSpacing(20)
+		hBoxLayout.AddWidget(helpLabel1, 0, core.Qt__AlignLeft)
+		//helpLabel2 := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
+
+		hBoxLayout2 := widgets.NewQHBoxLayout2(nil)
+		hBoxLayout2.AddSpacing(20)
+		hBoxLayout2.AddWidget(helpLabel2, 0, core.Qt__AlignLeft)
+
+		copyHistoryCheckBox := widgets.NewQCheckBox2("Copy history", nil)
+		vBoxLayout := widgets.NewQVBoxLayout2(dialog)
+		vBoxLayout.AddWidget(appendCopyCheckBox, 0, core.Qt__AlignLeft)
+		vBoxLayout.AddWidget(repeatUserNameCheckBox, 0, core.Qt__AlignLeft)
+		vBoxLayout.AddLayout(hBoxLayout, 0)
+		vBoxLayout.AddLayout(hBoxLayout2, 0)
+		vBoxLayout.AddWidget(copyHistoryCheckBox, 0, core.Qt__AlignLeft)
+
+		separator := widgets.NewQFrame(nil, 0)
+		separator.SetFrameShape(widgets.QFrame__HLine)
+		separator.SetLineWidth(20)
+		vBoxLayout.AddWidget(separator, 0, core.Qt__AlignLeft)
+		vBoxLayout.AddWidget(separator, 0, core.Qt__AlignLeft)
+		// Create the button box
+		buttonBox := widgets.NewQDialogButtonBox(dialog)
+		okButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Ok)
+		cancelButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Cancel)
+		// Set the button text
+		okButton.SetText("OK")
+		cancelButton.SetText("Cancel")
+		// Connect the button box's accepted signal
+		buttonBox.ConnectAccepted(func() {
+			fmt.Println("OK button clicked")
+			dialog.Accept()
+
+			row := tableWidget.CurrentRow()
+			if row <= tableWidget.RowCount()-1 {
+				fieldName := tableWidget.Item(row, 0).Text()
+				fieldValue := tableWidget.Item(row, 1).Text()
+				fieldValue2 := tableWidget.Item(row, 2).Text()
+				fieldValue3 := tableWidget.Item(row, 3).Text()
+
+				if appendCopyCheckBox.IsChecked() {
+					fieldName += "-Copy"
+				}
+
+				tableWidget.InsertRow(row + 1)
+				tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+				tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+				tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+				tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+				tableWidget.SelectRow(row + 1)
+				/*tableWidget.InsertRow(row - 1)
+				for column := 0; column < tableWidget.ColumnCount(); column++ {
+					tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+				}*/
+			}
+
+		})
+
+		// Connect the button box's rejected signal
+		buttonBox.ConnectRejected(func() {
+			fmt.Println("Cancel button clicked")
+			dialog.Reject()
+		})
+		layout := widgets.NewQVBoxLayout2(dialog)
+		layout.AddWidget(buttonBox, 0, core.Qt__AlignRight)
+
+		vBoxLayout.AddLayout(layout, 0)
+		dialog.Resize2(450, 250)
+		dialog.Exec()
+
 	})
 
 	selectAllAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
+		tableWidget.SelectAll()
 	})
 
 	/*clipbordAction := contextMenu.AddMenu2("Copy User Name")
@@ -231,11 +213,17 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 	})
 
 	deleteItemAction.ConnectTriggered(func(bool) {
+
+		row := tableWidget.CurrentRow()
+		if row > 0 {
+			tableWidget.RemoveRow(row)
+		}
+
 		// Get the selection model from the table view
 		// Get the selection model from the table view
 		//selectionModel := tableWidget.SelectionModel()
 		//selectedRows := selectionModel.Selection()
-		tableWidget.Model().RemoveRow(0, core.NewQModelIndex())
+		//tableWidget.Model().RemoveRow(0, core.NewQModelIndex())
 
 		//selectedIndexes := selectionModel.SelectedRows()
 
@@ -248,6 +236,178 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 			fmt.Println("第", index, "行删除了")
 		}*/
 
+	})
+}
+
+func setCopyUrlAction(tableWidget *widgets.QTableWidget, copyUrlAction *widgets.QAction) {
+	copyUrlAction.ConnectTriggered(func(bool) {
+		selectedRow := tableWidget.CurrentRow()
+
+		// Retrieve the item at the first column of the selected row
+		item := tableWidget.Item(selectedRow, 3)
+
+		// Get the text of the item
+		if item != nil {
+			firstItemText := item.Text()
+			fmt.Println("Text of the first item in the selected row:", firstItemText)
+			clipboard := gui.QGuiApplication_Clipboard()
+			if clipboard != nil {
+				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+			}
+		}
+	})
+}
+
+func setOpenUrlAction(tableWidget *widgets.QTableWidget, openUrlAction *widgets.QAction) {
+	openUrlAction.ConnectTriggered(func(bool) {
+		selectedRow := tableWidget.CurrentRow()
+
+		// Retrieve the item at the first column of the selected row
+		item := tableWidget.Item(selectedRow, 3)
+
+		// Get the text of the item
+		if item != nil {
+			firstItemText := item.Text()
+			fmt.Println("Text of the first item in the selected row:", firstItemText)
+			gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(firstItemText))
+		}
+	})
+}
+
+func setCopyPasswordAction(tableWidget *widgets.QTableWidget, copyPasswordAction *widgets.QAction) {
+	copyPasswordAction.ConnectTriggered(func(bool) {
+		selectedRow := tableWidget.CurrentRow()
+
+		// Retrieve the item at the first column of the selected row
+		item := tableWidget.Item(selectedRow, 2)
+
+		// Get the text of the item
+		if item != nil {
+			firstItemText := item.Text()
+			fmt.Println("Text of the first item in the selected row:", firstItemText)
+			clipboard := gui.QGuiApplication_Clipboard()
+			if clipboard != nil {
+				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+			}
+		}
+	})
+}
+
+func setCopyUserNameAction(tableWidget *widgets.QTableWidget, copyUserNameAction *widgets.QAction) {
+	copyUserNameAction.ConnectTriggered(func(bool) {
+		selectedRow := tableWidget.CurrentRow()
+
+		// Retrieve the item at the first column of the selected row
+		item := tableWidget.Item(selectedRow, 1)
+
+		// Get the text of the item
+		if item != nil {
+			firstItemText := item.Text()
+			fmt.Println("Text of the first item in the selected row:", firstItemText)
+			clipboard := gui.QGuiApplication_Clipboard()
+			if clipboard != nil {
+				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+			}
+		}
+
+	})
+}
+
+func setMoveTopAction(tableWidget *widgets.QTableWidget, moveTopAction *widgets.QAction) {
+	moveTopAction.ConnectTriggered(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row > 0 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+			fieldValue2 := tableWidget.Item(row, 2).Text()
+			fieldValue3 := tableWidget.Item(row, 3).Text()
+
+			/*	selectedItems := tableWidget.SelectedIndexes()
+				for _, item := range selectedItems {
+					fmt.Println("item.Text():", item)
+				}*/
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(0)
+			tableWidget.SetItem(0, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(0, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+			tableWidget.SetItem(0, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+			tableWidget.SetItem(0, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+			tableWidget.SelectRow(0)
+			/*tableWidget.InsertRow(row - 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+			}*/
+		}
+	})
+}
+
+func setMoveBottomAction(tableWidget *widgets.QTableWidget, moveBottomAction *widgets.QAction) {
+	moveBottomAction.ConnectTriggered(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row < tableWidget.RowCount()-1 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+			fieldValue2 := tableWidget.Item(row, 2).Text()
+			fieldValue3 := tableWidget.Item(row, 3).Text()
+			tableWidget.RemoveRow(row)
+			tableWidget.SetRowCount(tableWidget.RowCount() + 1)
+			//tableWidget.InsertRow(tableWidget.RowCount() - 1)
+			tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(tableWidget.RowCount()-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+			tableWidget.SetItem(tableWidget.RowCount()-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+			tableWidget.SetItem(tableWidget.RowCount()-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+			tableWidget.SelectRow(tableWidget.RowCount() - 1)
+			/*tableWidget.InsertRow(row - 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+			}*/
+		}
+	})
+}
+
+func setMoveDownAction(tableWidget *widgets.QTableWidget, moveDownAction *widgets.QAction) {
+	moveDownAction.ConnectTriggered(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row < tableWidget.RowCount()-1 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+			fieldValue2 := tableWidget.Item(row, 2).Text()
+			fieldValue3 := tableWidget.Item(row, 3).Text()
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(row + 1)
+			tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+			tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+			tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+			tableWidget.SelectRow(row + 1)
+			/*tableWidget.InsertRow(row - 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+			}*/
+		}
+	})
+}
+
+func setMoveUpAction(tableWidget *widgets.QTableWidget, moveUpAction *widgets.QAction) {
+	moveUpAction.ConnectTriggered(func(checked bool) {
+		row := tableWidget.CurrentRow()
+		if row > 0 {
+			fieldName := tableWidget.Item(row, 0).Text()
+			fieldValue := tableWidget.Item(row, 1).Text()
+			fieldValue2 := tableWidget.Item(row, 2).Text()
+			fieldValue3 := tableWidget.Item(row, 3).Text()
+			tableWidget.RemoveRow(row)
+			tableWidget.InsertRow(row - 1)
+			tableWidget.SetItem(row-1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+			tableWidget.SetItem(row-1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+			tableWidget.SetItem(row-1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+			tableWidget.SetItem(row-1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+			tableWidget.SelectRow(row - 1)
+			/*tableWidget.InsertRow(row - 1)
+			for column := 0; column < tableWidget.ColumnCount(); column++ {
+				tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+			}*/
+		}
 	})
 }
 
