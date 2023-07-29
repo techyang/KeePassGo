@@ -67,9 +67,7 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 	performAutoTypeAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)
 	})
-	editOrViewEntryAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
-	})
+	setEditOrViewEntryAction(tableWidget, editOrViewEntryAction)
 	duplicateAction.ConnectTriggered(func(bool) {
 
 		dialog := widgets.NewQDialog(nil, 0)
@@ -180,6 +178,7 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 			fmt.Println("Cancel button clicked")
 			dialog.Reject()
 		})
+
 		layout := widgets.NewQVBoxLayout2(dialog)
 		layout.AddWidget(buttonBox, 0, core.Qt__AlignRight)
 
@@ -236,6 +235,15 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 			fmt.Println("第", index, "行删除了")
 		}*/
 
+	})
+}
+
+func setEditOrViewEntryAction(tableWidget *widgets.QTableWidget, editOrViewEntryAction *widgets.QAction) {
+	editOrViewEntryAction.ConnectTriggered(func(bool) {
+		initDetailWidget(tableWidget)
+		//row := tableWidget.CurrentRow()
+		//objectName := tableWidget.ObjectName()
+		//GetKeePassEntry(objectName, row)
 	})
 }
 
@@ -421,7 +429,7 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	// Create the tab widget
 	keePassTabWidget := kpwidgets.NewKeePassTabWidget(dialog)
 	keePassTabWidget.Resize(600, 400)
-
+	keePassTabWidget.EntryTab.InitEntryTab(tableWidget)
 	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
@@ -450,8 +458,8 @@ func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *wi
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
 
-	toolButton.SetIcon(gui.NewQIcon5(":/Ext/Images_Client_16/C59_Package_Development.png")) // Replace with the path to your icon file
-	toolButton.SetIconSize(core.NewQSize2(32, 32))                                          // Set the size of the icon
+	toolButton.SetIcon(gui.NewQIcon5("/Ext/Images_Client_16/C59_Package_Development.png")) // Replace with the path to your icon file
+	toolButton.SetIconSize(core.NewQSize2(32, 32))                                         // Set the size of the icon
 	//toolButton.SetText("Tool")
 
 	okButton := widgets.NewQPushButton2("Ok", nil)

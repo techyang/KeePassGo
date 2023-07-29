@@ -185,7 +185,7 @@ func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTr
 
 		groupUUID := item.Data(1, 0).ToString()
 		fmt.Println(item.Text(0), "点击了", groupUUID)
-
+		tableWidget.SetObjectName(groupUUID)
 		group := findGroupByUUID(rootGroups, groupUUID)
 
 		if group != nil && group.Entries != nil {
