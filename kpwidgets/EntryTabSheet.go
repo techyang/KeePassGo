@@ -9,9 +9,8 @@ import (
 	"os"
 )
 
-type EntryTab struct {
-	Widget             *widgets.QWidget
-	FormLayout         *widgets.QFormLayout
+type EntryTabSheet struct {
+	*widgets.QWidget
 	Title              *widgets.QLineEdit
 	LastNameLineEdit   *widgets.QLineEdit
 	UserNameEdit       *widgets.QLineEdit
@@ -24,9 +23,9 @@ type EntryTab struct {
 	DateTimeEdit       *widgets.QDateTimeEdit
 }
 
-func NewEntryTab() *EntryTab {
-	entry := &EntryTab{
-		Widget:             widgets.NewQWidget(nil, 0),
+func NewEntryTabSheet() *EntryTabSheet {
+	entry := &EntryTabSheet{
+		QWidget:            widgets.NewQWidget(nil, 0),
 		Title:              widgets.NewQLineEdit(nil),
 		LastNameLineEdit:   widgets.NewQLineEdit(nil),
 		UserNameEdit:       widgets.NewQLineEdit(nil),
@@ -48,20 +47,20 @@ func NewEntryTab() *EntryTab {
 	nameLayout.AddWidget(iconButton, 0, core.Qt__AlignLeft)
 	entry.Title.SetFixedWidth(500)
 	label2 := widgets.NewQLabel2("Title:", nil, 0)
-	entry.FormLayout = widgets.NewQFormLayout(nil)
-	entry.FormLayout.AddRow2(label2, nameLayout)
+	formLayout := widgets.NewQFormLayout(nil)
+	formLayout.AddRow2(label2, nameLayout)
 
-	entry.FormLayout.AddRow3("User name:", entry.UserNameEdit)
-	entry.FormLayout.AddRow3("Password:", entry.PasswordEdit)
-	entry.FormLayout.AddRow3("Repeat:", entry.RepeatPasswordEdit)
+	formLayout.AddRow3("User name:", entry.UserNameEdit)
+	formLayout.AddRow3("Password:", entry.PasswordEdit)
+	formLayout.AddRow3("Repeat:", entry.RepeatPasswordEdit)
 
 	entry.ProgressBar.SetRange(0, 100)
-	entry.FormLayout.AddRow3("Quality:", entry.ProgressBar)
+	formLayout.AddRow3("Quality:", entry.ProgressBar)
 
-	entry.FormLayout.AddRow3("URL:", entry.URLEdit)
+	formLayout.AddRow3("URL:", entry.URLEdit)
 
 	entry.NotesEdit.Resize2(300, 200)
-	entry.FormLayout.AddRow3("Notes:", entry.NotesEdit)
+	formLayout.AddRow3("Notes:", entry.NotesEdit)
 
 	//entry.FormLayout.AddRow3("Expires:", entry.DateTimeEdit)
 	entry.DateTimeEdit.SetCalendarPopup(true)
@@ -81,13 +80,13 @@ func NewEntryTab() *EntryTab {
 	iconButton2 := widgets.NewQPushButton(nil)
 	iconButton2.SetIcon(gui.NewQIcon5("Ext/Images_Client_HighRes/C00_Password.png")) // Replace with the path to your icon file
 
-	vLayout := widgets.NewQVBoxLayout2(entry.Widget)
+	vLayout := widgets.NewQVBoxLayout2(entry)
 	nameLayout2 := widgets.NewQHBoxLayout2(nil)
 	nameLayout2.AddWidget(entry.ExpiresCheckBox, 0, core.Qt__AlignLeft)
 	nameLayout2.AddWidget(entry.DateTimeEdit, 0, core.Qt__AlignLeft)
 	nameLayout2.AddWidget(iconButton2, 0, core.Qt__AlignLeft)
 	nameLayout2.AddSpacing(100)
-	vLayout.AddLayout(entry.FormLayout, 0)
+	vLayout.AddLayout(formLayout, 0)
 	vLayout.AddLayout(nameLayout2, 0)
 
 	// Create the context menu
@@ -114,7 +113,7 @@ func NewEntryTab() *EntryTab {
 	return entry
 }
 
-func (entryTab *EntryTab) InitEntryTab(tableWidget *widgets.QTableWidget) {
+func (entryTab *EntryTabSheet) InitEntryTab(tableWidget *widgets.QTableWidget) {
 	keePassEntry := GetKeePassEntry(tableWidget.ObjectName(), tableWidget.CurrentRow())
 	entryTab.Title.SetText(keePassEntry.Title)
 	entryTab.UserNameEdit.SetText(keePassEntry.UserName)
@@ -134,7 +133,7 @@ func (entryTab *EntryTab) InitEntryTab(tableWidget *widgets.QTableWidget) {
 
 }
 
-func ReAddTableItem(entry *EntryTab, tableWidget *widgets.QTableWidget) {
+func ReAddTableItem(entry *EntryTabSheet, tableWidget *widgets.QTableWidget) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
 	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(entry.Title.Text(), 0))

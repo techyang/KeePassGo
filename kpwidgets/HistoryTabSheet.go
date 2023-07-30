@@ -6,17 +6,17 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-type HistoryTab struct {
-	Widget        *widgets.QWidget
+type HistoryTabSheet struct {
+	*widgets.QWidget
 	TableWidget   *widgets.QTableWidget
 	ViewButton    *widgets.QPushButton
 	DeleteButton  *widgets.QPushButton
 	RestoreButton *widgets.QPushButton
 }
 
-func NewHistoryTab() *HistoryTab {
-	cw := &HistoryTab{
-		Widget:        widgets.NewQWidget(nil, 0),
+func NewHistoryTabSheet() *HistoryTabSheet {
+	cw := &HistoryTabSheet{
+		QWidget:       widgets.NewQWidget(nil, 0),
 		TableWidget:   widgets.NewQTableWidget(nil),
 		ViewButton:    widgets.NewQPushButton2("View", nil),
 		DeleteButton:  widgets.NewQPushButton2("Delete", nil),
@@ -24,7 +24,7 @@ func NewHistoryTab() *HistoryTab {
 	}
 
 	// Layout
-	vBoxLayout := widgets.NewQVBoxLayout2(cw.Widget)
+	vBoxLayout := widgets.NewQVBoxLayout2(cw)
 
 	setHistoryTableWidget(cw.TableWidget, vBoxLayout)
 	/*vBoxLayout.AddWidget(cw.TagsLabel, 0, core.Qt__AlignLeft)

@@ -7,8 +7,8 @@ import (
 	"os/exec"
 )
 
-type AutoTypeTab struct {
-	Widget                            *widgets.QWidget
+type AutoTypeTabSheet struct {
+	*widgets.QWidget
 	EnableAutoTypeCheckbox            *widgets.QCheckBox
 	InheritDefaultTypeRadio           *widgets.QRadioButton
 	OverrideDefaultSequenceRadio      *widgets.QRadioButton
@@ -19,9 +19,9 @@ type AutoTypeTab struct {
 	TableWidget                       *widgets.QTableWidget
 }
 
-func NewAutoTypeTab() *AutoTypeTab {
-	cw := &AutoTypeTab{
-		Widget:                       widgets.NewQWidget(nil, 0),
+func NewAutoTypeTabSheet() *AutoTypeTabSheet {
+	cw := &AutoTypeTabSheet{
+		QWidget:                      widgets.NewQWidget(nil, 0),
 		EnableAutoTypeCheckbox:       widgets.NewQCheckBox2("Enable auto-type for this entry", nil),
 		InheritDefaultTypeRadio:      widgets.NewQRadioButton2("Inherit default auto-type sequence from group", nil),
 		OverrideDefaultSequenceRadio: widgets.NewQRadioButton2("Override default sequence", nil),
@@ -33,7 +33,7 @@ func NewAutoTypeTab() *AutoTypeTab {
 	}
 
 	// Layout
-	vBoxLayout := widgets.NewQVBoxLayout2(cw.Widget)
+	vBoxLayout := widgets.NewQVBoxLayout2(cw)
 
 	vBoxLayout.AddWidget(cw.EnableAutoTypeCheckbox, 0, core.Qt__AlignLeft)
 	vBoxLayout.AddWidget(cw.InheritDefaultTypeRadio, 0, core.Qt__AlignLeft)
