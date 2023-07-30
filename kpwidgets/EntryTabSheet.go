@@ -113,7 +113,7 @@ func NewEntryTabSheet() *EntryTabSheet {
 	return entry
 }
 
-func (entryTab *EntryTabSheet) InitEntryTab(tableWidget *widgets.QTableWidget) {
+func (entryTab *EntryTabSheet) InitEntryTab(tableWidget *KeePassTable) {
 	keePassEntry := GetKeePassEntry(tableWidget.ObjectName(), tableWidget.CurrentRow())
 	entryTab.Title.SetText(keePassEntry.Title)
 	entryTab.UserNameEdit.SetText(keePassEntry.UserName)
@@ -133,7 +133,7 @@ func (entryTab *EntryTabSheet) InitEntryTab(tableWidget *widgets.QTableWidget) {
 
 }
 
-func ReAddTableItem(entry *EntryTabSheet, tableWidget *widgets.QTableWidget) {
+func ReAddTableItem(entry *EntryTabSheet, tableWidget *KeePassTable) {
 	tableWidget.SetRowCount(tableWidget.RowCount() + 1)
 	// Create and set QTableWidgetItem for each cell
 	tableWidget.SetItem(tableWidget.RowCount()-1, 0, widgets.NewQTableWidgetItem2(entry.Title.Text(), 0))

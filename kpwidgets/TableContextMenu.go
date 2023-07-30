@@ -11,62 +11,7 @@ import (
 	"runtime"
 )
 
-func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
-	contextMenu := widgets.NewQMenu(nil)
-	copyUserNameAction := contextMenu.AddAction("Copy User Name \tCtrl+B+C")
-	copyUserNameAction.SetShortcut(gui.NewQKeySequence2("Ctrl+B", gui.QKeySequence__NativeText))
-	//copyUserNameAction.SetShortcut(widgets.QKeySequence_fromString("Ctrl+O"))
-
-	copyPasswordAction := contextMenu.AddAction("Copy Password")
-	copyPasswordAction.SetShortcut(gui.NewQKeySequence2("Ctrl+C", gui.QKeySequence__NativeText))
-
-	copyPasswordAction.SetMenuRole(widgets.QAction__TextHeuristicRole) // Show shortcut in the context menu
-	//copyPasswordAction.
-
-	urlsMenu := contextMenu.AddMenu2("URS(S)")
-	openUrlAction := urlsMenu.AddAction("Open")
-	copyUrlAction := urlsMenu.AddAction("Copy to ClipBoard")
-	contextMenu.AddSeparator()
-
-	performAutoTypeAction := contextMenu.AddAction("Perform Auto-Type")
-	contextMenu.AddSeparator()
-	addItemAction := contextMenu.AddAction("Add Entry...")
-	editOrViewEntryAction := contextMenu.AddAction("Edit/View Entry...")
-	duplicateAction := contextMenu.AddAction("Duplicate Entry...")
-
-	//addItemAction := contextMenu.AddAction("Add Entry...")
-	deleteItemAction := contextMenu.AddAction("Delete Entry")
-	selectEntriesMenu := contextMenu.AddMenu2("Select Entries")
-	selectEntriesMenu.AddAction("Duplicate Entry...")
-	selectAllAction := contextMenu.AddAction("Select All")
-	contextMenu.AddSeparator()
-	clipbordMenu := contextMenu.AddMenu2("Clipbord")
-	clipbordMenu.AddAction("Copy Entries...")
-	clipbordMenu.AddAction("Paste Entries...")
-
-	rearrangeMenu := contextMenu.AddMenu2("Rearrange")
-	moveTopAction := rearrangeMenu.AddAction("Move Entry to Top")
-	moveUpAction := rearrangeMenu.AddAction("Move Entry One Up")
-	moveDownAction := rearrangeMenu.AddAction("Move Entry One Down")
-	moveBottomAction := rearrangeMenu.AddAction("Move Entry to Bottom")
-
-	moveUpAction.SetShortcut(gui.NewQKeySequence2("Alt+", gui.QKeySequence__NativeText))
-
-	setMoveTopAction(tableWidget, moveTopAction)
-	setMoveUpAction(tableWidget, moveUpAction)
-	setMoveDownAction(tableWidget, moveDownAction)
-	setMoveBottomAction(tableWidget, moveBottomAction)
-
-	setCopyUserNameAction(tableWidget, copyUserNameAction)
-	setCopyPasswordAction(tableWidget, copyPasswordAction)
-
-	setOpenUrlAction(tableWidget, openUrlAction)
-
-	setCopyUrlAction(tableWidget, copyUrlAction)
-	performAutoTypeAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
-	})
-	setEditOrViewEntryAction(tableWidget, editOrViewEntryAction)
+func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
 	duplicateAction.ConnectTriggered(func(bool) {
 
 		dialog := widgets.NewQDialog(nil, 0)
@@ -84,33 +29,7 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 		helpLabel2.SetTextInteractionFlags(core.Qt__LinksAccessibleByMouse)
 
 		helpLabel2.ConnectLinkActivated(func(link string) {
-			//link = "D:\\Program Files\\TotalCMDPortable\\App\\totalcmd\\Plugins\\wcx\\Total7zip\\7-zip.chm"
-			/*if err := exec.Command("hh.exe", link).Start(); err != nil {
-				fmt.Println("Error opening .chm file:", err)
-			}*/
-			//chmFilePath := "path/to/helpfile.chm"
-
-			// Replace "your-topic" with the topic you want to display in the CHM file.
-			topic := "Working In Spy++"
-
-			// Use different commands based on the operating system.
-			var command string
-			var args []string
-			switch runtime.GOOS {
-			case "windows":
-				command = "hh.exe"
-				args = []string{link, fmt.Sprintf("-#%s", topic)}
-			default:
-				fmt.Println("Unsupported operating system.")
-				os.Exit(1)
-			}
-
-			cmd := exec.Command(command, args...)
-			err := cmd.Run()
-			if err != nil {
-				fmt.Println("Error opening CHM file:", err)
-				os.Exit(1)
-			}
+			doLinkClicked(link)
 		})
 
 		hBoxLayout := widgets.NewQHBoxLayout2(nil)
@@ -144,31 +63,7 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 		cancelButton.SetText("Cancel")
 		// Connect the button box's accepted signal
 		buttonBox.ConnectAccepted(func() {
-			fmt.Println("OK button clicked")
-			dialog.Accept()
-
-			row := tableWidget.CurrentRow()
-			if row <= tableWidget.RowCount()-1 {
-				fieldName := tableWidget.Item(row, 0).Text()
-				fieldValue := tableWidget.Item(row, 1).Text()
-				fieldValue2 := tableWidget.Item(row, 2).Text()
-				fieldValue3 := tableWidget.Item(row, 3).Text()
-
-				if appendCopyCheckBox.IsChecked() {
-					fieldName += "-Copy"
-				}
-
-				tableWidget.InsertRow(row + 1)
-				tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-				tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-				tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-				tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-				tableWidget.SelectRow(row + 1)
-				/*tableWidget.InsertRow(row - 1)
-				for column := 0; column < tableWidget.ColumnCount(); column++ {
-					tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-				}*/
-			}
+			doAccepted(dialog, tableWidget, appendCopyCheckBox)
 
 		})
 
@@ -186,58 +81,67 @@ func SetTableContextMenu(tableWidget *widgets.QTableWidget) {
 		dialog.Exec()
 
 	})
-
-	selectAllAction.ConnectTriggered(func(bool) {
-		tableWidget.SelectAll()
-	})
-
-	/*clipbordAction := contextMenu.AddMenu2("Copy User Name")
-	clipbordAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-	*/
-
-	tableWidget.ConnectCustomContextMenuRequested(func(pos *core.QPoint) {
-		contextMenu.Exec2(tableWidget.MapToGlobal(pos), nil)
-	})
-
-	// Connect the triggered signal of the menu actions
-	addItemAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
-	})
-
-	deleteItemAction.ConnectTriggered(func(bool) {
-
-		row := tableWidget.CurrentRow()
-		if row > 0 {
-			tableWidget.RemoveRow(row)
-		}
-
-		// Get the selection model from the table view
-		// Get the selection model from the table view
-		//selectionModel := tableWidget.SelectionModel()
-		//selectedRows := selectionModel.Selection()
-		//tableWidget.Model().RemoveRow(0, core.NewQModelIndex())
-
-		//selectedIndexes := selectionModel.SelectedRows()
-
-		/*qModelIndex := selectionModel.SelectedRows(0).
-		qModelIndex.
-		tableWidget.*/
-
-		/*for _, index := range selectedRows {
-			tableWidget.Model().RemoveRow(index.Row(), core.NewQModelIndex())
-			fmt.Println("第", index, "行删除了")
-		}*/
-
-	})
 }
 
-func setEditOrViewEntryAction(tableWidget *widgets.QTableWidget, editOrViewEntryAction *widgets.QAction) {
+func doLinkClicked(link string) {
+	//link = "D:\\Program Files\\TotalCMDPortable\\App\\totalcmd\\Plugins\\wcx\\Total7zip\\7-zip.chm"
+	/*if err := exec.Command("hh.exe", link).Start(); err != nil {
+		fmt.Println("Error opening .chm file:", err)
+	}*/
+	//chmFilePath := "path/to/helpfile.chm"
+
+	// Replace "your-topic" with the topic you want to display in the CHM file.
+	topic := "Working In Spy++"
+
+	// Use different commands based on the operating system.
+	var command string
+	var args []string
+	switch runtime.GOOS {
+	case "windows":
+		command = "hh.exe"
+		args = []string{link, fmt.Sprintf("-#%s", topic)}
+	default:
+		fmt.Println("Unsupported operating system.")
+		os.Exit(1)
+	}
+
+	cmd := exec.Command(command, args...)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error opening CHM file:", err)
+		os.Exit(1)
+	}
+}
+
+func doAccepted(dialog *widgets.QDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
+	fmt.Println("OK button clicked")
+	dialog.Accept()
+
+	row := tableWidget.CurrentRow()
+	if row <= tableWidget.RowCount()-1 {
+		fieldName := tableWidget.Item(row, 0).Text()
+		fieldValue := tableWidget.Item(row, 1).Text()
+		fieldValue2 := tableWidget.Item(row, 2).Text()
+		fieldValue3 := tableWidget.Item(row, 3).Text()
+
+		if appendCopyCheckBox.IsChecked() {
+			fieldName += "-Copy"
+		}
+
+		tableWidget.InsertRow(row + 1)
+		tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+		tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+		tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+		tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+		tableWidget.SelectRow(row + 1)
+		/*tableWidget.InsertRow(row - 1)
+		for column := 0; column < tableWidget.ColumnCount(); column++ {
+			tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+		}*/
+	}
+}
+
+func setEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
 	editOrViewEntryAction.ConnectTriggered(func(bool) {
 		initDetailWidget(tableWidget)
 		//row := tableWidget.CurrentRow()
@@ -246,7 +150,7 @@ func setEditOrViewEntryAction(tableWidget *widgets.QTableWidget, editOrViewEntry
 	})
 }
 
-func setCopyUrlAction(tableWidget *widgets.QTableWidget, copyUrlAction *widgets.QAction) {
+func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction) {
 	copyUrlAction.ConnectTriggered(func(bool) {
 		selectedRow := tableWidget.CurrentRow()
 
@@ -265,7 +169,7 @@ func setCopyUrlAction(tableWidget *widgets.QTableWidget, copyUrlAction *widgets.
 	})
 }
 
-func setOpenUrlAction(tableWidget *widgets.QTableWidget, openUrlAction *widgets.QAction) {
+func setOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
 	openUrlAction.ConnectTriggered(func(bool) {
 		selectedRow := tableWidget.CurrentRow()
 
@@ -281,7 +185,7 @@ func setOpenUrlAction(tableWidget *widgets.QTableWidget, openUrlAction *widgets.
 	})
 }
 
-func setCopyPasswordAction(tableWidget *widgets.QTableWidget, copyPasswordAction *widgets.QAction) {
+func setCopyPasswordAction(tableWidget *KeePassTable, copyPasswordAction *widgets.QAction) {
 	copyPasswordAction.ConnectTriggered(func(bool) {
 		selectedRow := tableWidget.CurrentRow()
 
@@ -300,7 +204,7 @@ func setCopyPasswordAction(tableWidget *widgets.QTableWidget, copyPasswordAction
 	})
 }
 
-func setCopyUserNameAction(tableWidget *widgets.QTableWidget, copyUserNameAction *widgets.QAction) {
+func setCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widgets.QAction) {
 	copyUserNameAction.ConnectTriggered(func(bool) {
 		selectedRow := tableWidget.CurrentRow()
 
@@ -320,7 +224,7 @@ func setCopyUserNameAction(tableWidget *widgets.QTableWidget, copyUserNameAction
 	})
 }
 
-func setMoveTopAction(tableWidget *widgets.QTableWidget, moveTopAction *widgets.QAction) {
+func setMoveTopAction(tableWidget *KeePassTable, moveTopAction *widgets.QAction) {
 	moveTopAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row > 0 {
@@ -333,7 +237,7 @@ func setMoveTopAction(tableWidget *widgets.QTableWidget, moveTopAction *widgets.
 	})
 }
 
-func setMoveBottomAction(tableWidget *widgets.QTableWidget, moveBottomAction *widgets.QAction) {
+func setMoveBottomAction(tableWidget *KeePassTable, moveBottomAction *widgets.QAction) {
 	moveBottomAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row < tableWidget.RowCount()-1 {
@@ -346,7 +250,7 @@ func setMoveBottomAction(tableWidget *widgets.QTableWidget, moveBottomAction *wi
 	})
 }
 
-func setMoveUpAction(tableWidget *widgets.QTableWidget, moveUpAction *widgets.QAction) {
+func setMoveUpAction(tableWidget *KeePassTable, moveUpAction *widgets.QAction) {
 	moveUpAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row > 0 {
@@ -359,7 +263,7 @@ func setMoveUpAction(tableWidget *widgets.QTableWidget, moveUpAction *widgets.QA
 	})
 }
 
-func setMoveDownAction(tableWidget *widgets.QTableWidget, moveDownAction *widgets.QAction) {
+func setMoveDownAction(tableWidget *KeePassTable, moveDownAction *widgets.QAction) {
 	moveDownAction.ConnectTriggered(func(checked bool) {
 		row := tableWidget.CurrentRow()
 		if row < tableWidget.RowCount()-1 {
@@ -372,7 +276,7 @@ func setMoveDownAction(tableWidget *widgets.QTableWidget, moveDownAction *widget
 	})
 }
 
-func setTableRowData(tableWidget *widgets.QTableWidget, newRow int, rowData []string) {
+func setTableRowData(tableWidget *KeePassTable, newRow int, rowData []string) {
 	for column := 0; column < tableWidget.ColumnCount(); column++ {
 		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
 	}
@@ -380,7 +284,7 @@ func setTableRowData(tableWidget *widgets.QTableWidget, newRow int, rowData []st
 }
 
 // Function to retrieve the data of a specific row in a QTableWidget and store it in an array
-func getRowData(tableWidget *widgets.QTableWidget, row int) []string {
+func getRowData(tableWidget *KeePassTable, row int) []string {
 	columnCount := tableWidget.ColumnCount()
 	rowData := make([]string, columnCount)
 
@@ -396,7 +300,7 @@ func getRowData(tableWidget *widgets.QTableWidget, row int) []string {
 	return rowData
 }
 
-func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
+func initDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")
@@ -427,7 +331,7 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *KeePassTable, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	entryTab := keePassDialog.EntryTab
 	//advancedTab := keePassDialog.AdvancedTab
 
@@ -455,30 +359,7 @@ func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTab
 
 	okButton.ConnectClicked(func(bool) {
 
-		msgBox := widgets.NewQMessageBox(nil)
-		msgBox.SetWindowTitle("提示信息")
-		//msgBox.SetText(keePassDialog.EntryTabSheet.UserNameEdit.Text())
-		msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
-		msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
-		msgBox.SetIcon(widgets.QMessageBox__Information)
-		msgBox.Exec()
-
-		// Code to handle cancelButton click event
-		//tabWidget.get
-		fmt.Println("okButton clicked")
-		ReAddTableItem(entryTab, tableWidget)
-
-		file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
-
-		db := gokeepasslib.NewDatabase()
-		db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
-		_ = gokeepasslib.NewDecoder(file).Decode(db)
-
-		db.UnlockProtectedEntries()
-
-		fmt.Println("Password entry saved successfully.")
-
-		dialog.Close()
+		doOkButtonClicked(keePassDialog, entryTab, tableWidget, dialog)
 	})
 
 	cancelButton.ConnectClicked(func(bool) {
@@ -487,4 +368,31 @@ func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTab
 		dialog.Close()
 	})
 	return hBoxLayout
+}
+
+func doOkButtonClicked(keePassDialog *KeePassTabWidget, entryTab *EntryTabSheet, tableWidget *KeePassTable, dialog *widgets.QDialog) {
+	msgBox := widgets.NewQMessageBox(nil)
+	msgBox.SetWindowTitle("提示信息")
+	//msgBox.SetText(keePassDialog.EntryTabSheet.UserNameEdit.Text())
+	msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
+	msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+	msgBox.SetIcon(widgets.QMessageBox__Information)
+	msgBox.Exec()
+
+	// Code to handle cancelButton click event
+	//tabWidget.get
+	fmt.Println("okButton clicked")
+	ReAddTableItem(entryTab, tableWidget)
+
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+
+	fmt.Println("Password entry saved successfully.")
+
+	dialog.Close()
 }
