@@ -144,7 +144,7 @@ func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
 	treeWidget.SetHeaderHidden(true)
 
 	// Connect the itemClicked signal of the tree widget
-	TableItemClicked(tableWidget, treeWidget, rootGroups)
+	TreeItemClicked(tableWidget, treeWidget, rootGroups)
 	return treeWidget
 }
 
@@ -179,7 +179,7 @@ func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Gro
 	return nil
 }
 
-func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
+func TreeItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
 
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 
@@ -189,12 +189,12 @@ func TableItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTr
 		group := findGroupByUUID(rootGroups, groupUUID)
 
 		if group != nil && group.Entries != nil {
-			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
-			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			//headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			//tableWidget.SetHorizontalHeaderLabels(headerLabels)
 			setTableItems(group, tableWidget)
 		} else {
-			headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
-			tableWidget.SetHorizontalHeaderLabels(headerLabels)
+			//headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+			//tableWidget.SetHorizontalHeaderLabels(headerLabels)
 			//tableWidget.Clear()
 			tableWidget.SetRowCount(0)
 		}
