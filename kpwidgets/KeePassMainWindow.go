@@ -37,6 +37,7 @@ func InitMainWindow() *widgets.QMainWindow {
 	//设置菜单
 	sys.SetContextMenu(trayContextMenu)
 	sys.Show()
+
 	return window
 }
 
