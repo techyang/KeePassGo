@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/techyang/keepassgo/functions"
+	"github.com/techyang/keepassgo/kpwidgets"
 	"github.com/therecipe/qt/widgets"
 	"os"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	///start
 	widgets.NewQApplication(len(os.Args), os.Args)
-	window := functions.InitMainWindow()
+	window := kpwidgets.InitMainWindow()
 	window.Show()
 	widgets.QApplication_Exec()
 }

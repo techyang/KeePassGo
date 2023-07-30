@@ -1,8 +1,7 @@
-package functions
+package kpwidgets
 
 import (
 	"fmt"
-	"github.com/techyang/keepassgo/kpwidgets"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -405,7 +404,7 @@ func initDetailWidget(tableWidget *widgets.QTableWidget) *widgets.QDialog {
 	imageLabel := initKeePassImage()
 
 	// Create the tab widget
-	keePassTabWidget := kpwidgets.NewKeePassTabWidget(dialog)
+	keePassTabWidget := NewKeePassTabWidget(dialog)
 	keePassTabWidget.Resize(600, 400)
 	keePassTabWidget.EntryTab.InitEntryTab(tableWidget)
 	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
@@ -428,7 +427,7 @@ func initKeePassImage() *widgets.QLabel {
 	return imageLabel
 }
 
-func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
+func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	entryTab := keePassDialog.EntryTab
 	advancedTab := keePassDialog.AdvancedTab
 	advancedTab.Widget.Parent()
@@ -468,7 +467,7 @@ func initBottomButton(keePassDialog *kpwidgets.KeePassTabWidget, tableWidget *wi
 		// Code to handle cancelButton click event
 		//tabWidget.get
 		fmt.Println("okButton clicked")
-		kpwidgets.ReAddTableItem(entryTab, tableWidget)
+		ReAddTableItem(entryTab, tableWidget)
 
 		file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
