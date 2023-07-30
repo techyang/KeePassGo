@@ -6,8 +6,8 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-type PropertiesTab struct {
-	Widget                   *widgets.QWidget
+type PropertiesTabSheet struct {
+	*widgets.QWidget
 	ForegroundColorCheckbox  *widgets.QCheckBox
 	ForegroundColorPickerBtn *widgets.QPushButton
 	BackgroundColorCheckbox  *widgets.QCheckBox
@@ -23,9 +23,9 @@ type PropertiesTab struct {
 	UUIDInput                *widgets.QLineEdit
 }
 
-func NewPropertiesTab() *PropertiesTab {
-	cw := &PropertiesTab{
-		Widget:                   widgets.NewQWidget(nil, 0),
+func NewPropertiesTabSheet() *PropertiesTabSheet {
+	cw := &PropertiesTabSheet{
+		QWidget:                  widgets.NewQWidget(nil, 0),
 		ForegroundColorCheckbox:  widgets.NewQCheckBox2("Custom foreground color", nil),
 		ForegroundColorPickerBtn: widgets.NewQPushButton2("Pick Color", nil),
 		BackgroundColorCheckbox:  widgets.NewQCheckBox2("Custom background color", nil),
@@ -42,7 +42,7 @@ func NewPropertiesTab() *PropertiesTab {
 	}
 
 	// Layout
-	vBoxLayout := widgets.NewQVBoxLayout2(cw.Widget)
+	vBoxLayout := widgets.NewQVBoxLayout2(cw)
 	nameLayout := widgets.NewQHBoxLayout2(nil)
 	nameLayout.AddWidget(cw.ForegroundColorCheckbox, 0, core.Qt__AlignLeft)
 	nameLayout.AddWidget(cw.ForegroundColorPickerBtn, 1, core.Qt__AlignLeft)

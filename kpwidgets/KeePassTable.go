@@ -3,6 +3,7 @@ package kpwidgets
 import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 )
 
 type KeePassTable struct {
@@ -54,9 +55,36 @@ func NewKeePassTable() *KeePassTable {
 	//SetTableContextMenu(tableWidget)
 	SetTableContextMenu(tableWidget)
 
+	passwordDelegate := NewPasswordDelegate()
+	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
+
 	keePassTable := &KeePassTable{
 		QTableWidget: tableWidget,
 	}
 
 	return keePassTable
+}
+
+func (tableWidget *KeePassTable) setTableItems(group *gokeepasslib.Group) {
+	// Set the password delegate for the second column
+	passwordDelegate := NewPasswordDelegate()
+	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
+
+	for i, entry := range group.Entries {
+		username := entry.Get("UserName").Value.Content
+		url := entry.Get("URL").Value.Content
+		note := entry.Get("Notes").Value.Content
+		tableWidget.SetRowCount(i + 1)
+		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
+
+		passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
+		//passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
+		//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
+		//passwordItem.SetCheckState(core.Qt__Checked)
+
+		tableWidget.SetItem(i, 2, passwordItem)
+		tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
+		tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
+	}
 }

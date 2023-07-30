@@ -4,28 +4,28 @@ import "github.com/therecipe/qt/widgets"
 
 type KeePassTabWidget struct {
 	TabWidget     *widgets.QTabWidget
-	EntryTab      *EntryTab
-	AdvancedTab   *AdvancedTab
-	PropertiesTab *PropertiesTab
-	AutoTypeTab   *AutoTypeTab
-	HistoryTab    *HistoryTab
+	EntryTab      *EntryTabSheet
+	AdvancedTab   *AdvancedTabSheet
+	PropertiesTab *PropertiesTabSheet
+	AutoTypeTab   *AutoTypeTabSheet
+	HistoryTab    *HistoryTabSheet
 }
 
 func NewKeePassTabWidget(parent widgets.QWidget_ITF) *KeePassTabWidget {
 	tabWidget := widgets.NewQTabWidget(parent)
 
-	entryTab := NewEntryTab()
-	advancedTab := NewAdvanceTab()
+	entryTab := NewEntryTabSheet()
+	advancedTab := NewAdvancedTabSheet()
 
-	propertiesTab := NewPropertiesTab()
-	autoTypeTab := NewAutoTypeTab()
-	historyTab := NewHistoryTab()
+	propertiesTab := NewPropertiesTabSheet()
+	autoTypeTab := NewAutoTypeTabSheet()
+	historyTab := NewHistoryTabSheet()
 
-	tabWidget.AddTab(entryTab.Widget, "Entry")
-	tabWidget.AddTab(advancedTab.Widget, "Advanced")
-	tabWidget.AddTab(propertiesTab.Widget, "Properties")
-	tabWidget.AddTab(autoTypeTab.Widget, "Auto-Type")
-	tabWidget.AddTab(historyTab.Widget, "History")
+	tabWidget.AddTab(entryTab, "Entry")
+	tabWidget.AddTab(advancedTab, "Advanced")
+	tabWidget.AddTab(propertiesTab, "Properties")
+	tabWidget.AddTab(autoTypeTab, "Auto-Type")
+	tabWidget.AddTab(historyTab, "History")
 
 	return &KeePassTabWidget{
 		TabWidget:     tabWidget,

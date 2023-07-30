@@ -5,8 +5,8 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-type AdvancedTab struct {
-	Widget                       *widgets.QWidget
+type AdvancedTabSheet struct {
+	*widgets.QWidget
 	StringFieldsGroupBox         *widgets.QGroupBox
 	StringFieldsTable            *widgets.QTableWidget
 	StringFieldsButtonsLayout    *widgets.QVBoxLayout
@@ -15,13 +15,13 @@ type AdvancedTab struct {
 	FileAttachmentsButtonsLayout *widgets.QVBoxLayout
 }
 
-func NewAdvanceTab() *AdvancedTab {
-	cw := &AdvancedTab{
-		Widget: widgets.NewQWidget(nil, 0),
+func NewAdvancedTabSheet() *AdvancedTabSheet {
+	cw := &AdvancedTabSheet{
+		QWidget: widgets.NewQWidget(nil, 0),
 	}
 
 	// Create the layout for the central widget
-	layout := widgets.NewQVBoxLayout2(cw.Widget)
+	layout := widgets.NewQVBoxLayout2(cw)
 
 	// Create the upper group box for "String fields"
 	cw.StringFieldsGroupBox = widgets.NewQGroupBox2("String fields", nil)

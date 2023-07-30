@@ -429,8 +429,7 @@ func initKeePassImage() *widgets.QLabel {
 
 func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTableWidget, dialog *widgets.QDialog) *widgets.QHBoxLayout {
 	entryTab := keePassDialog.EntryTab
-	advancedTab := keePassDialog.AdvancedTab
-	advancedTab.Widget.Parent()
+	//advancedTab := keePassDialog.AdvancedTab
 
 	hBoxLayout := widgets.NewQHBoxLayout2(nil)
 	toolButton := widgets.NewQPushButton2("Tool", nil)
@@ -458,7 +457,7 @@ func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *widgets.QTab
 
 		msgBox := widgets.NewQMessageBox(nil)
 		msgBox.SetWindowTitle("提示信息")
-		//msgBox.SetText(keePassDialog.EntryTab.UserNameEdit.Text())
+		//msgBox.SetText(keePassDialog.EntryTabSheet.UserNameEdit.Text())
 		msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
 		msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
 		msgBox.SetIcon(widgets.QMessageBox__Information)
