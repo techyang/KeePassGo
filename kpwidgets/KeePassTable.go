@@ -6,7 +6,7 @@ import (
 )
 
 type KeePassTable struct {
-	Widget *widgets.QTableWidget
+	*widgets.QTableWidget
 }
 
 func NewKeePassTable() *KeePassTable {
@@ -55,12 +55,8 @@ func NewKeePassTable() *KeePassTable {
 	SetTableContextMenu(tableWidget)
 
 	keePassTable := &KeePassTable{
-		Widget: tableWidget,
+		QTableWidget: tableWidget,
 	}
 
 	return keePassTable
-}
-
-func (keePassTable *KeePassTable) getTableWidget() *widgets.QTableWidget {
-	return keePassTable.Widget
 }

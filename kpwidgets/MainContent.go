@@ -49,7 +49,7 @@ func InitMainContent(window *widgets.QMainWindow) {
 
 	// Create a QTreeWidget
 	//tableWidget := initTableWidget()
-	tableWidget := NewKeePassTable().getTableWidget()
+	tableWidget := NewKeePassTable()
 	treeWidget := initTreeWidget(tableWidget)
 
 	//restTable(tableWidget)
@@ -70,7 +70,7 @@ func InitMainContent(window *widgets.QMainWindow) {
 
 }
 
-func initTreeWidget(tableWidget *widgets.QTableWidget) *widgets.QTreeWidget {
+func initTreeWidget(tableWidget *KeePassTable) *widgets.QTreeWidget {
 	treeWidget := widgets.NewQTreeWidget(nil)
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
@@ -117,7 +117,7 @@ func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group
 	}
 }
 
-func TreeItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
+func TreeItemClicked(tableWidget *KeePassTable, treeWidget *widgets.QTreeWidget, rootGroups []gokeepasslib.Group) {
 
 	treeWidget.ConnectItemClicked(func(item *widgets.QTreeWidgetItem, column int) {
 
@@ -143,7 +143,7 @@ func TreeItemClicked(tableWidget *widgets.QTableWidget, treeWidget *widgets.QTre
 	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
 }
 
-func setTableItems(group *gokeepasslib.Group, tableWidget *widgets.QTableWidget) {
+func setTableItems(group *gokeepasslib.Group, tableWidget *KeePassTable) {
 	// Set the password delegate for the second column
 	passwordDelegate := NewPasswordDelegate()
 	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
