@@ -106,6 +106,10 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 
 	moveUpAction.SetShortcut(gui.NewQKeySequence2("Alt+", gui.QKeySequence__NativeText))
 
+	moveTopAction.ConnectTriggered(func(checked bool) {
+		moveTop(keePassTable)
+	})
+
 	setMoveTopAction(keePassTable, moveTopAction)
 	setMoveUpAction(keePassTable, moveUpAction)
 	setMoveDownAction(keePassTable, moveDownAction)
@@ -171,6 +175,17 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		}*/
 
 	})
+}
+
+func moveTop(keePassTable *KeePassTable) {
+	row := keePassTable.CurrentRow()
+	if row > 0 {
+		rowData := getRowData(keePassTable, row)
+		keePassTable.RemoveRow(row)
+		newRow := 0
+		keePassTable.InsertRow(newRow)
+		setTableRowData(keePassTable, newRow, rowData)
+	}
 }
 
 func (tableWidget *KeePassTable) setTableItems(group *gokeepasslib.Group) {

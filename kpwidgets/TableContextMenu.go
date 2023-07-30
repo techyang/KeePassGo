@@ -29,33 +29,7 @@ func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAct
 		helpLabel2.SetTextInteractionFlags(core.Qt__LinksAccessibleByMouse)
 
 		helpLabel2.ConnectLinkActivated(func(link string) {
-			//link = "D:\\Program Files\\TotalCMDPortable\\App\\totalcmd\\Plugins\\wcx\\Total7zip\\7-zip.chm"
-			/*if err := exec.Command("hh.exe", link).Start(); err != nil {
-				fmt.Println("Error opening .chm file:", err)
-			}*/
-			//chmFilePath := "path/to/helpfile.chm"
-
-			// Replace "your-topic" with the topic you want to display in the CHM file.
-			topic := "Working In Spy++"
-
-			// Use different commands based on the operating system.
-			var command string
-			var args []string
-			switch runtime.GOOS {
-			case "windows":
-				command = "hh.exe"
-				args = []string{link, fmt.Sprintf("-#%s", topic)}
-			default:
-				fmt.Println("Unsupported operating system.")
-				os.Exit(1)
-			}
-
-			cmd := exec.Command(command, args...)
-			err := cmd.Run()
-			if err != nil {
-				fmt.Println("Error opening CHM file:", err)
-				os.Exit(1)
-			}
+			doLinkClicked(link)
 		})
 
 		hBoxLayout := widgets.NewQHBoxLayout2(nil)
@@ -89,31 +63,7 @@ func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAct
 		cancelButton.SetText("Cancel")
 		// Connect the button box's accepted signal
 		buttonBox.ConnectAccepted(func() {
-			fmt.Println("OK button clicked")
-			dialog.Accept()
-
-			row := tableWidget.CurrentRow()
-			if row <= tableWidget.RowCount()-1 {
-				fieldName := tableWidget.Item(row, 0).Text()
-				fieldValue := tableWidget.Item(row, 1).Text()
-				fieldValue2 := tableWidget.Item(row, 2).Text()
-				fieldValue3 := tableWidget.Item(row, 3).Text()
-
-				if appendCopyCheckBox.IsChecked() {
-					fieldName += "-Copy"
-				}
-
-				tableWidget.InsertRow(row + 1)
-				tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-				tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-				tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-				tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-				tableWidget.SelectRow(row + 1)
-				/*tableWidget.InsertRow(row - 1)
-				for column := 0; column < tableWidget.ColumnCount(); column++ {
-					tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-				}*/
-			}
+			doAccepted(dialog, tableWidget, appendCopyCheckBox)
 
 		})
 
@@ -131,6 +81,64 @@ func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAct
 		dialog.Exec()
 
 	})
+}
+
+func doLinkClicked(link string) {
+	//link = "D:\\Program Files\\TotalCMDPortable\\App\\totalcmd\\Plugins\\wcx\\Total7zip\\7-zip.chm"
+	/*if err := exec.Command("hh.exe", link).Start(); err != nil {
+		fmt.Println("Error opening .chm file:", err)
+	}*/
+	//chmFilePath := "path/to/helpfile.chm"
+
+	// Replace "your-topic" with the topic you want to display in the CHM file.
+	topic := "Working In Spy++"
+
+	// Use different commands based on the operating system.
+	var command string
+	var args []string
+	switch runtime.GOOS {
+	case "windows":
+		command = "hh.exe"
+		args = []string{link, fmt.Sprintf("-#%s", topic)}
+	default:
+		fmt.Println("Unsupported operating system.")
+		os.Exit(1)
+	}
+
+	cmd := exec.Command(command, args...)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error opening CHM file:", err)
+		os.Exit(1)
+	}
+}
+
+func doAccepted(dialog *widgets.QDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
+	fmt.Println("OK button clicked")
+	dialog.Accept()
+
+	row := tableWidget.CurrentRow()
+	if row <= tableWidget.RowCount()-1 {
+		fieldName := tableWidget.Item(row, 0).Text()
+		fieldValue := tableWidget.Item(row, 1).Text()
+		fieldValue2 := tableWidget.Item(row, 2).Text()
+		fieldValue3 := tableWidget.Item(row, 3).Text()
+
+		if appendCopyCheckBox.IsChecked() {
+			fieldName += "-Copy"
+		}
+
+		tableWidget.InsertRow(row + 1)
+		tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
+		tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
+		tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
+		tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
+		tableWidget.SelectRow(row + 1)
+		/*tableWidget.InsertRow(row - 1)
+		for column := 0; column < tableWidget.ColumnCount(); column++ {
+			tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
+		}*/
+	}
 }
 
 func setEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
@@ -351,30 +359,7 @@ func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *KeePassTable
 
 	okButton.ConnectClicked(func(bool) {
 
-		msgBox := widgets.NewQMessageBox(nil)
-		msgBox.SetWindowTitle("提示信息")
-		//msgBox.SetText(keePassDialog.EntryTabSheet.UserNameEdit.Text())
-		msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
-		msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
-		msgBox.SetIcon(widgets.QMessageBox__Information)
-		msgBox.Exec()
-
-		// Code to handle cancelButton click event
-		//tabWidget.get
-		fmt.Println("okButton clicked")
-		ReAddTableItem(entryTab, tableWidget)
-
-		file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
-
-		db := gokeepasslib.NewDatabase()
-		db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
-		_ = gokeepasslib.NewDecoder(file).Decode(db)
-
-		db.UnlockProtectedEntries()
-
-		fmt.Println("Password entry saved successfully.")
-
-		dialog.Close()
+		doOkButtonClicked(keePassDialog, entryTab, tableWidget, dialog)
 	})
 
 	cancelButton.ConnectClicked(func(bool) {
@@ -383,4 +368,31 @@ func initBottomButton(keePassDialog *KeePassTabWidget, tableWidget *KeePassTable
 		dialog.Close()
 	})
 	return hBoxLayout
+}
+
+func doOkButtonClicked(keePassDialog *KeePassTabWidget, entryTab *EntryTabSheet, tableWidget *KeePassTable, dialog *widgets.QDialog) {
+	msgBox := widgets.NewQMessageBox(nil)
+	msgBox.SetWindowTitle("提示信息")
+	//msgBox.SetText(keePassDialog.EntryTabSheet.UserNameEdit.Text())
+	msgBox.SetInformativeText(keePassDialog.EntryTab.UserNameEdit.Text())
+	msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+	msgBox.SetIcon(widgets.QMessageBox__Information)
+	msgBox.Exec()
+
+	// Code to handle cancelButton click event
+	//tabWidget.get
+	fmt.Println("okButton clicked")
+	ReAddTableItem(entryTab, tableWidget)
+
+	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+
+	fmt.Println("Password entry saved successfully.")
+
+	dialog.Close()
 }
