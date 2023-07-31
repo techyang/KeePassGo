@@ -123,20 +123,7 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 			window.Close()
 		}
 	})
-	//shortcut := gui.NewQKeySequence()
 
-	// Set the key code for the "Open" action
-	//shortcut.FromString("ctrl+A", gui.QKeySequence__NativeText)
-
-	//openAction.SetShortcuts([]*gui.QKeySequence{shortcut})
-
-	// Set the shortcut for the "Open" action
-	//openAction.SetShortcuts([]*gui.QKeySequence{shortcut})
-
-	// Connect the actions and tool buttons to their respective triggered events
-	/*openAction.ConnectTriggered(func(checked bool) {
-		widgets.NewQFileDialog2(window, "打开", "d:", "*.*").Show()
-	})*/
 }
 
 func DoNewAction(window *widgets.QMainWindow) {
