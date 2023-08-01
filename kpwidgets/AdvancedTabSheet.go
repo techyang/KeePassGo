@@ -1,8 +1,10 @@
 package kpwidgets
 
 import (
+	log "github.com/sirupsen/logrus"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 )
 
 type AdvancedTabSheet struct {
@@ -80,4 +82,23 @@ func NewAdvancedTabSheet() *AdvancedTabSheet {
 	fileAttachmentsLayout.AddLayout(cw.FileAttachmentsButtonsLayout, 0)
 
 	return cw
+}
+
+func (advancedTabSheet *AdvancedTabSheet) SetTableRowData(kpEntry gokeepasslib.Entry) {
+	if kpEntry.Values != nil {
+		j := 0
+		for _, value := range kpEntry.Values {
+			log.Info("key: " + value.Key)
+			if value.Key != "Notes" && value.Key != "URL" && value.Key != "Password" && value.Key != "Title" && value.Key != "UserName" {
+				advancedTabSheet.StringFieldsTable.SetRowCount(j + 1)
+				advancedTabSheet.StringFieldsTable.SetItem(j, 0, widgets.NewQTableWidgetItem2(value.Key, 0))
+				advancedTabSheet.StringFieldsTable.SetItem(j, 1, widgets.NewQTableWidgetItem2(value.Value.Content, 0))
+				j++
+			}
+		}
+	}
+	/*for column := 0; column < tableWidget.ColumnCount(); column++ {
+		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
+	}
+	tableWidget.SelectRow(newRow)*/
 }

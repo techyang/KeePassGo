@@ -314,7 +314,8 @@ func initDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
 	keePassEntry, entry := GetKeePassEntry(tableWidget.ObjectName(), tableWidget.CurrentRow())
 
 	keePassTabWidget.EntryTab.InitEntryTab2(keePassEntry)
-	keePassTabWidget.HistoryTab.SetTableRowData2(entry)
+	//keePassTabWidget.HistoryTab.SetTableRowData2(entry)
+	keePassTabWidget.AdvancedTab.SetTableRowData(entry)
 	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
