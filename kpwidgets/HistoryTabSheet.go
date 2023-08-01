@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 )
 
 type HistoryTabSheet struct {
@@ -59,6 +60,28 @@ func setHistoryTableWidget(tableWidget *widgets.QTableWidget, vBoxLayout *widget
 	headerLabels := []string{"Version", "Title", "User Name", "Size"}
 	tableWidget.SetHorizontalHeaderLabels(headerLabels)
 	vBoxLayout.AddWidget(tableWidget, 0, core.Qt__AlignLeft)
+}
+
+func (historyTabSheet *HistoryTabSheet) SetTableRowData2(kpEntry gokeepasslib.Entry) {
+	if kpEntry.Histories != nil {
+		for _, history := range kpEntry.Histories {
+			for i, entry := range history.Entries {
+				historyTabSheet.TableWidget.SetRowCount(i + 1)
+				version := entry.Times.LastModificationTime.Time
+				formattedTime := version.Format("2006-01-02 15:04:05")
+				username := entry.Values[4].Value.Content
+				size := "1 KB"
+				historyTabSheet.TableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(formattedTime, 0))
+				historyTabSheet.TableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+				historyTabSheet.TableWidget.SetItem(i, 2, widgets.NewQTableWidgetItem2(username, 0))
+				historyTabSheet.TableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(string(size), 0))
+			}
+		}
+	}
+	/*for column := 0; column < tableWidget.ColumnCount(); column++ {
+		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
+	}
+	tableWidget.SelectRow(newRow)*/
 }
 
 func getHistoryTableButtonVLayout(tableWidget *widgets.QTableWidget) *widgets.QVBoxLayout {

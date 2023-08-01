@@ -113,8 +113,7 @@ func NewEntryTabSheet() *EntryTabSheet {
 	return entry
 }
 
-func (entryTab *EntryTabSheet) InitEntryTab(tableWidget *KeePassTable) {
-	keePassEntry := GetKeePassEntry(tableWidget.ObjectName(), tableWidget.CurrentRow())
+func (entryTab *EntryTabSheet) InitEntryTab2(keePassEntry *KeePassEntry) {
 	entryTab.Title.SetText(keePassEntry.Title)
 	entryTab.UserNameEdit.SetText(keePassEntry.UserName)
 	entryTab.URLEdit.SetText(keePassEntry.URL)
@@ -143,7 +142,7 @@ func ReAddTableItem(entry *EntryTabSheet, tableWidget *KeePassTable) {
 	tableWidget.SetItem(tableWidget.RowCount()-1, 4, widgets.NewQTableWidgetItem2(entry.NotesEdit.ToPlainText(), 0))
 }
 
-func GetKeePassEntry(groupUUID string, itemIndex int) *KeePassEntry {
+func GetKeePassEntry(groupUUID string, itemIndex int) (*KeePassEntry, gokeepasslib.Entry) {
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
 
@@ -178,7 +177,7 @@ func GetKeePassEntry(groupUUID string, itemIndex int) *KeePassEntry {
 		Notes:        notes,
 		Expires:      expiryTime,
 		ExpiresSeted: expiresSeted,
-	}
+	}, entry
 
 }
 
