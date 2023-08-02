@@ -10,7 +10,7 @@ import (
 type AdvancedTabSheet struct {
 	*widgets.QWidget
 	StringFieldsGroupBox         *widgets.QGroupBox
-	StringFieldsTable            *widgets.QTableWidget
+	StringFieldsTable            *CommonTableWidget
 	StringFieldsButtonsLayout    *widgets.QVBoxLayout
 	FileAttachmentsGroupBox      *widgets.QGroupBox
 	FileAttachmentsTable         *widgets.QTableWidget
@@ -34,10 +34,10 @@ func NewAdvancedTabSheet() *AdvancedTabSheet {
 	cw.StringFieldsGroupBox.SetLayout(stringFieldsLayout)
 
 	// Create the table for "String fields"
-	cw.StringFieldsTable = widgets.NewQTableWidget(nil)
+	headerLabels := []string{"Field Name", "Field Value"}
+	cw.StringFieldsTable = NewCommonTableWidget(headerLabels)
 	cw.StringFieldsTable.SetColumnCount(2)
 	cw.StringFieldsTable.SetRowCount(0)
-	cw.StringFieldsTable.SetHorizontalHeaderLabels([]string{"Field Name", "Field Value"})
 	cw.StringFieldsTable.SetFixedWidth(500)
 	stringFieldsLayout.AddWidget(cw.StringFieldsTable, 0, core.Qt__AlignLeft)
 
@@ -101,4 +101,8 @@ func (advancedTabSheet *AdvancedTabSheet) SetTableRowData(kpEntry gokeepasslib.E
 		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
 	}
 	tableWidget.SelectRow(newRow)*/
+}
+
+func isCommonField(field string) {
+
 }
