@@ -8,19 +8,19 @@ import (
 )
 
 type KeePassTable struct {
-	*widgets.QTableWidget
+	*CommonTableWidget
 }
 
 func NewKeePassTable() *KeePassTable {
 	// Create a QTableWidget
 	// Create the table widget
-
-	tableWidget := widgets.NewQTableWidget(nil)
+	headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
+	tableWidget := NewCommonTableWidget(headerLabels)
 	tableWidget.SetColumnCount(5)
 
 	// Set the header labels
-	headerLabels := []string{"Title", "User Name", "Password", "URL", "Notes"}
-	tableWidget.SetHorizontalHeaderLabels(headerLabels)
+
+	//tableWidget.SetHorizontalHeaderLabels(headerLabels)
 
 	// when click one table item, select the whole columns of the row
 	tableWidget.SetSelectionBehavior(widgets.QAbstractItemView__SelectRows)
@@ -58,7 +58,7 @@ func NewKeePassTable() *KeePassTable {
 	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
 
 	keePassTable := &KeePassTable{
-		QTableWidget: tableWidget,
+		CommonTableWidget: tableWidget,
 	}
 	//SetTableContextMenu(tableWidget)
 	keePassTable.SetTableContextMenu()

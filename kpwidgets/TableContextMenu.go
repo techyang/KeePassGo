@@ -224,55 +224,27 @@ func setCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widget
 	})
 }
 
-func setMoveTopAction(tableWidget *KeePassTable, moveTopAction *widgets.QAction) {
+func setMoveTopAction(KeePassTable *KeePassTable, moveTopAction *widgets.QAction) {
 	moveTopAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row > 0 {
-			rowData := getRowData(tableWidget, row)
-			tableWidget.RemoveRow(row)
-			newRow := 0
-			tableWidget.InsertRow(newRow)
-			setTableRowData(tableWidget, newRow, rowData)
-		}
+		KeePassTable.MoveTop()
 	})
 }
 
-func setMoveBottomAction(tableWidget *KeePassTable, moveBottomAction *widgets.QAction) {
+func setMoveBottomAction(KeePassTable *KeePassTable, moveBottomAction *widgets.QAction) {
 	moveBottomAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row < tableWidget.RowCount()-1 {
-			rowData := getRowData(tableWidget, row)
-			tableWidget.RemoveRow(row)
-			newRow := tableWidget.RowCount()
-			tableWidget.InsertRow(newRow)
-			setTableRowData(tableWidget, newRow, rowData)
-		}
+		KeePassTable.MoveBottom()
 	})
 }
 
-func setMoveUpAction(tableWidget *KeePassTable, moveUpAction *widgets.QAction) {
+func setMoveUpAction(KeePassTable *KeePassTable, moveUpAction *widgets.QAction) {
 	moveUpAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row > 0 {
-			rowData := getRowData(tableWidget, row)
-			tableWidget.RemoveRow(row)
-			newRow := row - 1
-			tableWidget.InsertRow(newRow)
-			setTableRowData(tableWidget, newRow, rowData)
-		}
+		KeePassTable.MoveUp()
 	})
 }
 
-func setMoveDownAction(tableWidget *KeePassTable, moveDownAction *widgets.QAction) {
+func setMoveDownAction(KeePassTable *KeePassTable, moveDownAction *widgets.QAction) {
 	moveDownAction.ConnectTriggered(func(checked bool) {
-		row := tableWidget.CurrentRow()
-		if row < tableWidget.RowCount()-1 {
-			rowData := getRowData(tableWidget, row)
-			tableWidget.RemoveRow(row)
-			newRow := row + 1
-			tableWidget.InsertRow(newRow)
-			setTableRowData(tableWidget, newRow, rowData)
-		}
+		KeePassTable.MoveDown()
 	})
 }
 
