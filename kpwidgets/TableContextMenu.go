@@ -11,6 +11,23 @@ import (
 	"runtime"
 )
 
+func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
+	duplicateAction.ConnectTriggered(func(bool) {
+		dialog := NewDuplicationOptionsDialog()
+		dialog.Show()
+
+		dialog.buttonBox.ConnectAccepted(func() {
+			doAccepted(dialog, tableWidget, dialog.AppendCopyCheck)
+		})
+
+		// Connect the button box's rejected signal
+		dialog.buttonBox.ConnectRejected(func() {
+			fmt.Println("Cancel button clicked")
+			dialog.Reject()
+		})
+	})
+}
+
 func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
 	duplicateAction.ConnectTriggered(func(bool) {
 
@@ -63,7 +80,7 @@ func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAct
 		cancelButton.SetText("Cancel")
 		// Connect the button box's accepted signal
 		buttonBox.ConnectAccepted(func() {
-			doAccepted(dialog, tableWidget, appendCopyCheckBox)
+			//doAccepted(dialog, tableWidget, appendCopyCheckBox)
 
 		})
 
@@ -110,34 +127,6 @@ func doLinkClicked(link string) {
 	if err != nil {
 		fmt.Println("Error opening CHM file:", err)
 		os.Exit(1)
-	}
-}
-
-func doAccepted(dialog *widgets.QDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
-	fmt.Println("OK button clicked")
-	dialog.Accept()
-
-	row := tableWidget.CurrentRow()
-	if row <= tableWidget.RowCount()-1 {
-		fieldName := tableWidget.Item(row, 0).Text()
-		fieldValue := tableWidget.Item(row, 1).Text()
-		fieldValue2 := tableWidget.Item(row, 2).Text()
-		fieldValue3 := tableWidget.Item(row, 3).Text()
-
-		if appendCopyCheckBox.IsChecked() {
-			fieldName += "-Copy"
-		}
-
-		tableWidget.InsertRow(row + 1)
-		tableWidget.SetItem(row+1, 0, widgets.NewQTableWidgetItem2(fieldName, 0))
-		tableWidget.SetItem(row+1, 1, widgets.NewQTableWidgetItem2(fieldValue, 0))
-		tableWidget.SetItem(row+1, 2, widgets.NewQTableWidgetItem2(fieldValue2, 0))
-		tableWidget.SetItem(row+1, 3, widgets.NewQTableWidgetItem2(fieldValue3, 0))
-		tableWidget.SelectRow(row + 1)
-		/*tableWidget.InsertRow(row - 1)
-		for column := 0; column < tableWidget.ColumnCount(); column++ {
-			tableWidget.SetItem(row-1, column, tableWidget.Item(row, column))
-		}*/
 	}
 }
 

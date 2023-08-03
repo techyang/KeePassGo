@@ -125,7 +125,7 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		initDetailWidget(keePassTable)
 	})
 	setEditOrViewEntryAction(keePassTable, editOrViewEntryAction)
-	setDuplicateAction(keePassTable, duplicateAction)
+	setDuplicateAction2(keePassTable, duplicateAction)
 
 	selectAllAction.ConnectTriggered(func(bool) {
 		keePassTable.SelectAll()
