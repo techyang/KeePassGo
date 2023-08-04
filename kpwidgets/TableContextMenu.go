@@ -14,17 +14,19 @@ import (
 func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
 	duplicateAction.ConnectTriggered(func(bool) {
 		dialog := NewDuplicationOptionsDialog()
-		dialog.Show()
 
-		dialog.buttonBox.ConnectAccepted(func() {
+		//dialog.QDialog.Show()
+
+		dialog.ButtonBox.ConnectAccepted(func() {
 			doAccepted(dialog, tableWidget, dialog.AppendCopyCheck)
 		})
 
 		// Connect the button box's rejected signal
-		dialog.buttonBox.ConnectRejected(func() {
+		dialog.ButtonBox.ConnectRejected(func() {
 			fmt.Println("Cancel button clicked")
 			dialog.Reject()
 		})
+		dialog.Exec()
 	})
 }
 
