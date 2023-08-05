@@ -11,7 +11,7 @@ type DuplicateEntryDialog struct {
 	AppendCopyCheck *widgets.QCheckBox
 	RepeatUserName  *widgets.QCheckBox
 	CopyHistory     *widgets.QCheckBox
-	buttonBox       *widgets.QDialogButtonBox
+	ButtonBox       *widgets.QDialogButtonBox
 }
 
 func NewDuplicationOptionsDialog() *DuplicateEntryDialog {
@@ -54,9 +54,9 @@ func NewDuplicationOptionsDialog() *DuplicateEntryDialog {
 	layout.AddWidget(optionsDialog.CopyHistory, 0, core.Qt__AlignLeft)
 
 	// Add the button box
-	buttonBox := widgets.NewQDialogButtonBox(dialog)
-	okButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Ok)
-	cancelButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Cancel)
+	optionsDialog.ButtonBox = widgets.NewQDialogButtonBox(dialog)
+	okButton := optionsDialog.ButtonBox.AddButton3(widgets.QDialogButtonBox__Ok)
+	cancelButton := optionsDialog.ButtonBox.AddButton3(widgets.QDialogButtonBox__Cancel)
 
 	// Set the button text
 	okButton.SetText("OK")
@@ -64,7 +64,7 @@ func NewDuplicationOptionsDialog() *DuplicateEntryDialog {
 
 	// Connect the button box's accepted signal
 
-	layout.AddWidget(buttonBox, 0, core.Qt__AlignRight)
+	layout.AddWidget(optionsDialog.ButtonBox, 0, core.Qt__AlignRight)
 
 	return optionsDialog
 }
@@ -79,6 +79,7 @@ func doLinkClicked2(link string) {
 	fmt.Println("Link clicked:", link)
 }
 
+// click Ok Button action
 func doAccepted(dialog *DuplicateEntryDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
 	row := tableWidget.CurrentRow()
 	if row >= 0 {
