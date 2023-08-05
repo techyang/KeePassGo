@@ -79,6 +79,7 @@ func doLinkClicked2(link string) {
 	fmt.Println("Link clicked:", link)
 }
 
+// click Ok Button action
 func doAccepted(dialog *DuplicateEntryDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
 	row := tableWidget.CurrentRow()
 	if row >= 0 {
