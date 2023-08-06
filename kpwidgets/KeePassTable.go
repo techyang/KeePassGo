@@ -147,7 +147,7 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 
 	// Connect the triggered signal of the menu actions
 	addItemAction.ConnectTriggered(func(bool) {
-		initDetailWidget(keePassTable)
+		NewDetailWidget(keePassTable)
 	})
 
 	deleteItemAction.ConnectTriggered(func(bool) {
