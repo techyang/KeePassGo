@@ -15,8 +15,6 @@ func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAc
 	duplicateAction.ConnectTriggered(func(bool) {
 		dialog := NewDuplicationOptionsDialog()
 
-		//dialog.QDialog.Show()
-
 		dialog.ButtonBox.ConnectAccepted(func() {
 			doAccepted(dialog, tableWidget, dialog.AppendCopyCheck)
 		})
@@ -27,78 +25,6 @@ func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAc
 			dialog.Reject()
 		})
 		dialog.Exec()
-	})
-}
-
-func setDuplicateAction(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
-	duplicateAction.ConnectTriggered(func(bool) {
-
-		dialog := widgets.NewQDialog(nil, 0)
-		dialog.SetWindowTitle("Duplication Options")
-
-		// Create the tab widget
-
-		appendCopyCheckBox := widgets.NewQCheckBox2("Apend \"-Copy\" to entry titles", nil)
-		repeatUserNameCheckBox := widgets.NewQCheckBox2("Enable auto-type for this entry", nil)
-		helpLabel1 := widgets.NewQLabel2("If this option is enabled, the copies will reference \nthe user names and passwords of the original entries.\nWhen a user name or password is changed in an original \nentry, the copy will automatically use the new data, too.", nil, 0)
-		helpLabel2 := widgets.NewQLabel2("Help: Field References", nil, 0)
-
-		helpLabel2.SetText("<a href=\"D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\spyxx.chm\">Help: Field References</a>")
-
-		helpLabel2.SetTextInteractionFlags(core.Qt__LinksAccessibleByMouse)
-
-		helpLabel2.ConnectLinkActivated(func(link string) {
-			doLinkClicked(link)
-		})
-
-		hBoxLayout := widgets.NewQHBoxLayout2(nil)
-		hBoxLayout.AddSpacing(20)
-		hBoxLayout.AddWidget(helpLabel1, 0, core.Qt__AlignLeft)
-		//helpLabel2 := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
-
-		hBoxLayout2 := widgets.NewQHBoxLayout2(nil)
-		hBoxLayout2.AddSpacing(20)
-		hBoxLayout2.AddWidget(helpLabel2, 0, core.Qt__AlignLeft)
-
-		copyHistoryCheckBox := widgets.NewQCheckBox2("Copy history", nil)
-		vBoxLayout := widgets.NewQVBoxLayout2(dialog)
-		vBoxLayout.AddWidget(appendCopyCheckBox, 0, core.Qt__AlignLeft)
-		vBoxLayout.AddWidget(repeatUserNameCheckBox, 0, core.Qt__AlignLeft)
-		vBoxLayout.AddLayout(hBoxLayout, 0)
-		vBoxLayout.AddLayout(hBoxLayout2, 0)
-		vBoxLayout.AddWidget(copyHistoryCheckBox, 0, core.Qt__AlignLeft)
-
-		separator := widgets.NewQFrame(nil, 0)
-		separator.SetFrameShape(widgets.QFrame__HLine)
-		separator.SetLineWidth(20)
-		vBoxLayout.AddWidget(separator, 0, core.Qt__AlignLeft)
-		vBoxLayout.AddWidget(separator, 0, core.Qt__AlignLeft)
-		// Create the button box
-		buttonBox := widgets.NewQDialogButtonBox(dialog)
-		okButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Ok)
-		cancelButton := buttonBox.AddButton3(widgets.QDialogButtonBox__Cancel)
-		// Set the button text
-		okButton.SetText("OK")
-		cancelButton.SetText("Cancel")
-		// Connect the button box's accepted signal
-		buttonBox.ConnectAccepted(func() {
-			//doAccepted(dialog, tableWidget, appendCopyCheckBox)
-
-		})
-
-		// Connect the button box's rejected signal
-		buttonBox.ConnectRejected(func() {
-			fmt.Println("Cancel button clicked")
-			dialog.Reject()
-		})
-
-		layout := widgets.NewQVBoxLayout2(dialog)
-		layout.AddWidget(buttonBox, 0, core.Qt__AlignRight)
-
-		vBoxLayout.AddLayout(layout, 0)
-		dialog.Resize2(450, 250)
-		dialog.Exec()
-
 	})
 }
 
@@ -279,6 +205,35 @@ func initDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
 	keePassTabWidget.EntryTab.InitEntryTab2(keePassEntry)
 	//keePassTabWidget.HistoryTab.SetTableRowData2(entry)
 	keePassTabWidget.AdvancedTab.SetTableRowData(entry)
+	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
+
+	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
+	vBoxLayout.AddWidget(imageLabel, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddWidget(keePassTabWidget.TabWidget, 0, core.Qt__AlignLeft)
+	vBoxLayout.AddLayout(hBoxLayout, 0)
+
+	dialog.Resize2(600, 400)
+	dialog.Exec()
+
+	return dialog
+}
+
+func NewDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
+	// Create and add tabs to the tab widget
+	dialog := widgets.NewQDialog(nil, 0)
+	dialog.SetWindowTitle("Open Dialog")
+
+	imageLabel := initKeePassImage()
+
+	// Create the tab widget
+	keePassTabWidget := NewKeePassTabWidget(dialog)
+	keePassTabWidget.Resize(600, 400)
+
+	//keePassEntry, entry := GetKeePassEntry(tableWidget.ObjectName(), tableWidget.CurrentRow())
+
+	//keePassTabWidget.EntryTab.InitEntryTab2(keePassEntry)
+	//keePassTabWidget.HistoryTab.SetTableRowData2(entry)
+	//keePassTabWidget.AdvancedTab.SetTableRowData(entry)
 	hBoxLayout := initBottomButton(keePassTabWidget, tableWidget, dialog)
 
 	vBoxLayout := widgets.NewQVBoxLayout2(dialog)
