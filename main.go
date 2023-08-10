@@ -11,7 +11,7 @@ import (
 func main() {
 	///start
 	functions.SetupLogger()
-	log.Info("应用启动")
+	log.Info("begin to start app ...")
 	widgets.NewQApplication(len(os.Args), os.Args)
 	window := kpwidgets.InitMainWindow()
 	window.Show()
