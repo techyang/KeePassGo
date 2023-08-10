@@ -11,7 +11,7 @@ import (
 func main() {
 	///start
 	functions.SetupLogger()
-	log.Info("begin to start app ...")
+	log.Info("begin to start app ,please wait...")
 	widgets.NewQApplication(len(os.Args), os.Args)
 	window := kpwidgets.InitMainWindow()
 	window.Show()
