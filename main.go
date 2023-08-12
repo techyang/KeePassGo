@@ -1,3 +1,8 @@
+//go:build windows
+// +build windows
+
+//go:generate cmd /c "echo -ldflags -H=windowsgui > script.syso"
+
 package main
 
 import (

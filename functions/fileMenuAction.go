@@ -2,13 +2,18 @@ package functions
 
 import (
 	"fmt"
+	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	"strings"
 )
+
+var kpResources = NewKpResources()
 
 func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Create the file menu
 	fileMenu := menuBar.AddMenu2("File")
+	core.QCoreApplication_Translate("myapp", "", "", -1)
 
 	// Create actions for the file menu
 	newAction := fileMenu.AddAction("&New...")
@@ -126,11 +131,40 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 }
 
+func DoNewAction2(window *widgets.QMainWindow) {
+	dialog := NewNewEntryTipsDialog()
+
+	dialog.Show()
+}
+
 func DoNewAction(window *widgets.QMainWindow) {
+	messageBox := widgets.NewQMessageBox(nil)
+	messageBox.SetTextFormat(core.Qt__RichText) // Use rich text format
+
+	// Use HTML-style formatting to set font size
+	messageText := "<font size=\"5\">" + kpResources.NewDatabase + "</font>"
+	messageBox.SetText(messageText)
+	messageBox.SetIcon(widgets.QMessageBox__Information)
+	//	fileInfo := insertAfter(kpResources.DatabaseFileIntro, "KeePass database file", "\n")
+
+	messageBox.SetInformativeText(kpResources.DatabaseFileIntro + "\n\n" + kpResources.DatabaseFileRem + "\n\n" + kpResources.BackupDatabase)
+	//messageBox.SetDetailedText("Here is the detailed information about the error:\n\nLine 1: Something went wrong.\nLine 2: Please try again later.")
+	messageBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+	messageBox.Exec()
+}
+func insertAfter(originalStr, searchString, insertString string) string {
+	index := strings.Index(originalStr, searchString)
+	if index != -1 {
+		return originalStr[:index+len(searchString)] + insertString + originalStr[index+len(searchString):]
+	}
+	return originalStr
+}
+func DoNewAction3(window *widgets.QMainWindow) {
 	msgBox := widgets.NewQMessageBox(nil)
 	msgBox.SetWindowTitle("Message Box")
-	msgBox.SetText("This is a message box.")
-	msgBox.SetInformativeText("This is a message box with text information.")
+	msgBox.SetIcon(widgets.QMessageBox__Information)
+	msgBox.SetText(kpResources.CreateNewDatabase2)
+	msgBox.SetInformativeText(kpResources.DatabaseFileIntro)
 	msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
 	msgBox.SetDefaultButton2(widgets.QMessageBox__Ok)
 
@@ -150,7 +184,7 @@ func DoNewAction(window *widgets.QMainWindow) {
 		// Close the message box
 		msgBox.Close()
 	})
-
+	msgBox.Resize2(800, 600)
 	// Show the message box
 	msgBox.Exec()
 }
