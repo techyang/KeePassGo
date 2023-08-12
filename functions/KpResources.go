@@ -1043,7 +1043,7 @@ func NewKpResources() KpResources {
 		// 判断字段是否可以被设置
 		if fieldValue.CanSet() {
 			// 根据字段类型设置默认值
-			log.Info()
+			//log.Info()
 			s, _ := getDataValue(translation, namespace, field.Name)
 			fieldValue.SetString(s)
 
