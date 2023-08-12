@@ -5,6 +5,7 @@ import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	log "log/slog"
 	"strings"
 )
 
@@ -140,7 +141,7 @@ func DoNewAction2(window *widgets.QMainWindow) {
 func DoNewAction(window *widgets.QMainWindow) {
 	messageBox := widgets.NewQMessageBox(nil)
 	messageBox.SetTextFormat(core.Qt__RichText) // Use rich text format
-
+	messageBox.SetWindowTitle(window.WindowTitle())
 	// Use HTML-style formatting to set font size
 	messageText := "<font size=\"5\">" + kpResources.NewDatabase + "</font>"
 	messageBox.SetText(messageText)
@@ -150,6 +151,32 @@ func DoNewAction(window *widgets.QMainWindow) {
 	messageBox.SetInformativeText(kpResources.DatabaseFileIntro + "\n\n" + kpResources.DatabaseFileRem + "\n\n" + kpResources.BackupDatabase)
 	//messageBox.SetDetailedText("Here is the detailed information about the error:\n\nLine 1: Something went wrong.\nLine 2: Please try again later.")
 	messageBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
+	messageBox.SetDefaultButton2(widgets.QMessageBox__Ok)
+	okButton := messageBox.Button(widgets.QMessageBox__Ok)
+	okButton.ConnectClicked(func(checked bool) {
+		// Handle OK button clicked event
+		log.Info("Handle OK button clicked event")
+		fmt.Println("Ok button clicked")
+		newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
+		//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
+		//	newFileBox.SetNameFilterDetailsVisible(true)
+		//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
+		//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
+
+		newFileBox.Show()
+		newFileBox.ConnectFileSelected(func(file string) {
+			fmt.Print(file)
+		})
+		messageBox.Accept()
+	})
+
+	// Connect Cancel button clicked signal
+	cancelButton := messageBox.Button(widgets.QMessageBox__Cancel)
+	cancelButton.ConnectClicked(func(checked bool) {
+		// Handle Cancel button clicked event
+		log.Info("Handle Cancel button clicked event")
+		messageBox.Reject()
+	})
 	messageBox.Exec()
 }
 func insertAfter(originalStr, searchString, insertString string) string {
@@ -158,33 +185,4 @@ func insertAfter(originalStr, searchString, insertString string) string {
 		return originalStr[:index+len(searchString)] + insertString + originalStr[index+len(searchString):]
 	}
 	return originalStr
-}
-func DoNewAction3(window *widgets.QMainWindow) {
-	msgBox := widgets.NewQMessageBox(nil)
-	msgBox.SetWindowTitle("Message Box")
-	msgBox.SetIcon(widgets.QMessageBox__Information)
-	msgBox.SetText(kpResources.CreateNewDatabase2)
-	msgBox.SetInformativeText(kpResources.DatabaseFileIntro)
-	msgBox.SetStandardButtons(widgets.QMessageBox__Ok | widgets.QMessageBox__Cancel)
-	msgBox.SetDefaultButton2(widgets.QMessageBox__Ok)
-
-	// Connect the clicked signal of the buttons
-	msgBox.ConnectButtonClicked(func(button *widgets.QAbstractButton) {
-		if button.Text() == "OK" {
-			newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt")
-			newFileBox.Show()
-			newFileBox.ConnectFileSelected(func(file string) {
-				fmt.Print(file)
-			})
-		} else if button.Text() == "&Cancel" {
-			// Handle the logic for the Cancel button
-			// ...
-		}
-
-		// Close the message box
-		msgBox.Close()
-	})
-	msgBox.Resize2(800, 600)
-	// Show the message box
-	msgBox.Exec()
 }
