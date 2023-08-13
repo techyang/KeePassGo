@@ -5,7 +5,9 @@ import (
 	"github.com/sqweek/dialog"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
 	log "log/slog"
+	"os"
 )
 
 type KeePassToolBar struct {
@@ -19,10 +21,37 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	newToolButton.SetText("New")
 
 	newToolButton.ConnectClicked(func(bool) {
-		// Code to handle cancelButton click event
-		fmt.Println("toolButton clicked")
-		treeWidget.QTreeWidget.Clear()
-		//dialog.Close()
+		file, err := dialog.File().Title("new db").Filter("*.kdbx", ".kdbx", ".*").Save()
+
+		if len(file) > 0 {
+
+			file += ".kdbx"
+			fmt.Println("Error:", err)
+			fmt.Print(file)
+			masterPassword := "111111"
+
+			file, err := os.Create(file)
+			if err != nil {
+				panic(err)
+			}
+			defer file.Close()
+
+			// create the new database
+			db := gokeepasslib.NewDatabase(
+				gokeepasslib.WithDatabaseKDBXVersion4(),
+			)
+			db.Content.Meta.DatabaseName = "KDBX4"
+			db.Credentials = gokeepasslib.NewPasswordCredentials(masterPassword)
+
+			// Lock entries using stream cipher
+			db.LockProtectedEntries()
+
+			// and encode it into the file
+			keepassEncoder := gokeepasslib.NewEncoder(file)
+			if err := keepassEncoder.Encode(db); err != nil {
+				panic(err)
+			}
+		}
 	})
 	//newToolIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
 	//newToolButton.SetIcon(newToolIcon)
@@ -52,7 +81,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 		fmt.Println(file)
 		fmt.Println("Error:", err)
 		fmt.Print(file)
-		if file != "" {
+		if len(file) > 0 {
 			treeWidget.Clear()
 			treeWidget.loadKeePassTree(file)
 		}
