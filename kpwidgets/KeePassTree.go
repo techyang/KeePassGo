@@ -10,11 +10,13 @@ import (
 
 type KeePassTree struct {
 	*widgets.QTreeWidget
+	KeePassTable *KeePassTable
 }
 
 func NewKeePassTree(tableWidget *KeePassTable) *KeePassTree {
 	treeWidget := &KeePassTree{
-		widgets.NewQTreeWidget(nil),
+		QTreeWidget:  widgets.NewQTreeWidget(nil),
+		KeePassTable: tableWidget,
 	}
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 	file, _ := os.Open("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
@@ -44,6 +46,37 @@ func NewKeePassTree(tableWidget *KeePassTable) *KeePassTree {
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.TreeItemClicked(tableWidget, rootGroups)
 	return treeWidget
+}
+
+func (treeWidget *KeePassTree) loadKeePassTree(dbPath string) {
+
+	//treeWidget.SetHeaderLabels([]string{"yangwl"})
+	file, _ := os.Open(dbPath)
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
+	_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+	db.UnlockProtectedEntries()
+	rootGroups := db.Content.Root.Groups
+	for i, rootGroup := range rootGroups {
+		fmt.Println(i, "rootGroup:", rootGroup.Name)
+		// Create the root item
+		rootItem := widgets.NewQTreeWidgetItem4(treeWidget, []string{rootGroup.Name, "1.1"}, 0)
+		rootItem.SetExpanded(true) // Set the root item initially expanded
+		groups := rootGroup.Groups
+		buildGroupTree(rootItem, groups)
+
+		treeWidget.InsertTopLevelItem(i, rootItem)
+	}
+	// Create the root item
+
+	// Set the root item as the top-level item of the tree widget
+
+	treeWidget.SetHeaderHidden(true)
+
+	// Connect the itemClicked signal of the tree widget
+	//treeWidget.TreeItemClicked(tableWidget, rootGroups)
 }
 
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {

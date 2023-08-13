@@ -1,6 +1,7 @@
 package kpwidgets
 
 import (
+	"fmt"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	log "log/slog"
@@ -15,6 +16,13 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	// Add tool buttons to the toolbar
 	newToolButton := widgets.NewQToolButton(nil)
 	newToolButton.SetText("New")
+
+	newToolButton.ConnectClicked(func(bool) {
+		// Code to handle cancelButton click event
+		fmt.Println("toolButton clicked")
+		treeWidget.QTreeWidget.Clear()
+		//dialog.Close()
+	})
 	//newToolIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
 	//newToolButton.SetIcon(newToolIcon)
 	//.
@@ -37,6 +45,14 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 
 	openToolButton.AdjustSize()
+
+	openToolButton.ConnectClicked(func(bool) {
+		// Code to handle cancelButton click event
+		fmt.Println("toolButton clicked")
+
+		treeWidget.loadKeePassTree("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+		//dialog.Close()
+	})
 
 	saveAsToolButton := widgets.NewQToolButton(nil)
 	saveAsToolButton.SetToolTip("Save")
