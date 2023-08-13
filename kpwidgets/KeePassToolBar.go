@@ -49,8 +49,20 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.ConnectClicked(func(bool) {
 		// Code to handle cancelButton click event
 		fmt.Println("toolButton clicked")
+		newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
+		//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
+		//	newFileBox.SetNameFilterDetailsVisible(true)
+		//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
+		//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
 
-		treeWidget.loadKeePassTree("D:\\workspace_go\\gokeepasslib-master\\example-new-database2023.kdbx")
+		newFileBox.Show()
+		newFileBox.ConnectFileSelected(func(file string) {
+			fmt.Print(file)
+			treeWidget.Clear()
+			treeWidget.loadKeePassTree(file)
+
+		})
+
 		//dialog.Close()
 	})
 

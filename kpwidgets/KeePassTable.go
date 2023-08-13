@@ -192,13 +192,15 @@ func (tableWidget *KeePassTable) setTableItems(group *gokeepasslib.Group) {
 	// Set the password delegate for the second column
 	passwordDelegate := NewPasswordDelegate()
 	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
-
+	iconPath := "Ext/Images_App_HighRes/Nuvola/B48x48_KGPG_Key1.png"
 	for i, entry := range group.Entries {
 		username := entry.Get("UserName").Value.Content
 		url := entry.Get("URL").Value.Content
 		note := entry.Get("Notes").Value.Content
 		tableWidget.SetRowCount(i + 1)
-		tableWidget.SetItem(i, 0, widgets.NewQTableWidgetItem2(entry.GetTitle(), 0))
+		iconLabel := NewIconLabel(iconPath, "Item "+entry.GetTitle())
+		tableWidget.SetCellWidget(i, 0, iconLabel)
+
 		tableWidget.SetItem(i, 1, widgets.NewQTableWidgetItem2(username, 0))
 
 		passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
