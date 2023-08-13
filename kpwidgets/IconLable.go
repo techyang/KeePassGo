@@ -20,8 +20,8 @@ func NewIconLabel(iconPath, text string) *IconLabel {
 	textLabel := widgets.NewQLabel2(text, nil, 0)
 
 	layout := widgets.NewQHBoxLayout2(nil)
-	layout.AddWidget(iconLabel, 0, core.Qt__AlignCenter)
-	layout.AddWidget(textLabel, 0, core.Qt__AlignCenter)
+	layout.AddWidget(iconLabel, 0, core.Qt__AlignLeft)
+	layout.AddWidget(textLabel, 0, core.Qt__AlignLeft)
 
 	widget := widgets.NewQWidget(nil, 0)
 	widget.SetLayout(layout)

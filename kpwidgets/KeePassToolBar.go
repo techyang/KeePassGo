@@ -2,6 +2,7 @@ package kpwidgets
 
 import (
 	"fmt"
+	"github.com/sqweek/dialog"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	log "log/slog"
@@ -47,22 +48,31 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.AdjustSize()
 
 	openToolButton.ConnectClicked(func(bool) {
-		// Code to handle cancelButton click event
-		fmt.Println("toolButton clicked")
-		newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
-		//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
-		//	newFileBox.SetNameFilterDetailsVisible(true)
-		//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
-		//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
-
-		newFileBox.Show()
-		newFileBox.ConnectFileSelected(func(file string) {
-			fmt.Print(file)
+		file, err := dialog.File().Title("Open").Filter("KeePass Db", "*.kdbx", "*.txt").Load()
+		fmt.Println(file)
+		fmt.Println("Error:", err)
+		fmt.Print(file)
+		if file != "" {
 			treeWidget.Clear()
 			treeWidget.loadKeePassTree(file)
+		}
 
-		})
+		/*	// Code to handle cancelButton click event
+			fmt.Println("toolButton clicked")
+			newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
+			//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
+			//	newFileBox.SetNameFilterDetailsVisible(true)
+			//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
+			//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
 
+			newFileBox.Show()
+			newFileBox.ConnectFileSelected(func(file string) {
+				fmt.Print(file)
+				treeWidget.Clear()
+				treeWidget.loadKeePassTree(file)
+
+			})
+		*/
 		//dialog.Close()
 	})
 
@@ -71,6 +81,15 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	saveAsToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FileSave.png"))
 	saveAsToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 	saveAsToolButton.AdjustSize()
+
+	saveAsToolButton.ConnectClicked(func(bool) {
+		dialog.Message("%s", "Please select a file").Title("Hello world!").Info()
+		file, err := dialog.File().Title("Save As").Filter("All Files", "*").Save()
+		fmt.Println(file)
+		fmt.Println("Error:", err)
+		dialog.Message("You chose file: %s", file).Title("Goodbye world!").Error()
+		dialog.Directory().Title("Now find a dir").Browse()
+	})
 
 	addEntityToolButton := widgets.NewQToolButton(nil)
 	addEntityToolButton.SetToolTip("Add Entity")

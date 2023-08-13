@@ -53,6 +53,13 @@ func NewDuplicationOptionsDialog() *DuplicateEntryDialog {
 	// Add the CopyHistory checkbox
 	layout.AddWidget(optionsDialog.CopyHistory, 0, core.Qt__AlignLeft)
 
+	// Add the separator (use QLabel to simulate a horizontal line)
+	separatorLabel := widgets.NewQLabel2("<hr />", nil, 0)
+	separatorLabel.SetTextFormat(core.Qt__RichText)
+	separatorLabel.AdjustSize()
+	separatorLabel.SetFixedWidth(400)
+	layout.AddWidget(separatorLabel, 0, core.Qt__AlignLeft)
+
 	// Add the button box
 	optionsDialog.ButtonBox = widgets.NewQDialogButtonBox(dialog)
 	okButton := optionsDialog.ButtonBox.AddButton3(widgets.QDialogButtonBox__Ok)
