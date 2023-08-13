@@ -5,6 +5,9 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
+var tableWidget *KeePassTable
+var treeWidget *KeePassTree
+
 type PasswordDelegate struct {
 	widgets.QStyledItemDelegate
 }
@@ -44,8 +47,8 @@ func InitMainContent(window *widgets.QMainWindow) {
 	//button2 := widgets.NewQPushButton2("Button 2", nil)
 
 	// Create a QTreeWidget
-	tableWidget := NewKeePassTable()
-	treeWidget := NewKeePassTree(tableWidget)
+	tableWidget = NewKeePassTable()
+	treeWidget = NewKeePassTree(tableWidget)
 
 	//restTable(tableWidget)
 

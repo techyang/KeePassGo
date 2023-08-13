@@ -5,3 +5,4 @@ moc*
 deploy
 !/deploy
 .idea
+/vendor/
