@@ -19,8 +19,8 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Create actions for the file menu
 	newAction := fileMenu.AddAction("&New...")
 	//newActionIcon := gui.NewQIcon5("Ext/Icons_15_VA/KeePass_Round/KeePass_Round_24.png")
-	newActionIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
-
+	//newActionIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
+	newActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_FileNew.png")
 	newAction.SetIcon(newActionIcon)
 	//newAction.SetIcon(gui.NewQIcon5("D:\\workspace_finmall\\autotest\\metersphere-2.10.3-lts\\api-test\\frontend\\node_modules\\mobius1-selectr\\docs\\favicon.ico"))
 
@@ -28,18 +28,32 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	newAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
 	})
+	//newAction.SetShortcut(gui.NewQKeySequence2("Ctrl+N", gui.QKeySequence__NativeText))
+	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__New))
 
 	// Create actions for the file menu
 	//openAction := fileMenu.AddAction("&Open")
 
-	openMenu := fileMenu.AddMenu2("&Open")
-	openRecentMenu := fileMenu.AddMenu2("&Open Recent")
-	openFileAction := openMenu.AddAction("&Open File...")
-	openUrlAction := openMenu.AddAction("&Open Url...")
+	openMenu := fileMenu.AddMenu2("Open")
+	openRecentMenu := fileMenu.AddMenu2("Open Recent")
+	openFileAction := openMenu.AddAction("Open File...")
+	openUrlAction := openMenu.AddAction("Open Url...")
+
+	closeAction := fileMenu.AddAction("Close")
+	closeActionIcon := gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_File_Close.png")
+	closeAction.SetIcon(closeActionIcon)
+	closeAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	closeAction.SetShortcut(gui.NewQKeySequence2("Ctrl+W", gui.QKeySequence__NativeText))
 
 	fileMenu.AddSeparator()
 	saveAction := fileMenu.AddAction("&Save")
 	saveAsMenu := fileMenu.AddMenu2("&Save As ...")
+	saveActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_FileSave.png")
+	saveAction.SetIcon(saveActionIcon)
+	saveAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Save))
+
 	saveAsMenu.AddAction("&Save To File ...")
 	saveAsMenu.AddAction("&Save To Url ...")
 	saveAsMenu.AddSeparator()
@@ -81,12 +95,38 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	fileMenu.AddSeparator()
+
+	DatabaseSettingsAction := fileMenu.AddAction("Database Settings...")
+	DatabaseSettingsActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Package_Development.png")
+	DatabaseSettingsAction.SetIcon(DatabaseSettingsActionIcon)
+	DatabaseSettingsAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+
+	changeMasterKeyAction := fileMenu.AddAction("Database Settings...")
+	changeMasterKeyActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_File_Locked.png")
+	changeMasterKeyAction.SetIcon(changeMasterKeyActionIcon)
+	changeMasterKeyAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	//newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Close))
+
+	fileMenu.AddSeparator()
+	printAction := fileMenu.AddAction("Print...")
+	printActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_FilePrint.png")
+	printAction.SetIcon(printActionIcon)
+	printAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
+
+	fileMenu.AddSeparator()
 	exitAction := fileMenu.AddAction("Exit")
 	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
 	//exitAction.SetShortcut(widgets.NewQKeySequence2("Ctrl+Q"))
 	exitAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Quit))
 	//exitAction.SetShortcut(gui.NewQKeySequence5(gui.key))
-	exitAction.SetShortcut(gui.NewQKeySequence2("Ctrl+S", gui.QKeySequence__NativeText))
+	exitAction.SetShortcut(gui.NewQKeySequence2("Ctrl+Q", gui.QKeySequence__NativeText))
 	/*closeAction := widgets.NewQAction3(gui.QIcon_FromTheme("window-close"), "Close", nil)
 	fileMenu.AddActions([]*widgets.QAction{closeAction})*/
 

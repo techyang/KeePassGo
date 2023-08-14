@@ -53,6 +53,9 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 			}
 		}
 	})
+
+	//newToolButton.SetShortcut(gui.NewQKeySequence2("Ctrl+N", gui.QKeySequence__NativeText))
+
 	//newToolIcon := window.Style().StandardIcon(widgets.QStyle__SP_FileIcon, nil, nil)
 	//newToolButton.SetIcon(newToolIcon)
 	//.
