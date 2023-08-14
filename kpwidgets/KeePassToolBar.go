@@ -21,7 +21,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	newToolButton.SetText("New")
 
 	newToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("new db").Filter("*.kdbx", ".kdbx", ".*").Save()
+		file, err := dialog.File().Title("new db").Filter("*.kdbx", "kdbx").Save()
 
 		if len(file) > 0 {
 
@@ -77,7 +77,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.AdjustSize()
 
 	openToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("Open").Filter("KeePass Db", "*.kdbx", "*.txt").Load()
+		file, err := dialog.File().Title("Open").Filter("*.kdbx", "kdbx").Load()
 		fmt.Println(file)
 		fmt.Println("Error:", err)
 		fmt.Print(file)
