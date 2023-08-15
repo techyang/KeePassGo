@@ -76,23 +76,18 @@ func NewDuplicationOptionsDialog() *DuplicateEntryDialog {
 	return optionsDialog
 }
 
-func (d *DuplicateEntryDialog) doAccepted() {
-	// Do something when the OK button is clicked
-	fmt.Println("OK button clicked")
-}
-
 func doLinkClicked2(link string) {
 	// Handle link clicked event
 	fmt.Println("Link clicked:", link)
 }
 
 // click Ok Button action
-func doAccepted(dialog *DuplicateEntryDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
+func (dialog *DuplicateEntryDialog) DoAccepted(tableWidget *KeePassTable) {
 	row := tableWidget.CurrentRow()
 	if row >= 0 {
 		values := getRowData(tableWidget, row)
 
-		if appendCopyCheckBox.IsChecked() {
+		if dialog.AppendCopyCheck.IsChecked() {
 			values[0] += "-Copy"
 		}
 

@@ -16,7 +16,7 @@ func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAc
 		dialog := NewDuplicationOptionsDialog()
 
 		dialog.ButtonBox.ConnectAccepted(func() {
-			doAccepted(dialog, tableWidget, dialog.AppendCopyCheck)
+			dialog.DoAccepted(tableWidget)
 		})
 
 		// Connect the button box's rejected signal
