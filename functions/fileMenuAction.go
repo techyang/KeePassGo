@@ -121,6 +121,15 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
 
 	fileMenu.AddSeparator()
+
+	importAction := fileMenu.AddAction("Import...")
+	importActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_FilePrint.png")
+	importAction.SetIcon(importActionIcon)
+	importAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
+
 	exitAction := fileMenu.AddAction("Exit")
 	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
 	//exitAction.SetShortcut(widgets.NewQKeySequence2("Ctrl+Q"))
