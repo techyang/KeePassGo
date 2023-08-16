@@ -118,17 +118,32 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	printAction.ConnectTriggered(func(checked bool) {
 		//window.Close()
 	})
-	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
+	printAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
 
 	fileMenu.AddSeparator()
 
 	importAction := fileMenu.AddAction("Import...")
-	importActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_FilePrint.png")
+	importActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Folder_Inbox.png")
 	importAction.SetIcon(importActionIcon)
 	importAction.ConnectTriggered(func(checked bool) {
 		//window.Close()
 	})
-	newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Print))
+
+	exportAction := fileMenu.AddAction("Export...")
+	exportActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Folder_Outbox.png")
+	exportAction.SetIcon(exportActionIcon)
+	exportAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+
+	fileMenu.AddSeparator()
+	lockWorkspaceAction := fileMenu.AddAction("Lock Workspace")
+	lockWorkspaceActionIcon := gui.NewQIcon5("Resources/images/B16x16_LockWorkspace.png")
+	lockWorkspaceAction.SetIcon(lockWorkspaceActionIcon)
+	lockWorkspaceAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	lockWorkspaceAction.SetShortcut(gui.NewQKeySequence2("Ctrl+L", gui.QKeySequence__NativeText))
 
 	exitAction := fileMenu.AddAction("Exit")
 	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
