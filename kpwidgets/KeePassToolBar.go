@@ -233,18 +233,6 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 		log.Info("ConnectFocusInEvent")
 		comboBoxLineEdit.Clear()
 	})
-	/*comboBoxLineEdit.ConnectEventFilter(func(obj *core.QObject, event *core.QEvent) bool {
-		log.Info("comboBoxLineEdit.ConnectEventFilter", event.Type())
-		if event.Type() == core.QEvent__FocusIn {
-			// Clear the placeholder text when the line edit gains focus
-			comboBoxLineEdit.Clear()
-		}
-		return false
-	})*/
-	// Add items to the combo box
-	//comboBox.AddItem("Option 1")
-	//comboBox.AddItem("Option 2",0)
-	//comboBox.AddItem("Option 3",0)
 
 	// Set the minimum width of the combo box to fit its contents
 	comboBox.SetMinimumWidth(100)
