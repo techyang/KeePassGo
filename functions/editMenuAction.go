@@ -24,9 +24,9 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	// Create actions for the file menu
-	DelteteGroupAction := editMenu.AddAction("&Delete Group...")
+	delteteGroupAction := editMenu.AddAction("&Delete Group...")
 	// Connect the actions and tool buttons to their respective triggered events
-	DelteteGroupAction.ConnectTriggered(func(checked bool) {
+	delteteGroupAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
 	})
 
