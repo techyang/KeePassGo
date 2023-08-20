@@ -3,11 +3,13 @@ package kpwidgets
 import (
 	"fmt"
 	"github.com/sqweek/dialog"
+	"github.com/techyang/keepassgo/constants"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
 	log "log/slog"
 	"os"
+	"strings"
 )
 
 type KeePassToolBar struct {
@@ -21,14 +23,17 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	newToolButton.SetText("New")
 
 	newToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("new db").Filter("*.kdbx", "kdbx").Save()
+		file, err := dialog.File().Title("Create New Password Database").SetStartFile("NewDatabase.kdbx").Filter("KeePass KDBX Files(*.kdbx)", "kdbx").Save()
 
 		if len(file) > 0 {
 
-			file += ".kdbx"
+			if !strings.HasSuffix(file, constants.KEEPASS_DB_EXT) {
+				file += constants.KEEPASS_DB_EXT
+			}
+
 			fmt.Println("Error:", err)
 			fmt.Print(file)
-			masterPassword := "111111"
+			masterPassword := constants.KEEPASS_DB_DEFAULT_PASSWORD
 
 			file, err := os.Create(file)
 			if err != nil {
@@ -80,7 +85,9 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.AdjustSize()
 
 	openToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("Open").Filter("*.kdbx", "kdbx").Load()
+		exts := []string{"jpg", "png", "gif", "kdbx"}
+		file, err := dialog.File().Title("Open").Filter("*.kdbx", exts...).Load()
+
 		fmt.Println(file)
 		fmt.Println("Error:", err)
 		fmt.Print(file)
