@@ -145,6 +145,16 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		contextMenu.Exec2(keePassTable.MapToGlobal(pos), nil)
 	})
 
+	// Connect the itemSelectionChanged signal of the table widget
+	keePassTable.ConnectItemSelectionChanged(func() {
+		selectedItems := keePassTable.SelectedItems()
+		if len(selectedItems) > 0 {
+			//copyToolButton.SetEnabled(true) // Enable the button when items are selected
+		} else {
+			//w.copyToolButton.SetEnabled(false) // Disable the button when no items are selected
+		}
+	})
+
 	// Connect the triggered signal of the menu actions
 	addItemAction.ConnectTriggered(func(bool) {
 		NewDetailWidget(keePassTable)

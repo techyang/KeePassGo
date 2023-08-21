@@ -88,57 +88,68 @@ func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction)
 
 func setOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
 	openUrlAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(firstItemText))
-		}
+		OpenTableItemUrl(tableWidget)
 	})
+}
+
+func OpenTableItemUrl(tableWidget *KeePassTable) {
+	selectedRow := tableWidget.CurrentRow()
+
+	// Retrieve the item at the first column of the selected row
+	item := tableWidget.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		firstItemText := item.Text()
+		fmt.Println("Text of the first item in the selected row:", firstItemText)
+		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(firstItemText))
+	}
 }
 
 func setCopyPasswordAction(tableWidget *KeePassTable, copyPasswordAction *widgets.QAction) {
 	copyPasswordAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 2)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
+		CopyTableItemPassword(tableWidget)
 	})
+}
+
+func CopyTableItemPassword(tableWidget *KeePassTable) {
+	selectedRow := tableWidget.CurrentRow()
+
+	// Retrieve the item at the first column of the selected row
+	item := tableWidget.Item(selectedRow, 2)
+
+	// Get the text of the item
+	if item != nil {
+		firstItemText := item.Text()
+		fmt.Println("Text of the first item in the selected row:", firstItemText)
+		clipboard := gui.QGuiApplication_Clipboard()
+		if clipboard != nil {
+			clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+		}
+	}
 }
 
 func setCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widgets.QAction) {
 	copyUserNameAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 1)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
-
+		CopyTableItemUsername(tableWidget)
 	})
+}
+
+func CopyTableItemUsername(tableWidget *KeePassTable) {
+	selectedRow := tableWidget.CurrentRow()
+
+	// Retrieve the item at the first column of the selected row
+	item := tableWidget.Item(selectedRow, 1)
+
+	// Get the text of the item
+	if item != nil {
+		firstItemText := item.Text()
+		fmt.Println("Text of the first item in the selected row:", firstItemText)
+		clipboard := gui.QGuiApplication_Clipboard()
+		if clipboard != nil {
+			clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+		}
+	}
 }
 
 func setMoveTopAction(KeePassTable *KeePassTable, moveTopAction *widgets.QAction) {
