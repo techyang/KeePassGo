@@ -142,6 +142,10 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUserNameToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 	copyUserNameToolButton.AdjustSize()
 
+	copyUserNameToolButton.ConnectClicked(func(bool) {
+		CopyTableItemUsername(tableWidget)
+	})
+
 	copyPasswordToolButton := widgets.NewQToolButton(nil)
 	copyPasswordToolButton.SetToolTip("Copy Password to ClipBoard ")
 	//icon := gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Info.png")
@@ -149,6 +153,9 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	//copyPasswordToolButton.SetSizePolicy2(widgets.QSizePolicy__Fixed, widgets.QSizePolicy__Fixed)
 	copyPasswordToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 	copyPasswordToolButton.AdjustSize()
+	copyPasswordToolButton.ConnectClicked(func(bool) {
+		CopyTableItemPassword(tableWidget)
+	})
 
 	openUrlsToolButton := widgets.NewQToolButton(nil)
 	openUrlsToolButton.SetToolTip("Open URL(s)")
@@ -160,6 +167,11 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openUrlsMenu := widgets.NewQMenu(nil)
 	action11 := openUrlsMenu.AddAction("Open URLs")
 	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key3.png"))
+
+	action11.ConnectTriggered(func(checked bool) {
+		OpenTableItemUrl(tableWidget)
+	})
+
 	openUrlsMenu.AddSeparator()
 	action22 := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
 	action22.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
