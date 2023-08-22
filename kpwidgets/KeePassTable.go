@@ -131,16 +131,6 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		keePassTable.SelectAll()
 	})
 
-	/*clipbordAction := contextMenu.AddMenu2("Copy User Name")
-	clipbordAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-
-	copyUserNameAction := contextMenu.AddAction("Copy User Name")
-	*/
-
 	keePassTable.ConnectCustomContextMenuRequested(func(pos *core.QPoint) {
 		contextMenu.Exec2(keePassTable.MapToGlobal(pos), nil)
 	})
