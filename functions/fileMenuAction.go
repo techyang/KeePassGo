@@ -146,17 +146,10 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	lockWorkspaceAction.SetShortcut(gui.NewQKeySequence2("Ctrl+L", gui.QKeySequence__NativeText))
 
 	exitAction := fileMenu.AddAction("Exit")
-	//exitAction.SetIcon(gui.QIcon_FromTheme("window-close"))
-	//exitAction.SetShortcut(widgets.NewQKeySequence2("Ctrl+Q"))
 	exitAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Quit))
-	//exitAction.SetShortcut(gui.NewQKeySequence5(gui.key))
 	exitAction.SetShortcut(gui.NewQKeySequence2("Ctrl+Q", gui.QKeySequence__NativeText))
-	/*closeAction := widgets.NewQAction3(gui.QIcon_FromTheme("window-close"), "Close", nil)
-	fileMenu.AddActions([]*widgets.QAction{closeAction})*/
 
 	exitAction.SetIcon(gui.QIcon_FromTheme("edit-copy"))
-	//closeAction := widgets.NewQAction3(gui.QIcon_FromTheme("window-close"), "Close", nil)
-	//fileMenu.AddAction(closeAction,"close")
 
 	openRecentMenu.AddSeparator()
 	openRecentMenu.AddAction("&Clear List...")
