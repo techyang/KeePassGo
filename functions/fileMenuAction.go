@@ -158,17 +158,6 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		//widgets
 		dialog := widgets.NewQDialog(nil, 0)
 		dialog.SetWindowTitle("Open Dialog")
-
-		// Create the tab widget
-		//entryTabWidget := widgets.NewQWidget(nil, 0)
-		//tabWidget := kpwidgets.NewKeePassDialog(dialog)
-		//tabWidget.Resize(700, 400)
-
-		//initEntryTab(a)
-
-		//vBoxLayout := widgets.NewQVBoxLayout2(dialog)
-		//	vBoxLayout.AddWidget(tabWidget.TabWidget, 0, core.Qt__AlignLeft)
-
 		dialog.Resize2(600, 400)
 		dialog.Exec()
 	})
