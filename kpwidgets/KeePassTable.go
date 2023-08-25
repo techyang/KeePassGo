@@ -156,24 +156,6 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		if row > 0 {
 			keePassTable.RemoveRow(row)
 		}
-
-		// Get the selection model from the table view
-		// Get the selection model from the table view
-		//selectionModel := keePassTable.SelectionModel()
-		//selectedRows := selectionModel.Selection()
-		//keePassTable.Model().RemoveRow(0, core.NewQModelIndex())
-
-		//selectedIndexes := selectionModel.SelectedRows()
-
-		/*qModelIndex := selectionModel.SelectedRows(0).
-		qModelIndex.
-		keePassTable.*/
-
-		/*for _, index := range selectedRows {
-			keePassTable.Model().RemoveRow(index.Row(), core.NewQModelIndex())
-			fmt.Println("第", index, "行删除了")
-		}*/
-
 	})
 }
 
