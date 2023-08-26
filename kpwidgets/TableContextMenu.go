@@ -2,10 +2,13 @@ package kpwidgets
 
 import (
 	"fmt"
+	"github.com/skratchdot/open-golang/open"
+	"github.com/techyang/keepassgo/constants"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -88,11 +91,15 @@ func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction)
 
 func setOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
 	openUrlAction.ConnectTriggered(func(bool) {
-		OpenTableItemUrl(tableWidget)
+		OpenTableItemUrl(tableWidget, constants.Browser_Default)
 	})
 }
 
-func OpenTableItemUrl(tableWidget *KeePassTable) {
+func OpenTableItemUrl(tableWidget *KeePassTable, browser constants.Browser) {
+	OpenTableItemUrlWithOption(tableWidget, browser, "")
+}
+
+func OpenTableItemUrlWithOption(tableWidget *KeePassTable, browser constants.Browser, option string) {
 	selectedRow := tableWidget.CurrentRow()
 
 	// Retrieve the item at the first column of the selected row
@@ -100,9 +107,28 @@ func OpenTableItemUrl(tableWidget *KeePassTable) {
 
 	// Get the text of the item
 	if item != nil {
-		firstItemText := item.Text()
-		fmt.Println("Text of the first item in the selected row:", firstItemText)
-		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(firstItemText))
+		url := item.Text()
+		fmt.Println("Text of the first item in the selected row:", url)
+
+		if len(option) > 0 {
+			if constants.Browser_InternetExplorer == browser {
+				//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(url))
+				cmd := exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
+				err := cmd.Run()
+				if err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				open.RunWith(url, string(browser))
+			}
+		} else {
+			if "default" == browser {
+				//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput(url))
+				open.Run(url)
+			} else {
+				open.RunWith(url, string(browser))
+			}
+		}
 	}
 }
 

@@ -6,6 +6,7 @@ require github.com/therecipe/qt v0.0.0-20200904063919-c0c124a5770d
 
 require (
 	github.com/sirupsen/logrus v1.4.1
+	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/sqweek/dialog v0.0.0-20220809060634-e981b270ebbf
 	github.com/tobischo/gokeepasslib/v3 v3.5.1
 )

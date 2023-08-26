@@ -169,7 +169,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key3.png"))
 
 	action11.ConnectTriggered(func(checked bool) {
-		OpenTableItemUrl(tableWidget)
+		OpenTableItemUrl(tableWidget, constants.Browser_Default)
 	})
 
 	openUrlsMenu.AddSeparator()
