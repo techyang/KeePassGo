@@ -1,10 +1,15 @@
 package kpwidgets
 
 import (
+	"fmt"
+	"github.com/skratchdot/open-golang/open"
+	"github.com/techyang/keepassgo/constants"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
+	"log"
+	"os/exec"
 )
 
 type KeePassTable struct {
@@ -80,7 +85,41 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	urlsMenu := contextMenu.AddMenu2("URS(S)")
 	openUrlAction := urlsMenu.AddAction("Open")
 	copyUrlAction := urlsMenu.AddAction("Copy to ClipBoard")
+	urlsMenu.AddSeparator()
+	openWithIEAction := urlsMenu.AddAction("Open With Internet Explorer")
+	openWithIEInPirvateAction := urlsMenu.AddAction("Open With Internet Explorer (Private)")
+	urlsMenu.AddAction("Open With Edge").ConnectTriggered(func(bool) {
+		keePassTable.openWithBrowser()
+	})
+	urlsMenu.AddAction("Open With Google Chrome").ConnectTriggered(func(bool) {
+		keePassTable.openWithBrowser()
+	})
+	urlsMenu.AddAction("Open With Google Chrome (Private)").ConnectTriggered(func(bool) {
+		keePassTable.openWithBrowser()
+	})
+
+	urlsMenu.AddAction("Open With 360").ConnectTriggered(func(bool) {
+		keePassTable.openWithBrowser()
+	})
 	contextMenu.AddSeparator()
+	openWithIEAction.ConnectTriggered(func(bool) {
+		keePassTable.openWithBrowser()
+	})
+
+	openWithIEInPirvateAction.ConnectTriggered(func(bool) {
+		selectedRow := tableWidget.CurrentRow()
+		item := tableWidget.Item(selectedRow, 3)
+
+		// Get the text of the item
+		if item != nil {
+			url := item.Text()
+			cmd := exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
+			err := cmd.Run()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	})
 
 	performAutoTypeAction := contextMenu.AddAction("Perform Auto-Type")
 	contextMenu.AddSeparator()
@@ -137,12 +176,12 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 
 	// Connect the itemSelectionChanged signal of the table widget
 	keePassTable.ConnectItemSelectionChanged(func() {
-		selectedItems := keePassTable.SelectedItems()
+		/*selectedItems := keePassTable.SelectedItems()
 		if len(selectedItems) > 0 {
 			//copyToolButton.SetEnabled(true) // Enable the button when items are selected
 		} else {
 			//w.copyToolButton.SetEnabled(false) // Disable the button when no items are selected
-		}
+		}*/
 	})
 
 	// Connect the triggered signal of the menu actions
@@ -157,6 +196,18 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 			keePassTable.RemoveRow(row)
 		}
 	})
+}
+
+func (keePassTable *KeePassTable) openWithBrowser() {
+	selectedRow := tableWidget.CurrentRow()
+	item := tableWidget.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		url := item.Text()
+		fmt.Println("Text of the first item in the selected row:", url)
+		open.RunWith(url, string(constants.Browser_InternetExplorer))
+	}
 }
 
 func moveTop(keePassTable *KeePassTable) {
