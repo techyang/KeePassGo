@@ -22,5 +22,5 @@ Beside the language bindings provided, therecipe/qt also greatly simplifies the 
 At the time of writing, almost all Qt functions and classes are accessible, and you should be able to find everything you need to build fully featured Qt applications.
 
 # ScreenShots
-<img src="screenShorts/homepage.png">
-<img src="screenShorts/editEntry.png">
+<img src="screenShots/homepage.png">
+<img src="screenShots/editEntry.png">

@@ -20,5 +20,5 @@ thercipe/qt允许您完全用Go、JavaScript/TypeScript、Dart/Flutter、Haxe和
 在撰写本文时，几乎所有的Qt函数和类都是可访问的，您应该能够找到构建功能齐全的Qt应用程序所需的一切。
 
 # ScreenShots
-<img src="screenShorts/homepage.png">
-<img src="screenShorts/editEntry.png">
+<img src="screenShots/homepage.png">
+<img src="screenShots/editEntry.png">
