@@ -8,8 +8,8 @@ import (
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
-	"log"
 	"os/exec"
+	"runtime"
 )
 
 type KeePassTable struct {
@@ -89,36 +89,26 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	openWithIEAction := urlsMenu.AddAction("Open With Internet Explorer")
 	openWithIEInPirvateAction := urlsMenu.AddAction("Open With Internet Explorer (Private)")
 	urlsMenu.AddAction("Open With Edge").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.openWithBrowser(constants.Browser_Edge)
 	})
 	urlsMenu.AddAction("Open With Google Chrome").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.openWithBrowser(constants.Browser_Chrome)
 	})
 	urlsMenu.AddAction("Open With Google Chrome (Private)").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.openWithBrowserInPrivate(constants.Browser_Chrome)
 	})
 
-	urlsMenu.AddAction("Open With 360").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+	urlsMenu.AddAction("Open With 360安全浏览器").ConnectTriggered(func(bool) {
+		open.Run("C:\\Program Files (x86)\\Sybase\\PowerDesigner 16\\bpm.chm")
+		keePassTable.openWithBrowser(constants.Browser_360SE)
 	})
 	contextMenu.AddSeparator()
 	openWithIEAction.ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.openWithBrowser(constants.Browser_InternetExplorer)
 	})
 
 	openWithIEInPirvateAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			url := item.Text()
-			cmd := exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
-			err := cmd.Run()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
+		keePassTable.openWithBrowserInPrivate(constants.Browser_InternetExplorer)
 	})
 
 	performAutoTypeAction := contextMenu.AddAction("Perform Auto-Type")
@@ -198,7 +188,7 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	})
 }
 
-func (keePassTable *KeePassTable) openWithBrowser() {
+func (keePassTable *KeePassTable) openWithBrowser(browser constants.Browser) {
 	selectedRow := tableWidget.CurrentRow()
 	item := tableWidget.Item(selectedRow, 3)
 
@@ -206,10 +196,109 @@ func (keePassTable *KeePassTable) openWithBrowser() {
 	if item != nil {
 		url := item.Text()
 		fmt.Println("Text of the first item in the selected row:", url)
-		open.RunWith(url, string(constants.Browser_InternetExplorer))
+		if browser == constants.Browser_Default {
+			open.Run(url)
+			return
+		}
+		open.RunWith(url, string(browser))
 	}
 }
 
+func (keePassTable *KeePassTable) openWithBrowserInPrivate(browser constants.Browser) {
+	selectedRow := tableWidget.CurrentRow()
+	item := tableWidget.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		url := item.Text()
+		openUrlInPrivate(browser, url)
+	}
+}
+
+func openUrlInPrivate(browser constants.Browser, url string) {
+	switch browser {
+	case constants.Browser_Chrome:
+		openChromeInPrivate(url)
+	case constants.Browser_Firefox:
+		openFirefoxInPrivate(url)
+	case constants.Browser_InternetExplorer:
+		openIEInPrivate(url)
+	}
+}
+
+func openChromeInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "chrome", "--incognito", url)
+	case "darwin":
+		cmd = exec.Command("open", "-a", "Google Chrome", "--args", "--incognito", url)
+	case "linux":
+		cmd = exec.Command("google-chrome", "--incognito", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
+
+func openFirefoxInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "firefox", "--private-window", url)
+	case "darwin":
+		cmd = exec.Command("open", "-a", "Firefox", "--args", "-private-window", url)
+	case "linux":
+		cmd = exec.Command("firefox", "--private-window", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
+
+func openIEInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
 func moveTop(keePassTable *KeePassTable) {
 	row := keePassTable.CurrentRow()
 	if row > 0 {

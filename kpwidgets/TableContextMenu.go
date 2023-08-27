@@ -2,13 +2,11 @@ package kpwidgets
 
 import (
 	"fmt"
-	"github.com/skratchdot/open-golang/open"
 	"github.com/techyang/keepassgo/constants"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
-	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -91,11 +89,12 @@ func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction)
 
 func setOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
 	openUrlAction.ConnectTriggered(func(bool) {
-		OpenTableItemUrl(tableWidget, constants.Browser_Default)
+		tableWidget.openWithBrowser(constants.Browser_Default)
+		//OpenTableItemUrl(tableWidget, constants.Browser_Default)
 	})
 }
 
-func OpenTableItemUrl(tableWidget *KeePassTable, browser constants.Browser) {
+/*func OpenTableItemUrl(tableWidget *KeePassTable, browser constants.Browser) {
 	OpenTableItemUrlWithOption(tableWidget, browser, "")
 }
 
@@ -130,7 +129,7 @@ func OpenTableItemUrlWithOption(tableWidget *KeePassTable, browser constants.Bro
 			}
 		}
 	}
-}
+}*/
 
 func setCopyPasswordAction(tableWidget *KeePassTable, copyPasswordAction *widgets.QAction) {
 	copyPasswordAction.ConnectTriggered(func(bool) {

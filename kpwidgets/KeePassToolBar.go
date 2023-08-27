@@ -159,17 +159,17 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 
 	openUrlsToolButton := widgets.NewQToolButton(nil)
 	openUrlsToolButton.SetToolTip("Open URL(s)")
-	openUrlsToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Browser.png"))
+	openUrlsToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 	openUrlsToolButton.SetFixedSize2(22, 22)
 	openUrlsToolButton.AdjustSize()
 
 	// Create a menu for the first dropdown
 	openUrlsMenu := widgets.NewQMenu(nil)
 	action11 := openUrlsMenu.AddAction("Open URLs")
-	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key3.png"))
+	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 
 	action11.ConnectTriggered(func(checked bool) {
-		OpenTableItemUrl(tableWidget, constants.Browser_Default)
+		tableWidget.openWithBrowser(constants.Browser_Default)
 	})
 
 	openUrlsMenu.AddSeparator()
@@ -178,6 +178,16 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 
 	action33 := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
 	action33.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+
+	openWithEdgeAction := openUrlsMenu.AddAction("Open With Edge")
+	openWithEdgeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeAction := openUrlsMenu.AddAction("Open With Google Chrome")
+	openWithChromeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeInPrivateAction := openUrlsMenu.AddAction("Open With Google Chrome (Private)")
+	openWithChromeInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWith360SEAction := openUrlsMenu.AddAction("Open With 360安全浏览器")
+	openWith360SEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+
 	// Set the menus to the tool button
 	openUrlsToolButton.SetMenu(openUrlsMenu)
 	openUrlsToolButton.SetPopupMode(widgets.QToolButton__InstantPopup)

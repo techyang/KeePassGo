@@ -11,6 +11,7 @@ const (
 	Browser_Chrome           Browser = Browser("chrome")
 	Browser_Firefox          Browser = Browser("firefox")
 	Browser_Safari           Browser = Browser("safari")
-	Browser_Edge             Browser = Browser("edge")
+	Browser_Edge             Browser = Browser("msedge")
+	Browser_360SE            Browser = Browser("360se")
 	Browser_InternetExplorer Browser = Browser("iexplore")
 )
