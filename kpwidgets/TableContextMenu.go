@@ -70,20 +70,7 @@ func setEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *
 
 func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction) {
 	copyUrlAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-
-		// Retrieve the item at the first column of the selected row
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			firstItemText := item.Text()
-			fmt.Println("Text of the first item in the selected row:", firstItemText)
-			clipboard := gui.QGuiApplication_Clipboard()
-			if clipboard != nil {
-				clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
-			}
-		}
+		tableWidget.CopyUrl()
 	})
 }
 

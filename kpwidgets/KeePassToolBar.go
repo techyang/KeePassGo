@@ -173,20 +173,43 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	})
 
 	openUrlsMenu.AddSeparator()
-	action22 := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
-	action22.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
+	openWithIEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEAction.ConnectTriggered(func(checked bool) {
+		tableWidget.openWithBrowser(constants.Browser_InternetExplorer)
+	})
 
-	action33 := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
-	action33.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEInPrivateAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
+	openWithIEInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEInPrivateAction.ConnectTriggered(func(checked bool) {
+		tableWidget.openWithBrowserInPrivate(constants.Browser_InternetExplorer)
+	})
 
 	openWithEdgeAction := openUrlsMenu.AddAction("Open With Edge")
 	openWithEdgeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithEdgeAction.ConnectTriggered(func(checked bool) {
+		//TODO implement constants.Browser_Edge
+		tableWidget.openWithBrowser(constants.Browser_Chrome)
+	})
+
 	openWithChromeAction := openUrlsMenu.AddAction("Open With Google Chrome")
 	openWithChromeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeAction.ConnectTriggered(func(checked bool) {
+		tableWidget.openWithBrowser(constants.Browser_Chrome)
+	})
+
 	openWithChromeInPrivateAction := openUrlsMenu.AddAction("Open With Google Chrome (Private)")
 	openWithChromeInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeInPrivateAction.ConnectTriggered(func(checked bool) {
+		tableWidget.openWithBrowserInPrivate(constants.Browser_Chrome)
+	})
+
 	openWith360SEAction := openUrlsMenu.AddAction("Open With 360安全浏览器")
 	openWith360SEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWith360SEAction.ConnectTriggered(func(checked bool) {
+		//TODO implement constants.Browser_360SE
+		tableWidget.openWithBrowser(constants.Browser_Chrome)
+	})
 
 	// Set the menus to the tool button
 	openUrlsToolButton.SetMenu(openUrlsMenu)
@@ -197,6 +220,9 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUrlsToClipBoardToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_EditCopyUrl.png"))
 	copyUrlsToClipBoardToolButton.SetFixedSize2(22, 22)
 	copyUrlsToClipBoardToolButton.AdjustSize()
+	copyUrlsToClipBoardToolButton.ConnectClicked(func(checked bool) {
+		tableWidget.CopyUrl()
+	})
 
 	performAutoTypeToolButton := widgets.NewQToolButton(nil)
 	performAutoTypeToolButton.SetToolTip("Perform Auto-Type")

@@ -205,8 +205,8 @@ func (keePassTable *KeePassTable) openWithBrowser(browser constants.Browser) {
 }
 
 func (keePassTable *KeePassTable) openWithBrowserInPrivate(browser constants.Browser) {
-	selectedRow := tableWidget.CurrentRow()
-	item := tableWidget.Item(selectedRow, 3)
+	selectedRow := keePassTable.CurrentRow()
+	item := keePassTable.Item(selectedRow, 3)
 
 	// Get the text of the item
 	if item != nil {
@@ -299,6 +299,23 @@ func openIEInPrivate(url string) {
 		}
 	}
 }
+
+func (keePassTable *KeePassTable) CopyUrl() {
+	selectedRow := keePassTable.CurrentRow()
+	// Retrieve the item at the first column of the selected row
+	item := keePassTable.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		firstItemText := item.Text()
+		fmt.Println("Text of the first item in the selected row:", firstItemText)
+		clipboard := gui.QGuiApplication_Clipboard()
+		if clipboard != nil {
+			clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+		}
+	}
+}
+
 func moveTop(keePassTable *KeePassTable) {
 	row := keePassTable.CurrentRow()
 	if row > 0 {
