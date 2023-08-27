@@ -1,7 +1,8 @@
-package functions
+package kpwidgets
 
 import (
 	"fmt"
+	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -9,7 +10,7 @@ import (
 	"strings"
 )
 
-var kpResources = NewKpResources()
+var kpResources = functions.NewKpResources()
 
 func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Create the file menu
@@ -155,11 +156,7 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	openRecentMenu.AddAction("&Clear List...")
 	// Connect the actions and tool buttons to their respective triggered events
 	openFileAction.ConnectTriggered(func(checked bool) {
-		//widgets
-		dialog := widgets.NewQDialog(nil, 0)
-		dialog.SetWindowTitle("Open Dialog")
-		dialog.Resize2(600, 400)
-		dialog.Exec()
+		functions.OpenDatabase(TreeWidget, TableWidget)
 	})
 
 	openUrlAction.ConnectTriggered(func(checked bool) {
@@ -202,17 +199,7 @@ func DoNewAction(window *widgets.QMainWindow) {
 	okButton.ConnectClicked(func(checked bool) {
 		// Handle OK button clicked event
 		log.Info("Handle OK button clicked event")
-		fmt.Println("Ok button clicked")
-		newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
-		//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
-		//	newFileBox.SetNameFilterDetailsVisible(true)
-		//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
-		//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
-
-		newFileBox.Show()
-		newFileBox.ConnectFileSelected(func(file string) {
-			fmt.Print(file)
-		})
+		functions.NewDatabase()
 		messageBox.Accept()
 	})
 

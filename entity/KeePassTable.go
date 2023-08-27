@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
-	"log"
 	"os/exec"
+	"runtime"
 )
 
 type KeePassTable struct {
@@ -89,36 +89,26 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	openWithIEAction := urlsMenu.AddAction("Open With Internet Explorer")
 	openWithIEInPirvateAction := urlsMenu.AddAction("Open With Internet Explorer (Private)")
 	urlsMenu.AddAction("Open With Edge").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.OpenWithBrowser(constants.Browser_Edge)
 	})
 	urlsMenu.AddAction("Open With Google Chrome").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.OpenWithBrowser(constants.Browser_Chrome)
 	})
 	urlsMenu.AddAction("Open With Google Chrome (Private)").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.OpenWithBrowserInPrivate(constants.Browser_Chrome)
 	})
 
-	urlsMenu.AddAction("Open With 360").ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+	urlsMenu.AddAction("Open With 360安全浏览器").ConnectTriggered(func(bool) {
+		open.Run("C:\\Program Files (x86)\\Sybase\\PowerDesigner 16\\bpm.chm")
+		keePassTable.OpenWithBrowser(constants.Browser_360SE)
 	})
 	contextMenu.AddSeparator()
 	openWithIEAction.ConnectTriggered(func(bool) {
-		keePassTable.openWithBrowser()
+		keePassTable.OpenWithBrowser(constants.Browser_InternetExplorer)
 	})
 
 	openWithIEInPirvateAction.ConnectTriggered(func(bool) {
-		selectedRow := tableWidget.CurrentRow()
-		item := tableWidget.Item(selectedRow, 3)
-
-		// Get the text of the item
-		if item != nil {
-			url := item.Text()
-			cmd := exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
-			err := cmd.Run()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
+		keePassTable.OpenWithBrowserInPrivate(constants.Browser_InternetExplorer)
 	})
 
 	performAutoTypeAction := contextMenu.AddAction("Perform Auto-Type")
@@ -149,22 +139,22 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		moveTop(keePassTable)
 	})
 
-	setMoveTopAction(keePassTable, moveTopAction)
-	setMoveUpAction(keePassTable, moveUpAction)
-	setMoveDownAction(keePassTable, moveDownAction)
-	setMoveBottomAction(keePassTable, moveBottomAction)
+	SetMoveTopAction(keePassTable, moveTopAction)
+	SetMoveUpAction(keePassTable, moveUpAction)
+	SetMoveDownAction(keePassTable, moveDownAction)
+	SetMoveBottomAction(keePassTable, moveBottomAction)
 
-	setCopyUserNameAction(keePassTable, copyUserNameAction)
-	setCopyPasswordAction(keePassTable, copyPasswordAction)
+	SetCopyUserNameAction(keePassTable, copyUserNameAction)
+	SetCopyPasswordAction(keePassTable, copyPasswordAction)
 
-	setOpenUrlAction(keePassTable, openUrlAction)
+	SetOpenUrlAction(keePassTable, openUrlAction)
 
-	setCopyUrlAction(keePassTable, copyUrlAction)
+	SetCopyUrlAction(keePassTable, copyUrlAction)
 	performAutoTypeAction.ConnectTriggered(func(bool) {
-		initDetailWidget(keePassTable)
+		InitDetailWidget(keePassTable)
 	})
-	setEditOrViewEntryAction(keePassTable, editOrViewEntryAction)
-	setDuplicateAction2(keePassTable, duplicateAction)
+	SetEditOrViewEntryAction(keePassTable, editOrViewEntryAction)
+	SetDuplicateAction2(keePassTable, duplicateAction)
 
 	selectAllAction.ConnectTriggered(func(bool) {
 		keePassTable.SelectAll()
@@ -198,30 +188,146 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	})
 }
 
-func (keePassTable *KeePassTable) openWithBrowser() {
-	selectedRow := tableWidget.CurrentRow()
-	item := tableWidget.Item(selectedRow, 3)
+func (keePassTable *KeePassTable) OpenWithBrowser(browser constants.Browser) {
+	selectedRow := keePassTable.CurrentRow()
+	item := keePassTable.Item(selectedRow, 3)
 
 	// Get the text of the item
 	if item != nil {
 		url := item.Text()
 		fmt.Println("Text of the first item in the selected row:", url)
-		open.RunWith(url, string(constants.Browser_InternetExplorer))
+		if browser == constants.Browser_Default {
+			open.Run(url)
+			return
+		}
+		open.RunWith(url, string(browser))
+	}
+}
+
+func (keePassTable *KeePassTable) OpenWithBrowserInPrivate(browser constants.Browser) {
+	selectedRow := keePassTable.CurrentRow()
+	item := keePassTable.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		url := item.Text()
+		keePassTable.OpenUrlInPrivate(browser, url)
+	}
+}
+
+func (keePassTable *KeePassTable) OpenUrlInPrivate(browser constants.Browser, url string) {
+	switch browser {
+	case constants.Browser_Chrome:
+		OpenChromeInPrivate(url)
+	case constants.Browser_Firefox:
+		OpenFirefoxInPrivate(url)
+	case constants.Browser_InternetExplorer:
+		OpenIEInPrivate(url)
+	}
+}
+
+func OpenChromeInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "chrome", "--incognito", url)
+	case "darwin":
+		cmd = exec.Command("open", "-a", "Google Chrome", "--args", "--incognito", url)
+	case "linux":
+		cmd = exec.Command("google-chrome", "--incognito", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
+
+func OpenFirefoxInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "firefox", "--private-window", url)
+	case "darwin":
+		cmd = exec.Command("open", "-a", "Firefox", "--args", "-private-window", url)
+	case "linux":
+		cmd = exec.Command("firefox", "--private-window", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
+
+func OpenIEInPrivate(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "iexplore", "-private", url)
+	default:
+		fmt.Println("Unsupported operating system")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("Error opening browser:", err)
+		// Fallback to using the open package
+		err := open.Run(url)
+		if err != nil {
+			fmt.Println("Error opening URL:", err)
+		}
+	}
+}
+
+func (keePassTable *KeePassTable) CopyUrl() {
+	selectedRow := keePassTable.CurrentRow()
+	// Retrieve the item at the first column of the selected row
+	item := keePassTable.Item(selectedRow, 3)
+
+	// Get the text of the item
+	if item != nil {
+		firstItemText := item.Text()
+		fmt.Println("Text of the first item in the selected row:", firstItemText)
+		clipboard := gui.QGuiApplication_Clipboard()
+		if clipboard != nil {
+			clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
+		}
 	}
 }
 
 func moveTop(keePassTable *KeePassTable) {
 	row := keePassTable.CurrentRow()
 	if row > 0 {
-		rowData := getRowData(keePassTable, row)
+		rowData := GetRowData(keePassTable, row)
 		keePassTable.RemoveRow(row)
 		newRow := 0
 		keePassTable.InsertRow(newRow)
-		setTableRowData(keePassTable, newRow, rowData)
+		SetTableRowData(keePassTable, newRow, rowData)
 	}
 }
 
-func (tableWidget *KeePassTable) setTableItems(group *gokeepasslib.Group) {
+func (tableWidget *KeePassTable) SetTableItems(group *gokeepasslib.Group) {
 	// Set the password delegate for the second column
 	passwordDelegate := NewPasswordDelegate()
 	tableWidget.SetItemDelegateForColumn(0, passwordDelegate)
@@ -245,4 +351,20 @@ func (tableWidget *KeePassTable) setTableItems(group *gokeepasslib.Group) {
 		tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
 		tableWidget.SetItem(i, 4, widgets.NewQTableWidgetItem2(note, 0))
 	}
+}
+
+func FindGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Group {
+	//uuids := uuid.MustParse(uuid)
+	for _, group := range groups {
+		txt, _ := group.UUID.MarshalText()
+		if string(txt) == uuid {
+			fmt.Println("找到的名称是:", group.Name)
+			return &group
+		}
+		foundGroup := FindGroupByUUID(group.Groups, uuid)
+		if foundGroup != nil {
+			return foundGroup
+		}
+	}
+	return nil
 }

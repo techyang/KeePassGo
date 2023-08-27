@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"github.com/sqweek/dialog"
 	"github.com/techyang/keepassgo/constants"
+	"github.com/techyang/keepassgo/entity"
+	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
-	"github.com/tobischo/gokeepasslib/v3"
 	log "log/slog"
-	"os"
-	"strings"
 )
 
 type KeePassToolBar struct {
@@ -23,40 +22,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	newToolButton.SetText("New")
 
 	newToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("Create New Password Database").SetStartFile("NewDatabase.kdbx").Filter("KeePass KDBX Files(*.kdbx)", "kdbx").Save()
-
-		if len(file) > 0 {
-
-			if !strings.HasSuffix(file, constants.KEEPASS_DB_EXT) {
-				file += constants.KEEPASS_DB_EXT
-			}
-
-			fmt.Println("Error:", err)
-			fmt.Print(file)
-			masterPassword := constants.KEEPASS_DB_DEFAULT_PASSWORD
-
-			file, err := os.Create(file)
-			if err != nil {
-				panic(err)
-			}
-			defer file.Close()
-
-			// create the new database
-			db := gokeepasslib.NewDatabase(
-				gokeepasslib.WithDatabaseKDBXVersion4(),
-			)
-			db.Content.Meta.DatabaseName = "KDBX4"
-			db.Credentials = gokeepasslib.NewPasswordCredentials(masterPassword)
-
-			// Lock entries using stream cipher
-			db.LockProtectedEntries()
-
-			// and encode it into the file
-			keepassEncoder := gokeepasslib.NewEncoder(file)
-			if err := keepassEncoder.Encode(db); err != nil {
-				panic(err)
-			}
-		}
+		functions.NewDatabase()
 	})
 
 	//newToolButton.SetShortcut(gui.NewQKeySequence2("Ctrl+N", gui.QKeySequence__NativeText))
@@ -85,34 +51,8 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.AdjustSize()
 
 	openToolButton.ConnectClicked(func(bool) {
-		exts := []string{"jpg", "png", "gif", "kdbx"}
-		file, err := dialog.File().Title("Open").Filter("*.kdbx", exts...).Load()
+		OpenDatabase()
 
-		fmt.Println(file)
-		fmt.Println("Error:", err)
-		fmt.Print(file)
-		if len(file) > 0 {
-			treeWidget.Clear()
-			treeWidget.loadKeePassTree(file)
-		}
-
-		/*	// Code to handle cancelButton click event
-			fmt.Println("toolButton clicked")
-			newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
-			//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
-			//	newFileBox.SetNameFilterDetailsVisible(true)
-			//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
-			//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
-
-			newFileBox.Show()
-			newFileBox.ConnectFileSelected(func(file string) {
-				fmt.Print(file)
-				treeWidget.Clear()
-				treeWidget.loadKeePassTree(file)
-
-			})
-		*/
-		//dialog.Close()
 	})
 
 	saveAsToolButton := widgets.NewQToolButton(nil)
@@ -143,7 +83,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUserNameToolButton.AdjustSize()
 
 	copyUserNameToolButton.ConnectClicked(func(bool) {
-		CopyTableItemUsername(tableWidget)
+		entity.CopyTableItemUsername(TableWidget)
 	})
 
 	copyPasswordToolButton := widgets.NewQToolButton(nil)
@@ -154,30 +94,63 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyPasswordToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 	copyPasswordToolButton.AdjustSize()
 	copyPasswordToolButton.ConnectClicked(func(bool) {
-		CopyTableItemPassword(tableWidget)
+		entity.CopyTableItemPassword(TableWidget)
 	})
 
 	openUrlsToolButton := widgets.NewQToolButton(nil)
 	openUrlsToolButton.SetToolTip("Open URL(s)")
-	openUrlsToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Browser.png"))
+	openUrlsToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 	openUrlsToolButton.SetFixedSize2(22, 22)
 	openUrlsToolButton.AdjustSize()
 
 	// Create a menu for the first dropdown
 	openUrlsMenu := widgets.NewQMenu(nil)
 	action11 := openUrlsMenu.AddAction("Open URLs")
-	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key3.png"))
+	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 
 	action11.ConnectTriggered(func(checked bool) {
-		OpenTableItemUrl(tableWidget, constants.Browser_Default)
+		TableWidget.OpenWithBrowser(constants.Browser_Default)
 	})
 
 	openUrlsMenu.AddSeparator()
-	action22 := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
-	action22.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
+	openWithIEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEAction.ConnectTriggered(func(checked bool) {
+		TableWidget.OpenWithBrowser(constants.Browser_InternetExplorer)
+	})
 
-	action33 := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
-	action33.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEInPrivateAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
+	openWithIEInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithIEInPrivateAction.ConnectTriggered(func(checked bool) {
+		TableWidget.OpenWithBrowserInPrivate(constants.Browser_InternetExplorer)
+	})
+
+	openWithEdgeAction := openUrlsMenu.AddAction("Open With Edge")
+	openWithEdgeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithEdgeAction.ConnectTriggered(func(checked bool) {
+		//TODO implement constants.Browser_Edge
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
+	})
+
+	openWithChromeAction := openUrlsMenu.AddAction("Open With Google Chrome")
+	openWithChromeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeAction.ConnectTriggered(func(checked bool) {
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
+	})
+
+	openWithChromeInPrivateAction := openUrlsMenu.AddAction("Open With Google Chrome (Private)")
+	openWithChromeInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWithChromeInPrivateAction.ConnectTriggered(func(checked bool) {
+		TableWidget.OpenWithBrowserInPrivate(constants.Browser_Chrome)
+	})
+
+	openWith360SEAction := openUrlsMenu.AddAction("Open With 360安全浏览器")
+	openWith360SEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
+	openWith360SEAction.ConnectTriggered(func(checked bool) {
+		//TODO implement constants.Browser_360SE
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
+	})
+
 	// Set the menus to the tool button
 	openUrlsToolButton.SetMenu(openUrlsMenu)
 	openUrlsToolButton.SetPopupMode(widgets.QToolButton__InstantPopup)
@@ -187,6 +160,9 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUrlsToClipBoardToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_EditCopyUrl.png"))
 	copyUrlsToClipBoardToolButton.SetFixedSize2(22, 22)
 	copyUrlsToClipBoardToolButton.AdjustSize()
+	copyUrlsToClipBoardToolButton.ConnectClicked(func(checked bool) {
+		TableWidget.CopyUrl()
+	})
 
 	performAutoTypeToolButton := widgets.NewQToolButton(nil)
 	performAutoTypeToolButton.SetToolTip("Perform Auto-Type")

@@ -1,4 +1,4 @@
-package functions
+package kpwidgets
 
 import (
 	"github.com/therecipe/qt/gui"

@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"fmt"
@@ -53,7 +53,7 @@ func NewKeePassTree(tableWidget *KeePassTable) *KeePassTree {
 	return treeWidget
 }
 
-func (treeWidget *KeePassTree) loadKeePassTree(dbPath string) {
+func (treeWidget *KeePassTree) LoadKeePassTree(dbPath string, keePassTable *KeePassTable) {
 
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 	file, _ := os.Open(dbPath)
@@ -81,7 +81,7 @@ func (treeWidget *KeePassTree) loadKeePassTree(dbPath string) {
 	treeWidget.SetHeaderHidden(true)
 
 	// Connect the itemClicked signal of the tree widget
-	treeWidget.TreeItemClicked(tableWidget, rootGroups)
+	treeWidget.TreeItemClicked(keePassTable, rootGroups)
 }
 
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {
@@ -107,10 +107,10 @@ func (treeWidget *KeePassTree) TreeItemClicked(tableWidget *KeePassTable, rootGr
 		groupUUID := item.Data(1, 0).ToString()
 		fmt.Println(item.Text(0), "点击了", groupUUID)
 		tableWidget.SetObjectName(groupUUID)
-		group := findGroupByUUID(rootGroups, groupUUID)
+		group := FindGroupByUUID(rootGroups, groupUUID)
 
 		if group != nil && group.Entries != nil {
-			tableWidget.setTableItems(group)
+			tableWidget.SetTableItems(group)
 		} else {
 			tableWidget.SetRowCount(0)
 		}

@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	log "github.com/sirupsen/logrus"
