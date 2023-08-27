@@ -202,17 +202,7 @@ func DoNewAction(window *widgets.QMainWindow) {
 	okButton.ConnectClicked(func(checked bool) {
 		// Handle OK button clicked event
 		log.Info("Handle OK button clicked event")
-		fmt.Println("Ok button clicked")
-		newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
-		//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
-		//	newFileBox.SetNameFilterDetailsVisible(true)
-		//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
-		//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
-
-		newFileBox.Show()
-		newFileBox.ConnectFileSelected(func(file string) {
-			fmt.Print(file)
-		})
+		NewDatabase()
 		messageBox.Accept()
 	})
 

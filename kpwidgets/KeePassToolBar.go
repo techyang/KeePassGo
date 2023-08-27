@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"github.com/sqweek/dialog"
 	"github.com/techyang/keepassgo/constants"
+	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
-	"github.com/tobischo/gokeepasslib/v3"
 	log "log/slog"
-	"os"
-	"strings"
 )
 
 type KeePassToolBar struct {
@@ -23,40 +21,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	newToolButton.SetText("New")
 
 	newToolButton.ConnectClicked(func(bool) {
-		file, err := dialog.File().Title("Create New Password Database").SetStartFile("NewDatabase.kdbx").Filter("KeePass KDBX Files(*.kdbx)", "kdbx").Save()
-
-		if len(file) > 0 {
-
-			if !strings.HasSuffix(file, constants.KEEPASS_DB_EXT) {
-				file += constants.KEEPASS_DB_EXT
-			}
-
-			fmt.Println("Error:", err)
-			fmt.Print(file)
-			masterPassword := constants.KEEPASS_DB_DEFAULT_PASSWORD
-
-			file, err := os.Create(file)
-			if err != nil {
-				panic(err)
-			}
-			defer file.Close()
-
-			// create the new database
-			db := gokeepasslib.NewDatabase(
-				gokeepasslib.WithDatabaseKDBXVersion4(),
-			)
-			db.Content.Meta.DatabaseName = "KDBX4"
-			db.Credentials = gokeepasslib.NewPasswordCredentials(masterPassword)
-
-			// Lock entries using stream cipher
-			db.LockProtectedEntries()
-
-			// and encode it into the file
-			keepassEncoder := gokeepasslib.NewEncoder(file)
-			if err := keepassEncoder.Encode(db); err != nil {
-				panic(err)
-			}
-		}
+		functions.NewDatabase()
 	})
 
 	//newToolButton.SetShortcut(gui.NewQKeySequence2("Ctrl+N", gui.QKeySequence__NativeText))
