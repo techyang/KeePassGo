@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"github.com/therecipe/qt/core"

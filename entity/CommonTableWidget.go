@@ -1,6 +1,7 @@
-package kpwidgets
+package entity
 
 import (
+	//"github.com/techyang/keepassgo/kpwidgets"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
@@ -128,4 +129,22 @@ func (tableWidget *CommonTableWidget) getRowData(row int) []string {
 	}
 
 	return rowData
+}
+
+type PasswordDelegate struct {
+	widgets.QStyledItemDelegate
+}
+
+func NewPasswordDelegate() *PasswordDelegate {
+	return &PasswordDelegate{}
+}
+
+func (delegate *PasswordDelegate) DisplayText(value *core.QVariant, locale *core.QLocale) string {
+	// If the value is a string, return "***"
+	if value.Type() == core.QVariant__String {
+		return "***"
+	}
+
+	// Otherwise, call the base class method to display the default text
+	return delegate.QStyledItemDelegate.DisplayText(value, locale)
 }

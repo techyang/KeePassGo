@@ -1,6 +1,8 @@
-package kpwidgets
+package entity
 
-import "github.com/therecipe/qt/widgets"
+import (
+	"github.com/therecipe/qt/widgets"
+)
 
 type KeePassTabWidget struct {
 	TabWidget     *widgets.QTabWidget

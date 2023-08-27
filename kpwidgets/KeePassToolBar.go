@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sqweek/dialog"
 	"github.com/techyang/keepassgo/constants"
+	"github.com/techyang/keepassgo/entity"
 	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -50,34 +51,8 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	openToolButton.AdjustSize()
 
 	openToolButton.ConnectClicked(func(bool) {
-		exts := []string{"jpg", "png", "gif", "kdbx"}
-		file, err := dialog.File().Title("Open").Filter("*.kdbx", exts...).Load()
+		OpenDatabase()
 
-		fmt.Println(file)
-		fmt.Println("Error:", err)
-		fmt.Print(file)
-		if len(file) > 0 {
-			treeWidget.Clear()
-			treeWidget.loadKeePassTree(file)
-		}
-
-		/*	// Code to handle cancelButton click event
-			fmt.Println("toolButton clicked")
-			newFileBox := widgets.NewQFileDialog2(window, "新建", "", "*.txt;;*.db")
-			//newFileBox.SetFileMode(widgets.QFileDialog__AnyFile)
-			//	newFileBox.SetNameFilterDetailsVisible(true)
-			//newFileBox.SetLabelText(widgets.QFileDialog__LookIn, "Custom Look In:")
-			//newFileBox.SetLabelText(widgets.QFileDialog__FileName, "文件名:")
-
-			newFileBox.Show()
-			newFileBox.ConnectFileSelected(func(file string) {
-				fmt.Print(file)
-				treeWidget.Clear()
-				treeWidget.loadKeePassTree(file)
-
-			})
-		*/
-		//dialog.Close()
 	})
 
 	saveAsToolButton := widgets.NewQToolButton(nil)
@@ -108,7 +83,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUserNameToolButton.AdjustSize()
 
 	copyUserNameToolButton.ConnectClicked(func(bool) {
-		CopyTableItemUsername(tableWidget)
+		entity.CopyTableItemUsername(TableWidget)
 	})
 
 	copyPasswordToolButton := widgets.NewQToolButton(nil)
@@ -119,7 +94,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyPasswordToolButton.SetFixedSize2(buttonWidth, buttonHeight)
 	copyPasswordToolButton.AdjustSize()
 	copyPasswordToolButton.ConnectClicked(func(bool) {
-		CopyTableItemPassword(tableWidget)
+		entity.CopyTableItemPassword(TableWidget)
 	})
 
 	openUrlsToolButton := widgets.NewQToolButton(nil)
@@ -134,46 +109,46 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	action11.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 
 	action11.ConnectTriggered(func(checked bool) {
-		tableWidget.openWithBrowser(constants.Browser_Default)
+		TableWidget.OpenWithBrowser(constants.Browser_Default)
 	})
 
 	openUrlsMenu.AddSeparator()
 	openWithIEAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer")
 	openWithIEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWithIEAction.ConnectTriggered(func(checked bool) {
-		tableWidget.openWithBrowser(constants.Browser_InternetExplorer)
+		TableWidget.OpenWithBrowser(constants.Browser_InternetExplorer)
 	})
 
 	openWithIEInPrivateAction := openUrlsMenu.AddAction("Open URLs with Internet Explorer (Private)")
 	openWithIEInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWithIEInPrivateAction.ConnectTriggered(func(checked bool) {
-		tableWidget.openWithBrowserInPrivate(constants.Browser_InternetExplorer)
+		TableWidget.OpenWithBrowserInPrivate(constants.Browser_InternetExplorer)
 	})
 
 	openWithEdgeAction := openUrlsMenu.AddAction("Open With Edge")
 	openWithEdgeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWithEdgeAction.ConnectTriggered(func(checked bool) {
 		//TODO implement constants.Browser_Edge
-		tableWidget.openWithBrowser(constants.Browser_Chrome)
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
 	})
 
 	openWithChromeAction := openUrlsMenu.AddAction("Open With Google Chrome")
 	openWithChromeAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWithChromeAction.ConnectTriggered(func(checked bool) {
-		tableWidget.openWithBrowser(constants.Browser_Chrome)
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
 	})
 
 	openWithChromeInPrivateAction := openUrlsMenu.AddAction("Open With Google Chrome (Private)")
 	openWithChromeInPrivateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWithChromeInPrivateAction.ConnectTriggered(func(checked bool) {
-		tableWidget.openWithBrowserInPrivate(constants.Browser_Chrome)
+		TableWidget.OpenWithBrowserInPrivate(constants.Browser_Chrome)
 	})
 
 	openWith360SEAction := openUrlsMenu.AddAction("Open With 360安全浏览器")
 	openWith360SEAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_History_Clear.png"))
 	openWith360SEAction.ConnectTriggered(func(checked bool) {
 		//TODO implement constants.Browser_360SE
-		tableWidget.openWithBrowser(constants.Browser_Chrome)
+		TableWidget.OpenWithBrowser(constants.Browser_Chrome)
 	})
 
 	// Set the menus to the tool button
@@ -186,7 +161,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	copyUrlsToClipBoardToolButton.SetFixedSize2(22, 22)
 	copyUrlsToClipBoardToolButton.AdjustSize()
 	copyUrlsToClipBoardToolButton.ConnectClicked(func(checked bool) {
-		tableWidget.CopyUrl()
+		TableWidget.CopyUrl()
 	})
 
 	performAutoTypeToolButton := widgets.NewQToolButton(nil)

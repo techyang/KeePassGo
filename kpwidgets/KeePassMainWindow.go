@@ -60,8 +60,8 @@ func InitTrayIcon(window *widgets.QMainWindow) *widgets.QSystemTrayIcon {
 func initMenuBar(window *widgets.QMainWindow) {
 	menuBar := window.MenuBar()
 
-	functions.InitFileMenu(menuBar, window)
-	functions.InitEditMenu(menuBar, window)
+	InitFileMenu(menuBar, window)
+	InitEditMenu(menuBar, window)
 	functions.InitHelpMenu(menuBar, window)
 }
 

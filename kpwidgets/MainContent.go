@@ -1,30 +1,13 @@
 package kpwidgets
 
 import (
+	"github.com/techyang/keepassgo/entity"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
 
-var tableWidget *KeePassTable
-var treeWidget *KeePassTree
-
-type PasswordDelegate struct {
-	widgets.QStyledItemDelegate
-}
-
-func NewPasswordDelegate() *PasswordDelegate {
-	return &PasswordDelegate{}
-}
-
-func (delegate *PasswordDelegate) DisplayText(value *core.QVariant, locale *core.QLocale) string {
-	// If the value is a string, return "***"
-	if value.Type() == core.QVariant__String {
-		return "***"
-	}
-
-	// Otherwise, call the base class method to display the default text
-	return delegate.QStyledItemDelegate.DisplayText(value, locale)
-}
+var TableWidget *entity.KeePassTable
+var TreeWidget *entity.KeePassTree
 
 func InitMainContent(window *widgets.QMainWindow) {
 	// Create a QVBoxLayout and a QWidget as the container
@@ -47,22 +30,22 @@ func InitMainContent(window *widgets.QMainWindow) {
 	//button2 := widgets.NewQPushButton2("Button 2", nil)
 
 	// Create a QTreeWidget
-	tableWidget = NewKeePassTable()
-	treeWidget = NewKeePassTree(tableWidget)
+	TableWidget = entity.NewKeePassTable()
+	TreeWidget = entity.NewKeePassTree(TableWidget)
 
 	//restTable(tableWidget)
 
 	// Add the buttons to the QHBoxLayout
 	//hBoxLayout.AddWidget(button1, 0, 0)
-	hBoxLayout.AddWidget(treeWidget, 0, 0)
+	hBoxLayout.AddWidget(TreeWidget, 0, 0)
 
 	button3 := widgets.NewQPushButton2("Button 3", nil)
 	// Add the QHBoxLayout to the QVBoxLayout
 	layout.AddLayout(hBoxLayout, 0)
 	layout.AddWidget(button3, 0, 0)
 
-	splitter.AddWidget(treeWidget)
-	splitter.AddWidget(tableWidget)
+	splitter.AddWidget(TreeWidget)
+	splitter.AddWidget(TableWidget)
 	// Set the container as the central widget of the main window
 	window.SetCentralWidget(splitter)
 

@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"runtime"
 )
 
-func setDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
+func SetDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
 	duplicateAction.ConnectTriggered(func(bool) {
 		dialog := NewDuplicationOptionsDialog()
 
@@ -59,24 +59,24 @@ func doLinkClicked(link string) {
 	}
 }
 
-func setEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
+func SetEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
 	editOrViewEntryAction.ConnectTriggered(func(bool) {
-		initDetailWidget(tableWidget)
+		InitDetailWidget(tableWidget)
 		//row := tableWidget.CurrentRow()
 		//objectName := tableWidget.ObjectName()
 		//GetKeePassEntry(objectName, row)
 	})
 }
 
-func setCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction) {
+func SetCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction) {
 	copyUrlAction.ConnectTriggered(func(bool) {
 		tableWidget.CopyUrl()
 	})
 }
 
-func setOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
+func SetOpenUrlAction(tableWidget *KeePassTable, openUrlAction *widgets.QAction) {
 	openUrlAction.ConnectTriggered(func(bool) {
-		tableWidget.openWithBrowser(constants.Browser_Default)
+		tableWidget.OpenWithBrowser(constants.Browser_Default)
 		//OpenTableItemUrl(tableWidget, constants.Browser_Default)
 	})
 }
@@ -118,7 +118,7 @@ func OpenTableItemUrlWithOption(tableWidget *KeePassTable, browser constants.Bro
 	}
 }*/
 
-func setCopyPasswordAction(tableWidget *KeePassTable, copyPasswordAction *widgets.QAction) {
+func SetCopyPasswordAction(tableWidget *KeePassTable, copyPasswordAction *widgets.QAction) {
 	copyPasswordAction.ConnectTriggered(func(bool) {
 		CopyTableItemPassword(tableWidget)
 	})
@@ -141,7 +141,7 @@ func CopyTableItemPassword(tableWidget *KeePassTable) {
 	}
 }
 
-func setCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widgets.QAction) {
+func SetCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widgets.QAction) {
 	copyUserNameAction.ConnectTriggered(func(bool) {
 		CopyTableItemUsername(tableWidget)
 	})
@@ -164,31 +164,31 @@ func CopyTableItemUsername(tableWidget *KeePassTable) {
 	}
 }
 
-func setMoveTopAction(KeePassTable *KeePassTable, moveTopAction *widgets.QAction) {
+func SetMoveTopAction(KeePassTable *KeePassTable, moveTopAction *widgets.QAction) {
 	moveTopAction.ConnectTriggered(func(checked bool) {
 		KeePassTable.MoveTop()
 	})
 }
 
-func setMoveBottomAction(KeePassTable *KeePassTable, moveBottomAction *widgets.QAction) {
+func SetMoveBottomAction(KeePassTable *KeePassTable, moveBottomAction *widgets.QAction) {
 	moveBottomAction.ConnectTriggered(func(checked bool) {
 		KeePassTable.MoveBottom()
 	})
 }
 
-func setMoveUpAction(KeePassTable *KeePassTable, moveUpAction *widgets.QAction) {
+func SetMoveUpAction(KeePassTable *KeePassTable, moveUpAction *widgets.QAction) {
 	moveUpAction.ConnectTriggered(func(checked bool) {
 		KeePassTable.MoveUp()
 	})
 }
 
-func setMoveDownAction(KeePassTable *KeePassTable, moveDownAction *widgets.QAction) {
+func SetMoveDownAction(KeePassTable *KeePassTable, moveDownAction *widgets.QAction) {
 	moveDownAction.ConnectTriggered(func(checked bool) {
 		KeePassTable.MoveDown()
 	})
 }
 
-func setTableRowData(tableWidget *KeePassTable, newRow int, rowData []string) {
+func SetTableRowData(tableWidget *KeePassTable, newRow int, rowData []string) {
 	for column := 0; column < tableWidget.ColumnCount(); column++ {
 		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
 	}
@@ -196,7 +196,7 @@ func setTableRowData(tableWidget *KeePassTable, newRow int, rowData []string) {
 }
 
 // Function to retrieve the data of a specific row in a QTableWidget and store it in an array
-func getRowData(tableWidget *KeePassTable, row int) []string {
+func GetRowData(tableWidget *KeePassTable, row int) []string {
 	columnCount := tableWidget.ColumnCount()
 	rowData := make([]string, columnCount)
 
@@ -212,7 +212,7 @@ func getRowData(tableWidget *KeePassTable, row int) []string {
 	return rowData
 }
 
-func initDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
+func InitDetailWidget(tableWidget *KeePassTable) *widgets.QDialog {
 	// Create and add tabs to the tab widget
 	dialog := widgets.NewQDialog(nil, 0)
 	dialog.SetWindowTitle("Open Dialog")

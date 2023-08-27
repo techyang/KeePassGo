@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"fmt"
@@ -153,7 +153,7 @@ func GetKeePassEntry(groupUUID string, itemIndex int) (*KeePassEntry, gokeepassl
 	db.UnlockProtectedEntries()
 	rootGroups := db.Content.Root.Groups
 
-	group := findGroupByUUID(rootGroups, groupUUID)
+	group := FindGroupByUUID(rootGroups, groupUUID)
 
 	entry := group.Entries[itemIndex]
 
@@ -179,20 +179,4 @@ func GetKeePassEntry(groupUUID string, itemIndex int) (*KeePassEntry, gokeepassl
 		ExpiresSeted: expiresSeted,
 	}, entry
 
-}
-
-func findGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Group {
-	//uuids := uuid.MustParse(uuid)
-	for _, group := range groups {
-		txt, _ := group.UUID.MarshalText()
-		if string(txt) == uuid {
-			fmt.Println("找到的名称是:", group.Name)
-			return &group
-		}
-		foundGroup := findGroupByUUID(group.Groups, uuid)
-		if foundGroup != nil {
-			return foundGroup
-		}
-	}
-	return nil
 }

@@ -1,4 +1,4 @@
-package main
+package entity
 
 import (
 	"github.com/therecipe/qt/core"

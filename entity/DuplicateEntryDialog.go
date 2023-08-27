@@ -1,4 +1,4 @@
-package kpwidgets
+package entity
 
 import (
 	"fmt"
@@ -85,7 +85,7 @@ func doLinkClicked2(link string) {
 func (dialog *DuplicateEntryDialog) DoAccepted(tableWidget *KeePassTable) {
 	row := tableWidget.CurrentRow()
 	if row >= 0 {
-		values := getRowData(tableWidget, row)
+		values := GetRowData(tableWidget, row)
 
 		if dialog.AppendCopyCheck.IsChecked() {
 			values[0] += "-Copy"
