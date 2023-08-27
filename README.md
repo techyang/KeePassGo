@@ -1,3 +1,5 @@
+[中文](README-zh-CN.md) | English
+
 # About KeePassGo
 an implementation of go for KeePass (https://keepass.info/) using therecipe/qt (https://github.com/therecipe/qt)
 ## Why KeePass?
@@ -7,10 +9,6 @@ KeePass is a free open source password manager, which helps you to manage your p
 
 Is it really free?
 Yes, KeePass is really free, and more than that: it is open source (OSI certified). You can have a look at its full source code and check whether the security features are implemented correctly.
-# ScreenShots
-<img src="screenShorts/homepage.png">
-<img src="screenShorts/editEntry.png">
-
 
 ## about therecipe/qt
 Qt is a free and open-source widget toolkit for creating graphical user interfaces as well as cross-platform applications that run on various software and hardware platforms with little or no change in the underlying codebase.
@@ -22,3 +20,7 @@ therecipe/qt allows you to write Qt applications entirely in Go, JavaScript/Type
 Beside the language bindings provided, therecipe/qt also greatly simplifies the deployment of Qt applications to various software and hardware platforms.
 
 At the time of writing, almost all Qt functions and classes are accessible, and you should be able to find everything you need to build fully featured Qt applications.
+
+# ScreenShots
+<img src="screenShorts/homepage.png">
+<img src="screenShorts/editEntry.png">
