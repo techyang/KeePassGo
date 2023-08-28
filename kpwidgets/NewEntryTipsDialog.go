@@ -74,27 +74,3 @@ func (d *NewEntryTipsDialog) doAccepted() {
 	// Do something when the OK button is clicked
 	fmt.Println("OK button clicked")
 }
-
-/*func doLinkClicked2(link string) {
-	// Handle link clicked event
-	fmt.Println("Link clicked:", link)
-}
-
-// click Ok Button action
-func doAccepted(dialog *NewEntryTipsDialog, tableWidget *KeePassTable, appendCopyCheckBox *widgets.QCheckBox) {
-	row := tableWidget.CurrentRow()
-	if row >= 0 {
-		values := getRowData(tableWidget, row)
-
-		if appendCopyCheckBox.IsChecked() {
-			values[0] += "-Copy"
-		}
-
-		tableWidget.InsertRow(row + 1)
-		for col := 0; col < tableWidget.ColumnCount(); col++ {
-			tableWidget.SetItem(row+1, col, widgets.NewQTableWidgetItem2(values[col], 0))
-		}
-		tableWidget.SelectRow(row + 1)
-	}
-	dialog.Accept()
-}*/
