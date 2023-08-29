@@ -41,14 +41,6 @@ func NewHistoryTabSheet() *HistoryTabSheet {
 	twoChannelAutoTypeLayout.AddWidget(cw.RestoreButton, 0, core.Qt__AlignTop)
 	vBoxLayout.AddLayout(twoChannelAutoTypeLayout, 0)
 
-	/*	cw.BackgroundColorPickerBtn.ConnectClicked(func(checked bool) {
-		colorDialog := widgets.NewQColorDialog2(gui.NewQColor3(255, 255, 255, 255), nil)
-		colorDialog.Exec()
-		if colorDialog != nil {
-			cw.BackgroundColorPickerBtn.SetStyleSheet("background-color: " + colorDialog.CurrentColor().Name())
-		}
-	})*/
-
 	return cw
 }
 
