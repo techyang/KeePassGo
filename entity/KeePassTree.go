@@ -54,7 +54,7 @@ func NewKeePassTree(tableWidget *KeePassTable) *KeePassTree {
 }
 
 func (treeWidget *KeePassTree) LoadKeePassTree(dbPath string, keePassTable *KeePassTable) {
-
+	keePassTable.SetRowCount(0) //清空原有table数据
 	//treeWidget.SetHeaderLabels([]string{"yangwl"})
 	file, _ := os.Open(dbPath)
 
@@ -82,6 +82,7 @@ func (treeWidget *KeePassTree) LoadKeePassTree(dbPath string, keePassTable *KeeP
 
 	// Connect the itemClicked signal of the tree widget
 	treeWidget.TreeItemClicked(keePassTable, rootGroups)
+
 }
 
 func buildGroupTree(parent *widgets.QTreeWidgetItem, groups []gokeepasslib.Group) {

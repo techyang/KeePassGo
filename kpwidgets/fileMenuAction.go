@@ -2,11 +2,15 @@ package kpwidgets
 
 import (
 	"fmt"
+	"github.com/techyang/keepassgo/entity"
 	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
+	"github.com/tobischo/gokeepasslib/v3"
+	"github.com/tobischo/gokeepasslib/v3/wrappers"
 	log "log/slog"
+	"os"
 	"strings"
 )
 
@@ -60,6 +64,47 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	saveAsMenu.AddSeparator()
 	saveAsMenu.AddAction("&Save Copy To File ...")
 	saveAction.ConnectTriggered(func(checked bool) {
+		filename := "D:\\workspace_go\\gokeepasslib-master\\example-writing2023.kdbx"
+		//masterPassword := "111111"
+
+		// create root group
+
+		file, _ := os.Open(filename)
+
+		db := gokeepasslib.NewDatabase()
+		db.Credentials = gokeepasslib.NewPasswordCredentials("111111")
+		_ = gokeepasslib.NewDecoder(file).Decode(db)
+
+		db.UnlockProtectedEntries()
+
+		gp := entity.FindGroupByUUID(db.Content.Root.Groups, "UpnnUcQ5/kKbVGEJ8PFqMA==")
+
+		entry := gokeepasslib.NewEntry()
+		entry.Values = append(entry.Values, mkValue("Title", "My GMail password"))
+		entry.Values = append(entry.Values, mkValue("UserName", "example@gmail.com"))
+		entry.Values = append(entry.Values, mkProtectedValue("Password", "hunter2"))
+		gp.Entries = append(gp.Entries, entry)
+
+		db = &gokeepasslib.Database{
+			Header:      gokeepasslib.NewHeader(),
+			Credentials: gokeepasslib.NewPasswordCredentials("111111"),
+			Content: &gokeepasslib.DBContent{
+				Meta: gokeepasslib.NewMetaData(),
+				Root: &gokeepasslib.RootData{
+					Groups: db.Content.Root.Groups,
+				},
+			},
+		}
+
+		// Lock entries using stream cipher
+		db.LockProtectedEntries()
+
+		// and encode it into the file
+		keepassEncoder := gokeepasslib.NewEncoder(file)
+		if err := keepassEncoder.Encode(db); err != nil {
+			panic(err)
+		}
+
 		msgBox := widgets.NewQMessageBox(window)
 		msgBox.SetWindowTitle("退出确认")
 		msgBox.SetText("是否退出?")
@@ -173,6 +218,23 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		}
 	})
 
+}
+
+func mkProtectedValue(key string, value string) gokeepasslib.ValueData {
+	return gokeepasslib.ValueData{
+		Key:   key,
+		Value: gokeepasslib.V{Content: value, Protected: wrappers.BoolWrapper(NewBoolWrapper(true))},
+	}
+}
+
+type BoolWrapper struct {
+	Bool bool
+}
+
+func NewBoolWrapper(value bool) BoolWrapper {
+	return BoolWrapper{
+		Bool: value,
+	}
 }
 
 func DoNewAction2(window *widgets.QMainWindow) {
