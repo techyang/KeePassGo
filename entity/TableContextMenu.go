@@ -62,9 +62,6 @@ func doLinkClicked(link string) {
 func SetEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
 	editOrViewEntryAction.ConnectTriggered(func(bool) {
 		InitDetailWidget(tableWidget)
-		//row := tableWidget.CurrentRow()
-		//objectName := tableWidget.ObjectName()
-		//GetKeePassEntry(objectName, row)
 	})
 }
 
