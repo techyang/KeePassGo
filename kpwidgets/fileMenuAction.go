@@ -176,9 +176,22 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	exportAction := fileMenu.AddAction("Export...")
-	exportActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Folder_Outbox.png")
+	exportActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Reload_Page.png")
 	exportAction.SetIcon(exportActionIcon)
 	exportAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+
+	synchronizeMenu := fileMenu.AddMenu2("Synchronize")
+	synchronizeWithFileAction := synchronizeMenu.AddAction("Synchronize with File...")
+	synchronizeWithUrlAction := synchronizeMenu.AddAction("Synchronize with Url...")
+	synchronizeMenuIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Reload_Page.png")
+	synchronizeWithFileAction.SetIcon(synchronizeMenuIcon)
+	synchronizeWithUrlAction.SetIcon(synchronizeMenuIcon)
+	synchronizeWithFileAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
+	})
+	synchronizeWithUrlAction.ConnectTriggered(func(checked bool) {
 		//window.Close()
 	})
 
