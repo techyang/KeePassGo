@@ -75,15 +75,24 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	selectAllAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__SelectAll))
 	editMenu.AddSeparator()
 
-	showEntriesAction := editMenu.AddAction("&Select All...")
+	showEntriesMenu := editMenu.AddMenu2("Show Entries...")
+	showEntriesByTagMenu := editMenu.AddMenu2("Show Entries by Tag...")
 	// Connect the actions and tool buttons to their respective triggered events
-	showEntriesAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+
+	showEntriesAllAction := showEntriesMenu.AddAction("All")
+	showEntriesGroupAction := showEntriesMenu.AddAction("Selected Entry's Group")
+	showEntriesAllIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key3.png")
+	showEntriesGroupIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_Folder.png")
+
+	showEntriesAllAction.SetIcon(showEntriesAllIcon)
+	showEntriesGroupAction.SetIcon(showEntriesGroupIcon)
+	showEntriesGroupAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
 	})
-	showEntriesByTagAction := editMenu.AddAction("&Select All...")
-	// Connect the actions and tool buttons to their respective triggered events
-	showEntriesByTagAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+
+	noTagFoundAction := showEntriesByTagMenu.AddAction("(No Tag Found)")
+	noTagFoundAction.ConnectTriggered(func(checked bool) {
+		//window.Close()
 	})
 
 	editMenu.AddSeparator()
