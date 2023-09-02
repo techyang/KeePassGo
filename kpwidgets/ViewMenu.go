@@ -133,4 +133,35 @@ func InitViewMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		//DoNewAction(window)
 	})
 
+	groupingInEntryListMenu := viewMenu.AddMenu2("Grouping in Entry List ")
+	groupingInEntryListGroup := widgets.NewQActionGroup(sortByMenu)
+
+	groupingInEntryListOnAction := groupingInEntryListMenu.AddAction("On")
+	groupingInEntryListOnAction.SetCheckable(true)
+	groupingInEntryListOnAction.SetActionGroup(groupingInEntryListGroup)
+	groupingInEntryListOnAction.ConnectTriggered(func(checked bool) {
+		//DoNewAction(window)
+	})
+
+	groupingInEntryListRecommendAction := groupingInEntryListMenu.AddAction("Auto(Recommend)")
+	groupingInEntryListRecommendAction.SetCheckable(true)
+	groupingInEntryListRecommendAction.SetActionGroup(groupingInEntryListGroup)
+	groupingInEntryListRecommendAction.ConnectTriggered(func(checked bool) {
+		//DoNewAction(window)
+	})
+
+	groupingInEntryListOffAction := groupingInEntryListMenu.AddAction("Off")
+	groupingInEntryListOffAction.SetCheckable(true)
+	groupingInEntryListOffAction.SetActionGroup(groupingInEntryListGroup)
+	groupingInEntryListOffAction.ConnectTriggered(func(checked bool) {
+		//DoNewAction(window)
+	})
+
+	viewMenu.AddSeparator()
+	showEntriesOfSubGroupsAction := viewMenu.AddAction("Show Entries of Subgroups")
+	showEntriesOfSubGroupsAction.SetCheckable(true)
+	showEntriesOfSubGroupsAction.ConnectTriggered(func(checked bool) {
+		//DoNewAction(window)
+	})
+
 }
