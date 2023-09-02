@@ -9,7 +9,7 @@ func InitViewMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	viewMenu := menuBar.AddMenu2("View")
 
 	// Create actions for the file menu
-	changeLanguageAction := viewMenu.AddAction("Change Language")
+	changeLanguageAction := viewMenu.AddAction("Change Language...")
 	// Connect the actions and tool buttons to their respective triggered events
 	changeLanguageAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
