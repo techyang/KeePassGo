@@ -70,6 +70,21 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 		dialog.Directory().Title("Now find a dir").Browse()
 	})
 
+	saveAllToolButton := widgets.NewQToolButton(nil)
+	saveAllToolButton.SetToolTip("Save All")
+	saveAllToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_File_SaveAll.png"))
+	saveAllToolButton.SetFixedSize2(buttonWidth, buttonHeight)
+	saveAllToolButton.AdjustSize()
+
+	saveAllToolButton.ConnectClicked(func(bool) {
+		dialog.Message("%s", "Please select a file").Title("Hello world!").Info()
+		file, err := dialog.File().Title("Save As").Filter("All Files", "*").Save()
+		fmt.Println(file)
+		fmt.Println("Error:", err)
+		dialog.Message("You chose file: %s", file).Title("Goodbye world!").Error()
+		dialog.Directory().Title("Now find a dir").Browse()
+	})
+
 	addEntityToolButton := widgets.NewQToolButton(nil)
 	addEntityToolButton.SetToolTip("Add Entity")
 	addEntityToolButton.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Import.png"))
@@ -235,6 +250,7 @@ func NewKeePassToolBar(window *widgets.QMainWindow) *KeePassToolBar {
 	toolBar.AddWidget(newToolButton)
 	toolBar.AddWidget(openToolButton)
 	toolBar.AddWidget(saveAsToolButton)
+	toolBar.AddWidget(saveAllToolButton)
 	toolBar.AddSeparator()
 	toolBar.AddWidget(addEntityToolButton)
 	toolBar.AddSeparator()

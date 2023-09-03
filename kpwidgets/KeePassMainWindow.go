@@ -1,7 +1,6 @@
 package kpwidgets
 
 import (
-	"github.com/techyang/keepassgo/functions"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 	"github.com/tobischo/gokeepasslib/v3"
@@ -64,7 +63,7 @@ func initMenuBar(window *widgets.QMainWindow) {
 	InitEditMenu(menuBar, window)
 	InitViewMenu(menuBar, window)
 	InitToolsMenu(menuBar, window)
-	functions.InitHelpMenu(menuBar, window)
+	InitHelpMenu(menuBar, window)
 }
 
 func clearChildItems(item *widgets.QTreeWidgetItem) {

@@ -1,4 +1,4 @@
-package functions
+package kpwidgets
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	helpMenu := menuBar.AddMenu2("Help")
 
 	// Create the "About" action for the help menu
-	helpAction := helpMenu.AddAction("Help")
+	helpAction := helpMenu.AddAction("Help Contents")
 	//helpAction.SetShortcut(gui.NewQKeySequence2("Ctrl+Alt+S", gui.QKeySequence__NativeText))
 	helpAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__HelpContents))
 
@@ -64,12 +64,25 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		//widgets.QMessageBox_About(window, "帮助", "请参考:https://www.csdn.net")
 	})
 
+	helpSourceAction := helpMenu.AddAction("Help Source")
+
+	// Connect the "About" action to its triggered event
+	helpSourceAction.ConnectTriggered(func(checked bool) {
+
+	})
+
 	helpMenu.AddSeparator()
 	helpMenu.AddAction("KeePass Website").ConnectTriggered(func(checked bool) {
 		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/"))
 	})
 	helpMenu.AddAction("Donate...").ConnectTriggered(func(checked bool) {
 		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/donate.html"))
+	})
+
+	helpMenu.AddSeparator()
+	checkForUpdatesAction := helpMenu.AddAction("Check for Updates")
+	checkForUpdatesAction.ConnectTriggered(func(checked bool) {
+		//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/donate.html"))
 	})
 
 	helpMenu.AddSeparator()
