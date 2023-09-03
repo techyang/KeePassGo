@@ -17,6 +17,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	helpAction := helpMenu.AddAction("Help Contents")
 	//helpAction.SetShortcut(gui.NewQKeySequence2("Ctrl+Alt+S", gui.QKeySequence__NativeText))
 	helpAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__HelpContents))
+	helpAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Toggle_Log.png"))
 
 	// Connect the "About" action to its triggered event
 	helpAction.ConnectTriggered(func(checked bool) {
@@ -65,22 +66,27 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	helpSourceAction := helpMenu.AddAction("Help Source")
-
-	// Connect the "About" action to its triggered event
+	helpSourceAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KOrganizer.png"))
 	helpSourceAction.ConnectTriggered(func(checked bool) {
 
 	})
 
 	helpMenu.AddSeparator()
-	helpMenu.AddAction("KeePass Website").ConnectTriggered(func(checked bool) {
+	webSiteAction := helpMenu.AddAction("KeePass Website")
+	webSiteAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Folder_Home.png"))
+	webSiteAction.ConnectTriggered(func(checked bool) {
 		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/"))
 	})
-	helpMenu.AddAction("Donate...").ConnectTriggered(func(checked bool) {
+
+	donateAction := helpMenu.AddAction("Donate...")
+	donateAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Identity.png"))
+	donateAction.ConnectTriggered(func(checked bool) {
 		gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/donate.html"))
 	})
 
 	helpMenu.AddSeparator()
 	checkForUpdatesAction := helpMenu.AddAction("Check for Updates")
+	checkForUpdatesAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 	checkForUpdatesAction.ConnectTriggered(func(checked bool) {
 		//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/donate.html"))
 	})
@@ -88,6 +94,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	helpMenu.AddSeparator()
 	// Create the "About" action for the help menu
 	aboutAction := helpMenu.AddAction("About KeePassGo")
+	aboutAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_Help.png"))
 	// Connect the "About" action to its triggered event
 	aboutAction.ConnectTriggered(func(checked bool) {
 		// 创建自定义对话框
