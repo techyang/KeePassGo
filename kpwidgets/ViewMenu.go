@@ -1,6 +1,7 @@
 package kpwidgets
 
 import (
+	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
 
@@ -10,6 +11,7 @@ func InitViewMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the file menu
 	changeLanguageAction := viewMenu.AddAction("Change Language...")
+	changeLanguageAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_Keyboard_Layout.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	changeLanguageAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
@@ -57,6 +59,7 @@ func InitViewMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	viewMenu.AddSeparator()
 
 	configureColumnsAction := viewMenu.AddAction("Configure Columns...")
+	configureColumnsAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_View_Detailed.png"))
 	configureColumnsAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
 	})
