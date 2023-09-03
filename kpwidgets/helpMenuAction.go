@@ -1,7 +1,7 @@
 package kpwidgets
 
 import (
-	"fmt"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -22,7 +22,8 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Connect the "About" action to its triggered event
 	helpAction.ConnectTriggered(func(checked bool) {
 
-		dialog := widgets.NewQDialog(window, 0)
+		open.Run("D:\\Program Files (x86)\\KeePass Password Safe 2\\KeePass.chm")
+		/*dialog := widgets.NewQDialog(window, 0)
 		dialog.SetWindowTitle("QDialogButtonBox Example")
 
 		// Create the button box
@@ -56,7 +57,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		// Show the main window and the dialog
 
 		dialog.Exec()
-
+		*/
 		//url := core.NewQUrl3("https://keepass.info/help/base/index.html", core.QUrl__StrictMode)
 		//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/help/base/index.html"))
 
