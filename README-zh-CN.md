@@ -22,3 +22,4 @@ thercipe/qt允许您完全用Go、JavaScript/TypeScript、Dart/Flutter、Haxe和
 # ScreenShots
 <img src="screenShots/homepage.png">
 <img src="screenShots/editEntry.png">
+<img src="screenShots/MenuBar.png">

@@ -24,3 +24,4 @@ At the time of writing, almost all Qt functions and classes are accessible, and 
 # ScreenShots
 <img src="screenShots/homepage.png">
 <img src="screenShots/editEntry.png">
+<img src="screenShots/MenuBar.png">
