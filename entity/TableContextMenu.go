@@ -12,21 +12,19 @@ import (
 	"runtime"
 )
 
-func SetDuplicateAction2(tableWidget *KeePassTable, duplicateAction *widgets.QAction) {
-	duplicateAction.ConnectTriggered(func(bool) {
-		dialog := NewDuplicationOptionsDialog()
+func DuplicationEntity(tableWidget *KeePassTable) {
+	dialog := NewDuplicationOptionsDialog()
 
-		dialog.ButtonBox.ConnectAccepted(func() {
-			dialog.DoAccepted(tableWidget)
-		})
-
-		// Connect the button box's rejected signal
-		dialog.ButtonBox.ConnectRejected(func() {
-			fmt.Println("Cancel button clicked")
-			dialog.Reject()
-		})
-		dialog.Exec()
+	dialog.ButtonBox.ConnectAccepted(func() {
+		dialog.DoAccepted(tableWidget)
 	})
+
+	// Connect the button box's rejected signal
+	dialog.ButtonBox.ConnectRejected(func() {
+		fmt.Println("Cancel button clicked")
+		dialog.Reject()
+	})
+	dialog.Exec()
 }
 
 func doLinkClicked(link string) {
@@ -59,11 +57,11 @@ func doLinkClicked(link string) {
 	}
 }
 
-func SetEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
+/*func SetEditOrViewEntryAction(tableWidget *KeePassTable, editOrViewEntryAction *widgets.QAction) {
 	editOrViewEntryAction.ConnectTriggered(func(bool) {
 		InitDetailWidget(tableWidget)
 	})
-}
+}*/
 
 func SetCopyUrlAction(tableWidget *KeePassTable, copyUrlAction *widgets.QAction) {
 	copyUrlAction.ConnectTriggered(func(bool) {
@@ -138,12 +136,6 @@ func CopyTableItemPassword(tableWidget *KeePassTable) {
 	}
 }
 
-func SetCopyUserNameAction(tableWidget *KeePassTable, copyUserNameAction *widgets.QAction) {
-	copyUserNameAction.ConnectTriggered(func(bool) {
-		CopyTableItemUsername(tableWidget)
-	})
-}
-
 func CopyTableItemUsername(tableWidget *KeePassTable) {
 	selectedRow := tableWidget.CurrentRow()
 
@@ -159,30 +151,6 @@ func CopyTableItemUsername(tableWidget *KeePassTable) {
 			clipboard.SetText(firstItemText, gui.QClipboard__Clipboard)
 		}
 	}
-}
-
-func SetMoveTopAction(KeePassTable *KeePassTable, moveTopAction *widgets.QAction) {
-	moveTopAction.ConnectTriggered(func(checked bool) {
-		KeePassTable.MoveTop()
-	})
-}
-
-func SetMoveBottomAction(KeePassTable *KeePassTable, moveBottomAction *widgets.QAction) {
-	moveBottomAction.ConnectTriggered(func(checked bool) {
-		KeePassTable.MoveBottom()
-	})
-}
-
-func SetMoveUpAction(KeePassTable *KeePassTable, moveUpAction *widgets.QAction) {
-	moveUpAction.ConnectTriggered(func(checked bool) {
-		KeePassTable.MoveUp()
-	})
-}
-
-func SetMoveDownAction(KeePassTable *KeePassTable, moveDownAction *widgets.QAction) {
-	moveDownAction.ConnectTriggered(func(checked bool) {
-		KeePassTable.MoveDown()
-	})
 }
 
 func SetTableRowData(tableWidget *KeePassTable, newRow int, rowData []string) {

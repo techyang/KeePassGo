@@ -107,6 +107,13 @@ func (tableWidget *CommonTableWidget) MoveDown() {
 	}
 }
 
+func (tableWidget *CommonTableWidget) Delete() {
+	row := tableWidget.CurrentRow()
+	if row >= 0 {
+		tableWidget.RemoveRow(row)
+	}
+}
+
 func (tableWidget *CommonTableWidget) setTableRowData(newRow int, rowData []string) {
 	for column := 0; column < tableWidget.ColumnCount(); column++ {
 		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))

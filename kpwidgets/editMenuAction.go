@@ -1,7 +1,7 @@
 package kpwidgets
 
 import (
-	"fmt"
+	"github.com/techyang/keepassgo/entity"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
@@ -43,7 +43,7 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	addEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Import.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	addEntityAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+		entity.NewDetailWidget(TableWidget)
 	})
 
 	addEntityAction.SetShortcut(gui.NewQKeySequence2("Ctrl+I", gui.QKeySequence__NativeText))
@@ -53,7 +53,7 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	editEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Sign.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	editEntityAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+		entity.InitDetailWidget(TableWidget)
 	})
 
 	// Create actions for the edit menu
@@ -62,18 +62,14 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Connect the actions and tool buttons to their respective triggered events
 	duplicateEntityAction.ConnectTriggered(func(checked bool) {
-		//TableWidget.de
+		entity.DuplicationEntity(TableWidget)
 	})
 
 	DelteteEntityAction := editMenu.AddAction("&Delete Entity...")
 	DelteteEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_DeleteEntry.png"))
 	DelteteEntityAction.SetShortcut(gui.NewQKeySequence2("Delete", gui.QKeySequence__NativeText))
 	DelteteEntityAction.ConnectTriggered(func(checked bool) {
-		fmt.Println("删除动作")
-		row := TableWidget.CurrentRow()
-		if row >= 0 {
-			TableWidget.RemoveRow(row)
-		}
+		TableWidget.Delete()
 	})
 
 	editMenu.AddSeparator()
@@ -82,7 +78,7 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	selectAllAction := editMenu.AddAction("&Select All...")
 	// Connect the actions and tool buttons to their respective triggered events
 	selectAllAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+		TableWidget.SelectAll()
 	})
 	selectAllAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__SelectAll))
 	editMenu.AddSeparator()

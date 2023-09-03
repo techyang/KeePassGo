@@ -139,22 +139,52 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 		moveTop(keePassTable)
 	})
 
-	SetMoveTopAction(keePassTable, moveTopAction)
-	SetMoveUpAction(keePassTable, moveUpAction)
-	SetMoveDownAction(keePassTable, moveDownAction)
-	SetMoveBottomAction(keePassTable, moveBottomAction)
+	//SetMoveTopAction(keePassTable, moveTopAction)
 
-	SetCopyUserNameAction(keePassTable, copyUserNameAction)
-	SetCopyPasswordAction(keePassTable, copyPasswordAction)
+	moveTopAction.ConnectTriggered(func(bool) {
+		keePassTable.MoveTop()
+	})
+	moveUpAction.ConnectTriggered(func(bool) {
+		keePassTable.MoveUp()
+	})
 
-	SetOpenUrlAction(keePassTable, openUrlAction)
+	moveDownAction.ConnectTriggered(func(bool) {
+		keePassTable.MoveDown()
+	})
 
-	SetCopyUrlAction(keePassTable, copyUrlAction)
+	moveBottomAction.ConnectTriggered(func(bool) {
+		keePassTable.MoveBottom()
+	})
+
+	copyUserNameAction.ConnectTriggered(func(bool) {
+		CopyTableItemUsername(keePassTable)
+	})
+
+	copyPasswordAction.ConnectTriggered(func(bool) {
+		CopyTableItemPassword(keePassTable)
+	})
+
+	openUrlAction.ConnectTriggered(func(bool) {
+		keePassTable.OpenWithBrowser(constants.Browser_Default)
+	})
+
+	copyUrlAction.ConnectTriggered(func(bool) {
+		keePassTable.CopyUrl()
+	})
+
 	performAutoTypeAction.ConnectTriggered(func(bool) {
 		InitDetailWidget(keePassTable)
 	})
-	SetEditOrViewEntryAction(keePassTable, editOrViewEntryAction)
-	SetDuplicateAction2(keePassTable, duplicateAction)
+	//SetEditOrViewEntryAction(keePassTable, editOrViewEntryAction)
+	editOrViewEntryAction.ConnectTriggered(func(bool) {
+		InitDetailWidget(keePassTable)
+	})
+
+	//SetDuplicateAction2(keePassTable, duplicateAction)
+
+	duplicateAction.ConnectTriggered(func(bool) {
+		DuplicationEntity(keePassTable)
+	})
 
 	selectAllAction.ConnectTriggered(func(bool) {
 		keePassTable.SelectAll()
@@ -180,11 +210,7 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	})
 
 	deleteItemAction.ConnectTriggered(func(bool) {
-
-		row := keePassTable.CurrentRow()
-		if row > 0 {
-			keePassTable.RemoveRow(row)
-		}
+		keePassTable.Delete()
 	})
 }
 
