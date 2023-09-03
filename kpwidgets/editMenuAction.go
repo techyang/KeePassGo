@@ -1,6 +1,7 @@
 package kpwidgets
 
 import (
+	"fmt"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
@@ -11,6 +12,8 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the file menu
 	addGroupAction := editMenu.AddAction("&Add Group...")
+	//addGroupAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_Folder_Txt.png"))
+	addGroupAction.SetIcon(gui.NewQIcon5("Ext/Images_App_HighRes/Nuvola_Derived/B48x48_Folder_New_Ex.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	addGroupAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
@@ -18,14 +21,15 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the file menu
 	editGroupAction := editMenu.AddAction("&Edit Group...")
+	editGroupAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_Folder_Txt.png"))
+
 	// Connect the actions and tool buttons to their respective triggered events
 	editGroupAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
 	})
 
-	// Create actions for the file menu
 	delteteGroupAction := editMenu.AddAction("&Delete Group...")
-	// Connect the actions and tool buttons to their respective triggered events
+	delteteGroupAction.SetIcon(gui.NewQIcon5("Ext/Images_App_HighRes/Nuvola/B48x48_Folder_Locked.png"))
 	delteteGroupAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
 	})
@@ -36,6 +40,7 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the edit menu
 	addEntityAction := editMenu.AddAction("&Add Entity...")
+	addEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Import.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	addEntityAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
@@ -45,6 +50,7 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the edit menu
 	editEntityAction := editMenu.AddAction("&Edit Entity...")
+	editEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Sign.png"))
 	// Connect the actions and tool buttons to their respective triggered events
 	editEntityAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)
@@ -52,16 +58,22 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	// Create actions for the edit menu
 	duplicateEntityAction := editMenu.AddAction("&Duplicate Entity...")
+	duplicateEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_KGPG_Key2.png"))
+
 	// Connect the actions and tool buttons to their respective triggered events
 	duplicateEntityAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+		//TableWidget.de
 	})
 
-	// Create actions for the edit menu
 	DelteteEntityAction := editMenu.AddAction("&Delete Entity...")
-	// Connect the actions and tool buttons to their respective triggered events
+	DelteteEntityAction.SetIcon(gui.NewQIcon5("Resources/Nuvola_Derived/B16x16_DeleteEntry.png"))
+	DelteteEntityAction.SetShortcut(gui.NewQKeySequence2("Delete", gui.QKeySequence__NativeText))
 	DelteteEntityAction.ConnectTriggered(func(checked bool) {
-		DoNewAction(window)
+		fmt.Println("删除动作")
+		row := TableWidget.CurrentRow()
+		if row >= 0 {
+			TableWidget.RemoveRow(row)
+		}
 	})
 
 	editMenu.AddSeparator()
@@ -97,6 +109,8 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	editMenu.AddSeparator()
 	findAction := editMenu.AddAction("&Find...")
+	findAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_XMag.png"))
+
 	// Connect the actions and tool buttons to their respective triggered events
 	findAction.ConnectTriggered(func(checked bool) {
 		DoNewAction(window)

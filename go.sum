@@ -29,6 +29,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/therecipe/qt v0.0.0-20200904063919-c0c124a5770d h1:T+d8FnaLSvM/1BdlDXhW4d5dr2F07bAbB+LpgzMxx+o=
 github.com/therecipe/qt v0.0.0-20200904063919-c0c124a5770d/go.mod h1:SUUR2j3aE1z6/g76SdD6NwACEpvCxb3fvG82eKbD6us=
+github.com/therecipe/qt/internal/binding/files/docs/5.13.0 v0.0.0-20200904063919-c0c124a5770d h1:AJRoBel/g9cDS+yE8BcN3E+TDD/xNAguG21aoR8DAIE=
+github.com/therecipe/qt/internal/binding/files/docs/5.13.0 v0.0.0-20200904063919-c0c124a5770d/go.mod h1:mH55Ek7AZcdns5KPp99O0bg+78el64YCYWHiQKrOdt4=
 github.com/tobischo/gokeepasslib/v3 v3.5.1 h1:6gdTLSnuE84sU7cwnz5JvCSQBHnlHyc7pCBoy6lZKhs=
 github.com/tobischo/gokeepasslib/v3 v3.5.1/go.mod h1:wp7WzSrQAZs1MK5ZaPC1jkRq0HIXmkmbqDXAhPTNWic=
 github.com/twgh/xcgui v1.3.380 h1:70rhOcRpS0UVsitBR3Bydev8i23tT2yrUFI010GQGv8=
