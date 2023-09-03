@@ -63,6 +63,7 @@ func initMenuBar(window *widgets.QMainWindow) {
 	InitFileMenu(menuBar, window)
 	InitEditMenu(menuBar, window)
 	InitViewMenu(menuBar, window)
+	InitToolsMenu(menuBar, window)
 	functions.InitHelpMenu(menuBar, window)
 }
 
