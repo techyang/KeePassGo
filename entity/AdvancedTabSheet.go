@@ -97,10 +97,7 @@ func (advancedTabSheet *AdvancedTabSheet) SetTableRowData(kpEntry gokeepasslib.E
 			}
 		}
 	}
-	/*for column := 0; column < tableWidget.ColumnCount(); column++ {
-		tableWidget.SetItem(newRow, column, widgets.NewQTableWidgetItem2(rowData[column], 0))
-	}
-	tableWidget.SelectRow(newRow)*/
+
 }
 
 func isCommonField(field string) {
