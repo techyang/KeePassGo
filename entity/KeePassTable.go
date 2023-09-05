@@ -99,7 +99,7 @@ func (keePassTable *KeePassTable) SetTableContextMenu() {
 	})
 
 	urlsMenu.AddAction("Open With 360安全浏览器").ConnectTriggered(func(bool) {
-		open.Run("C:\\Program Files (x86)\\Sybase\\PowerDesigner 16\\bpm.chm")
+		//open.Run("C:\\Program Files (x86)\\Sybase\\PowerDesigner 16\\bpm.chm")
 		keePassTable.OpenWithBrowser(constants.Browser_360SE)
 	})
 	contextMenu.AddSeparator()
