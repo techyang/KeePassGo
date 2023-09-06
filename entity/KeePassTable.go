@@ -380,11 +380,11 @@ func (tableWidget *KeePassTable) SetTableItems(group *gokeepasslib.Group) {
 }
 
 func FindGroupByUUID(groups []gokeepasslib.Group, uuid string) *gokeepasslib.Group {
-	//uuids := uuid.MustParse(uuid)
+
 	for _, group := range groups {
 		txt, _ := group.UUID.MarshalText()
 		if string(txt) == uuid {
-			fmt.Println("找到的名称是:", group.Name)
+			//fmt.Println("找到的名称是:", group.Name)
 			return &group
 		}
 		foundGroup := FindGroupByUUID(group.Groups, uuid)
