@@ -371,7 +371,6 @@ func (tableWidget *KeePassTable) SetTableItems(group *gokeepasslib.Group) {
 		passwordItem := widgets.NewQTableWidgetItem2(entry.GetPassword(), 0)
 		//passwordItem.SetFlags(core.Qt__ItemIsSelectable | core.Qt__ItemIsEditable)
 		//passwordItem.SetFlags(passwordItem.Flags() | core.Qt__ItemIsUserCheckable)
-		//passwordItem.SetCheckState(core.Qt__Checked)
 
 		tableWidget.SetItem(i, 2, passwordItem)
 		tableWidget.SetItem(i, 3, widgets.NewQTableWidgetItem2(url, 0))
