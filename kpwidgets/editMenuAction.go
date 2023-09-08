@@ -187,14 +187,6 @@ func InitEditMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		// Action logic for "New"
 	})
 
-	exitAction.ConnectTriggered(func(checked bool) {
-		//widgets.QMessageBox_Question(window, "是否退出?", "真的要退出吗?", widgets.QMessageBox__Ok, widgets.QMessageBox__Cancel)
-		// 弹出确认对话框
-		result := widgets.QMessageBox_Question(window, "确认退出", "确定要退出应用程序吗？", widgets.QMessageBox__Ok|widgets.QMessageBox__Cancel, widgets.QMessageBox__Cancel)
-		if result == widgets.QMessageBox__Ok {
-			// 用户点击了确定按钮，退出应用程序
-			window.Close()
-		}
-	})
+
 	*/
 }
