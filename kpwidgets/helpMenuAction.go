@@ -137,14 +137,6 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		layout.AddSpacing(10)
 		layout.AddWidget(table, 0, 0)
 
-		/*gridLayout := widgets.NewQGridLayout(nil)
-		gridLayout.AddWidget(copyrightLabel)
-		gridLayout.AddWidget(copyrightLabel)
-		gridLayout.AddWidget(copyrightLabel)
-		gridLayout.AddWidget(copyrightLabel)
-		gridLayout.AddWidget(copyrightLabel)
-		gridLayout.AddWidget(copyrightLabel)*/
-
 		// 创建网格布局
 		gridLayout := widgets.NewQGridLayout(nil)
 
