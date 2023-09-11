@@ -185,8 +185,6 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		bottomLayout.AddWidget(okButton, 0, core.Qt__AlignRight|core.Qt__AlignBottom)
 
 		// 添加底部布局到主布局
-		//layout.AddSpacing(10)
-		//layout.AddLayout(bottomLayout)
 
 		layout.AddSpacing(10)
 		layout.AddLayout(bottomLayout, 0)
