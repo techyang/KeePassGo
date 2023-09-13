@@ -28,8 +28,7 @@ func NewTrayContextMenu() *TrayContextMenu {
 	about.ConnectTriggered(func(bool) {
 		//button := widgets.QMessageBox_Information(nil, "title", "text", widgets.QMessageBox__Ok, widgets.QMessageBox__Yes)
 		fmt.Println("click me")
-		//widgets.QMessageBox_Information(nil, "title", "text", widgets.QMessageBox__Ok, widgets.QMessageBox__Yes)
-		//widgets.NewQFileDialog2(nil, "打开", "d:", "*.txt").Show()
+
 	})
 	//设置子项
 	help.SetMenu(menuChild)
