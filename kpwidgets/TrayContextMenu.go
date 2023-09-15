@@ -24,9 +24,8 @@ func NewTrayContextMenu() *TrayContextMenu {
 	//定义二级菜单
 	menuChild := widgets.NewQMenu(nil)
 	menuChild.AddAction("option")
-	about := menuChild.AddAction("about")
+	about := menuChild.AddAction("About")
 	about.ConnectTriggered(func(bool) {
-		//button := widgets.QMessageBox_Information(nil, "title", "text", widgets.QMessageBox__Ok, widgets.QMessageBox__Yes)
 		fmt.Println("click me")
 
 	})
