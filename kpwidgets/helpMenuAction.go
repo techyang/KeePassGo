@@ -103,7 +103,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		dialog.SetWindowTitle("About")
 
 		// 创建版权文本 QLabel
-		copyrightLabel := widgets.NewQLabel2("Copyright Text", nil, 0)
+		copyrightLabel := widgets.NewQLabel2("Copyright (c) 2003-2017 Dominik Reil.", nil, 0)
 
 		// 创建 KeePass 官网链接 QLabel
 		websiteLabel := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
