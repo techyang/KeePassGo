@@ -58,12 +58,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 		dialog.Exec()
 		*/
-		//url := core.NewQUrl3("https://keepass.info/help/base/index.html", core.QUrl__StrictMode)
-		//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/help/base/index.html"))
 
-		// Open the URL in the default web browser
-		//widgets.QDesktopServices_OpenUrl(url)
-		//widgets.QMessageBox_About(window, "帮助", "请参考:https://www.csdn.net")
 	})
 
 	helpSourceAction := helpMenu.AddAction("Help Source")
