@@ -44,8 +44,6 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		})
 
 		// Set the button text
-		okButton.SetText("OK")
-		cancelButton.SetText("Cancel")
 
 		// Create the layout
 		layout := widgets.NewQVBoxLayout2(dialog)
