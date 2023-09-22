@@ -82,7 +82,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	checkForUpdatesAction := helpMenu.AddAction("Check for Updates")
 	checkForUpdatesAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B16x16_FTP.png"))
 	checkForUpdatesAction.ConnectTriggered(func(checked bool) {
-		//gui.QDesktopServices_OpenUrl(core.QUrl_FromUserInput("https://keepass.info/donate.html"))
+
 	})
 
 	helpMenu.AddSeparator()

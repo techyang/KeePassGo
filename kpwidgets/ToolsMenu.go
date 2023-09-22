@@ -5,6 +5,7 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
+// InitToolsMenu init tool menu content
 func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Create the file menu
 	toolsMenu := menuBar.AddMenu2("Tools")
