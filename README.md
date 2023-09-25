@@ -1,7 +1,7 @@
 [中文](README-zh-CN.md) | English
 
 # About KeePassGo
-An implementation of go for KeePass (https://keepass.info/) using therecipe/qt (https://github.com/therecipe/qt). welcome to use.
+An implementation of go for KeePass (https://keepass.info/) using therecipe/qt (https://github.com/therecipe/qt). welcome to use this software.
 ## Why KeePass?
 Today, you have to remember many passwords. You need a password for a lot of websites, your e-mail account, your webserver, network logins, etc. The list is endless. Also, you should use a different password for each account, because if you would use only one password everywhere and someone gets this password, you would have a problem: the thief would have access to all of your accounts.
 
