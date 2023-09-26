@@ -5,6 +5,7 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
+// InitToolsMenu init tool menu content
 func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	// Create the file menu
 	toolsMenu := menuBar.AddMenu2("Tools")
@@ -30,10 +31,19 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	})
 
-	databaseToolsAction := toolsMenu.AddAction("Database Tools")
-	databaseToolsAction.ConnectTriggered(func(checked bool) {
+	databaseToolsMenu := toolsMenu.AddMenu2("Database Tools")
+	databaseMaintenanceAction := databaseToolsMenu.AddAction("Database Maintenance...")
+	databaseToolsMenu.AddSeparator()
+	databaseToolsMenu.AddAction("Delete duplicate Entries")
+	// Connect the actions and tool buttons to their respective triggered events
+	/*databaseToolsAction.ConnectTriggered(func(checked bool) {
+		functions.OpenDatabase(TreeWidget, TableWidget)
+	})*/
+
+	databaseMaintenanceAction.ConnectTriggered(func(checked bool) {
 
 	})
+	//toolsMenu.AddAction("")
 
 	toolsMenu.AddSeparator()
 	triggersAction := toolsMenu.AddAction("Triggers...")
