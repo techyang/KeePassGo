@@ -35,6 +35,7 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	databaseMaintenanceAction := databaseToolsMenu.AddAction("Database Maintenance...")
 	databaseToolsMenu.AddSeparator()
 	databaseToolsMenu.AddAction("Delete duplicate Entries")
+	databaseToolsMenu.AddAction("Delete Empty Groups")
 	// Connect the actions and tool buttons to their respective triggered events
 	/*databaseToolsAction.ConnectTriggered(func(checked bool) {
 		functions.OpenDatabase(TreeWidget, TableWidget)
