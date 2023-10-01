@@ -34,13 +34,32 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	databaseToolsMenu := toolsMenu.AddMenu2("Database Tools")
 	databaseMaintenanceAction := databaseToolsMenu.AddAction("Database Maintenance...")
 	databaseToolsMenu.AddSeparator()
-	databaseToolsMenu.AddAction("Delete duplicate Entries")
-	databaseToolsMenu.AddAction("Delete Empty Groups")
-	databaseToolsMenu.AddAction("Delete Unused Custom Icons")
+	deleteDuplicateEntriesAction := databaseToolsMenu.AddAction("Delete duplicate Entries")
+	deleteDuplicateEntriesAction.ConnectTriggered(func(checked bool) {
+
+	})
+
+	deleteEmptyGroupsAction := databaseToolsMenu.AddAction("Delete Empty Groups")
+	deleteEmptyGroupsAction.ConnectTriggered(func(checked bool) {
+
+	})
+
+	deleteUnusedCustomIconsAction := databaseToolsMenu.AddAction("Delete Unused Custom Icons")
+	deleteUnusedCustomIconsAction.ConnectTriggered(func(checked bool) {
+
+	})
+
 	databaseToolsMenu.AddSeparator()
-	databaseToolsMenu.AddAction("Xml Replace")
+	xmlReplaceAction := databaseToolsMenu.AddAction("Xml Replace")
+	xmlReplaceAction.ConnectTriggered(func(checked bool) {
+
+	})
+
 	databaseToolsMenu.AddSeparator()
-	databaseToolsMenu.AddAction("Print Emergency Sheet")
+	printEmergencySheeteAction := databaseToolsMenu.AddAction("Print Emergency Sheet")
+	printEmergencySheeteAction.ConnectTriggered(func(checked bool) {
+
+	})
 
 	// Connect the actions and tool buttons to their respective triggered events
 	/*databaseToolsAction.ConnectTriggered(func(checked bool) {
