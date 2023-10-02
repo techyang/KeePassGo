@@ -61,15 +61,9 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	})
 
-	// Connect the actions and tool buttons to their respective triggered events
-	/*databaseToolsAction.ConnectTriggered(func(checked bool) {
-		functions.OpenDatabase(TreeWidget, TableWidget)
-	})*/
-
 	databaseMaintenanceAction.ConnectTriggered(func(checked bool) {
 
 	})
-	//toolsMenu.AddAction("")
 
 	toolsMenu.AddSeparator()
 	triggersAction := toolsMenu.AddAction("Triggers...")
