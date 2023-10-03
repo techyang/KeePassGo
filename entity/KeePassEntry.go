@@ -2,6 +2,7 @@ package entity
 
 import "time"
 
+// KeePassEntry keePass Entry struct
 type KeePassEntry struct {
 	Title        string
 	UserName     string
