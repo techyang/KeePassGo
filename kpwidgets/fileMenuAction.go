@@ -146,7 +146,7 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		//window.Close()
 	})
 
-	changeMasterKeyAction := fileMenu.AddAction("Database Settings...")
+	changeMasterKeyAction := fileMenu.AddAction("Change Master Key...")
 	changeMasterKeyActionIcon := gui.NewQIcon5("Resources/Nuvola/B16x16_File_Locked.png")
 	changeMasterKeyAction.SetIcon(changeMasterKeyActionIcon)
 	changeMasterKeyAction.ConnectTriggered(func(checked bool) {
