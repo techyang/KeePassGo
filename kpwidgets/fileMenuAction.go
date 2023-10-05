@@ -152,7 +152,6 @@ func InitFileMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	changeMasterKeyAction.ConnectTriggered(func(checked bool) {
 		//window.Close()
 	})
-	//newAction.SetShortcut(gui.NewQKeySequence5(gui.QKeySequence__Close))
 
 	fileMenu.AddSeparator()
 	printAction := fileMenu.AddAction("Print...")
