@@ -246,12 +246,6 @@ func NewBoolWrapper(value bool) BoolWrapper {
 	}
 }
 
-func DoNewAction2(window *widgets.QMainWindow) {
-	dialog := NewNewEntryTipsDialog()
-
-	dialog.Show()
-}
-
 func DoNewAction(window *widgets.QMainWindow) {
 	messageBox := widgets.NewQMessageBox(nil)
 	messageBox.SetTextFormat(core.Qt__RichText) // Use rich text format
