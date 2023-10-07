@@ -97,6 +97,8 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 		// 创建版权文本 QLabel
 		copyrightLabel := widgets.NewQLabel2("Copyright (c) 2003-2017 Dominik Reil.", nil, 0)
+		keePassLabel := widgets.NewQLabel2("KeePass is OSI Certified Open Source Software.", nil, 0)
+		licenceLabel := widgets.NewQLabel2("The program is distributed under the terms of the GNU General Public Licence v2 or later.", nil, 0)
 
 		// 创建 KeePass 官网链接 QLabel
 		websiteLabel := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
@@ -124,7 +126,11 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		layout := widgets.NewQVBoxLayout()
 
 		// 添加部件到主布局
-		layout.AddWidget(copyrightLabel, 0, core.Qt__AlignCenter)
+		layout.AddWidget(copyrightLabel, 0, core.Qt__AlignLeft)
+
+		layout.AddWidget(keePassLabel, 0, core.Qt__AlignLeft)
+		layout.AddWidget(licenceLabel, 0, core.Qt__AlignLeft)
+
 		layout.AddSpacing(10)
 		layout.AddWidget(websiteLabel, 0, core.Qt__AlignCenter)
 		layout.AddSpacing(10)
