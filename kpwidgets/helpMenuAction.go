@@ -104,6 +104,12 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		websiteLabel := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
 		websiteLabel.SetOpenExternalLinks(true)
 
+		acknowledgementsLabel := widgets.NewQLabel2("<a href=\"https://keepass.info\">KeePass website</a>", nil, 0)
+		acknowledgementsLabel.SetOpenExternalLinks(true)
+
+		helpLabel := widgets.NewQLabel2("<a href=\"https://keepass.info/help/base/index.html\">Help</a>", nil, 0)
+		helpLabel.SetOpenExternalLinks(true)
+
 		// 创建 Component/Status/Version 表格
 		table := widgets.NewQTableWidget2(2, 3, nil)
 		table.SetHorizontalHeaderLabels([]string{"Component", "Status", "Version"})
@@ -127,13 +133,20 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 		// 添加部件到主布局
 		layout.AddWidget(copyrightLabel, 0, core.Qt__AlignLeft)
-
+		layout.AddSpacing(10)
 		layout.AddWidget(keePassLabel, 0, core.Qt__AlignLeft)
+		layout.AddSpacing(10)
 		layout.AddWidget(licenceLabel, 0, core.Qt__AlignLeft)
 
 		layout.AddSpacing(10)
-		layout.AddWidget(websiteLabel, 0, core.Qt__AlignCenter)
-		layout.AddSpacing(10)
+		//layout.AddWidget(websiteLabel, 0, core.Qt__AlignCenter)
+		//layout.AddSpacing(10)
+		gridLayout2 := widgets.NewQGridLayout(nil)
+		gridLayout2.AddWidget2(websiteLabel, 0, 0, core.Qt__AlignLeft)
+		gridLayout2.AddWidget2(acknowledgementsLabel, 0, 1, core.Qt__AlignLeft)
+		gridLayout2.AddWidget2(helpLabel, 0, 2, core.Qt__AlignLeft)
+		layout.AddLayout(gridLayout2, 0)
+
 		layout.AddWidget(table, 0, 0)
 
 		// 创建网格布局
