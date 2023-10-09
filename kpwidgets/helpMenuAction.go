@@ -110,6 +110,12 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		helpLabel := widgets.NewQLabel2("<a href=\"https://keepass.info/help/base/index.html\">Help</a>", nil, 0)
 		helpLabel.SetOpenExternalLinks(true)
 
+		licenseLabel := widgets.NewQLabel2("<a href=\"https://keepass.info/donate.html\">License</a>", nil, 0)
+		licenseLabel.SetOpenExternalLinks(true)
+
+		donateLabel := widgets.NewQLabel2("<a href=\"https://keepass.info/donate.html\">Donate</a>", nil, 0)
+		donateLabel.SetOpenExternalLinks(true)
+
 		// 创建 Component/Status/Version 表格
 		table := widgets.NewQTableWidget2(2, 3, nil)
 		table.SetHorizontalHeaderLabels([]string{"Component", "Status", "Version"})
@@ -145,6 +151,8 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		gridLayout2.AddWidget2(websiteLabel, 0, 0, core.Qt__AlignLeft)
 		gridLayout2.AddWidget2(acknowledgementsLabel, 0, 1, core.Qt__AlignLeft)
 		gridLayout2.AddWidget2(helpLabel, 0, 2, core.Qt__AlignLeft)
+		gridLayout2.AddWidget2(licenseLabel, 1, 0, core.Qt__AlignLeft)
+		gridLayout2.AddWidget2(donateLabel, 1, 1, core.Qt__AlignLeft)
 		layout.AddLayout(gridLayout2, 0)
 
 		layout.AddWidget(table, 0, 0)
