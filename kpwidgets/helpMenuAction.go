@@ -5,8 +5,6 @@ import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
-	"math/rand"
-	"time"
 )
 
 func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
@@ -158,7 +156,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		layout.AddWidget(table, 0, 0)
 
 		// 创建网格布局
-		gridLayout := widgets.NewQGridLayout(nil)
+		/*gridLayout := widgets.NewQGridLayout(nil)
 
 		// 门户网站连接列表
 		websites := []string{
@@ -196,7 +194,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 				// 释放 QUrl
 				url.DestroyQUrl()
 			}
-		}
+		}*/
 
 		// 创建底部布局
 		bottomLayout := widgets.NewQHBoxLayout2(nil)
@@ -209,7 +207,7 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 		layout.AddSpacing(10)
 		layout.AddLayout(bottomLayout, 0)
 		layout.AddSpacing(10)
-		layout.AddLayout(gridLayout, 0)
+		//layout.AddLayout(gridLayout, 0)
 		// 设置主布局为对话框的布局
 		dialog.SetLayout(layout)
 
