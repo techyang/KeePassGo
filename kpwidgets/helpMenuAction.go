@@ -155,47 +155,6 @@ func InitHelpMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 		layout.AddWidget(table, 0, 0)
 
-		// 创建网格布局
-		/*gridLayout := widgets.NewQGridLayout(nil)
-
-		// 门户网站连接列表
-		websites := []string{
-			"https://www.google.com",
-			"https://www.github.com",
-			"https://www.microsoft.com",
-			"https://www.apple.com",
-			"https://www.openai.com",
-			"https://www.spotify.com",
-			"https://www.amazon.com",
-			"https://www.facebook.com",
-			"https://www.twitter.com",
-		}
-
-		// 创建随机数生成器
-		rand.Seed(time.Now().UnixNano())
-
-		// 在网格布局中随机放置门户网站连接
-		for i := 0; i < 3; i++ {
-			for j := 0; j < 3; j++ {
-				// 从门户网站连接列表中随机选择一个连接
-				randomWebsite := websites[rand.Intn(len(websites))]
-
-				// 创建 QLabel 和 QUrl
-				label := widgets.NewQLabel(nil, 0)
-				url := core.NewQUrl3(randomWebsite, core.QUrl__TolerantMode)
-
-				// 设置 QLabel 的文本和打开外部链接
-				label.SetText(randomWebsite)
-				label.SetOpenExternalLinks(true)
-
-				// 将 QLabel 添加到网格布局的指定位置
-				gridLayout.AddWidget2(label, i, j, core.Qt__AlignLeft)
-
-				// 释放 QUrl
-				url.DestroyQUrl()
-			}
-		}*/
-
 		// 创建底部布局
 		bottomLayout := widgets.NewQHBoxLayout2(nil)
 		bottomLayout.AddSpacing(10)
