@@ -22,13 +22,6 @@ func InitMainContent(window *widgets.QMainWindow) {
 	container := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQHBoxLayout2(container)
 
-	// Create the QHBoxLayout for the buttons
-	//	hBoxLayout := widgets.NewQVBoxLayout()
-
-	// Create the buttons
-	//button1 := widgets.NewQPushButton2("Button 1", nil)
-	//button2 := widgets.NewQPushButton2("Button 2", nil)
-
 	// Create a QTreeWidget
 	TableWidget = entity.NewKeePassTable()
 	TreeWidget = entity.NewKeePassTree(TableWidget)
