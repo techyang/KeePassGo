@@ -19,6 +19,7 @@ func main() {
 	log.Info("begin to start app ,please wait...")
 	widgets.NewQApplication(len(os.Args), os.Args)
 	window := kpwidgets.InitMainWindow()
+	// show the main windows
 	window.Show()
 	widgets.QApplication_Exec()
 }
