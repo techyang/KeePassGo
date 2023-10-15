@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+// main function
 func main() {
 	///start
 	//functions.SetupLogger()
