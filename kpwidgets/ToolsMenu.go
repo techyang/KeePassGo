@@ -33,6 +33,7 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 
 	databaseToolsMenu := toolsMenu.AddMenu2("Database Tools")
 	databaseMaintenanceAction := databaseToolsMenu.AddAction("Database Maintenance...")
+	databaseMaintenanceAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_Package_Settings.png"))
 	databaseToolsMenu.AddSeparator()
 	deleteDuplicateEntriesAction := databaseToolsMenu.AddAction("Delete duplicate Entries")
 	deleteDuplicateEntriesAction.ConnectTriggered(func(checked bool) {
@@ -40,6 +41,8 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	deleteEmptyGroupsAction := databaseToolsMenu.AddAction("Delete Empty Groups")
+	deleteEmptyGroupsAction.SetIcon(gui.NewQIcon5("Ext/Images_App_HighRes/Nuvola/B48x48_Folder_Locked.png"))
+
 	deleteEmptyGroupsAction.ConnectTriggered(func(checked bool) {
 
 	})
