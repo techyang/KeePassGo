@@ -48,6 +48,7 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	})
 
 	deleteUnusedCustomIconsAction := databaseToolsMenu.AddAction("Delete Unused Custom Icons")
+	deleteUnusedCustomIconsAction.SetIcon(gui.NewQIcon5("Ext/Images_App_HighRes/Nuvola/B48x48_Trashcan_Full.png"))
 	deleteUnusedCustomIconsAction.ConnectTriggered(func(checked bool) {
 
 	})
