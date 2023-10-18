@@ -86,7 +86,7 @@ func InitToolsMenu(menuBar *widgets.QMenuBar, window *widgets.QMainWindow) {
 	optionsAction := toolsMenu.AddAction("Options...")
 	optionsAction.SetIcon(gui.NewQIcon5("Resources/Nuvola/B48x48_KCMSystem.png"))
 	optionsAction.ConnectTriggered(func(checked bool) {
-
+		// todo
 	})
 
 }
